@@ -1,0 +1,10 @@
+
+Warning: Undefined array key "data" in E:\DoomWork\phobianodyssey\tools\googleapi\quickstart.php on line 37
+
+Warning: Trying to access array offset on value of type null in E:\DoomWork\phobianodyssey\tools\googleapi\quickstart.php on line 37
+
+Warning: Trying to access array offset on value of type null in E:\DoomWork\phobianodyssey\tools\googleapi\quickstart.php on line 37
+
+Warning: Trying to access array offset on value of type null in E:\DoomWork\phobianodyssey\tools\googleapi\quickstart.php on line 37
+
+Warning: foreach() argument must be of type array|object, null given in E:\DoomWork\phobianodyssey\tools\googleapi\quickstart.php on line 37

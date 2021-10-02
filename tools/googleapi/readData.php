@@ -1,4 +1,5 @@
 <?php
+print ("This will only work with the Google API downloaded, and the src and vendor folders in the same folder as this script!" . PHP_EOL);
 require __DIR__ . '/vendor/autoload.php';
 
 $spreadsheetId = '1ldZ0EXH_GIozUMwVQcZHxcjAIx-r8NCNp4m_1ixl9tg';
