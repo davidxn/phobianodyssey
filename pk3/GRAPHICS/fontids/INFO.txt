@@ -1,0 +1,10 @@
+Name: Id Shadowed
+Type: SmallFont
+Format: Default
+Variants: 1
+Replaces: STCFN***
+Size: 6px
+Paletted: Yes (Doom)
+Lower-cases: No
+Individual glyphs/character maps included: Yes
+Standard GFX included: No

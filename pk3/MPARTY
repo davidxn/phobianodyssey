@@ -1,0 +1,11 @@
+ZombieWeak,Wandering_Zombies,NONE,NONE,ZombieMan,ZombieMan,NONE,ZombieMan,NONE,ZombieMan,NONE,NONE
+ZombieWeak2,Wandering_Zombies,NONE,ZombieMan,NONE,NONE,ZombieMan,NONE,NONE,NONE,ZombieMan,NONE
+ZombieSquad,Zombie_Squad,ZombieMan,NONE,NONE,ShotgunGuy,NONE,ZombieMan,ZombieMan,ZombieMan,NONE,ZombieMan
+ZombieDet,Zombie_Detachment,NONE,ZombieMan,ZombieMan,ShotgunGuy,NONE,ZombieMan,ZombieMan,NONE,NONE,NONE
+ZombieTroop,Zombie_Troop,ZombieMan,ShotgunGuy,ZombieMan,ShotgunGuy,ChaingunGuy,ZombieMan,ZombieMan,ZombieMan,ZombieMan,ZombieMan
+ImpHorde,Imp_Horde,DoomImp,DoomImp,DoomImp,DoomImp,DoomImp,DoomImp,DoomImp,DoomImp,DoomImp,DoomImp
+ImpParty,Imp_Party,DoomImp,NONE,DoomImp,DoomImp,NONE,DoomImp,NONE,NONE,NONE,NONE
+ImpSquad,Imp_Squad,NONE,DoomImp,NONE,DoomImp,NONE,DoomImp,NONE,DoomImp,NONE,DoomImp
+ImpHunters,Imp_Hunters,NONE,DoomImp,NONE,NONE,DoomImp,NONE,Demon,NONE,Demon,NONE
+ImpHunters2,Imp_Hunters,NONE,NONE,DoomImp,DoomImp,DoomImp,Demon,NONE,NONE,NONE,NONE
+TwoArchviles,Archvile_Twins,NONE,Archvile,NONE,NONE,NONE,NONE,Archvile,NONE,NONE,NONE

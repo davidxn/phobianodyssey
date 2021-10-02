@@ -1,0 +1,61 @@
+ACTOR PoMaterial : CustomInventory
+{
+  Inventory.PickupMessage "Collected a material"
+  Inventory.MaxAmount 9999
+  states
+  {
+    Idle:
+	  "####" A 4
+	  "####" B 4
+	  Loop
+	Use:
+	  TNT1 A 0
+  }
+}
+
+ACTOR PoMaterialHorn : PoMaterial {
+  Inventory.PickupMessage "Collected a demonic horn"
+  States
+  {
+    Spawn:
+	  M001 A 1 A_Jump(256, "Idle")
+  }
+}
+
+ACTOR PoExp : PoMaterial
+{
+  Inventory.PickupMessage "Experience"
+  Inventory.MaxAmount 999999999
+  States
+  {
+    Spawn:
+	  M001 A 1 A_Jump(256, "Idle")
+  }
+}
+
+ACTOR PoDanger : PoMaterial
+{
+  Inventory.MaxAmount 100
+}
+
+ACTOR BattleStart : MapSpot 9002
+{
+  //$Sprite PLAYA1
+}
+
+ACTOR MonsterStart : MapSpot 9003
+{
+  //$Sprite TROOA1
+}
+
+ACTOR PoChest : FloatingSkull 2200
+{
+  +USESPECIAL
+  Activation THINGSPEC_ThingActs | THINGSPEC_ClearSpecial
+  States {
+    Spawn:
+      CHST A -1
+    Opened:
+      CHST B -1
+  }
+}

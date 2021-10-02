@@ -1,0 +1,60 @@
+StatusBar normal, forcescaled
+{
+	DrawImage "STBAR", 0, 0; 
+
+	//Health
+	DrawBar "HPfull", "HPempty", Health (100), vertical, interpolate(8), -51, 168;	
+	ifhealth 101
+	DrawBar "Overbar", "Frame", Health (200), vertical, interpolate(8), -51, 168;	
+
+	//Armor
+	DrawBar "ARfull", "ARempty", Armor (100), vertical, interpolate(8), -17, 168;
+	DrawBar "Overbar", "Frame", Armor (200), vertical, interpolate(8), -17, 168;
+	Alpha 0.8
+	DrawImage armoricon, -3, 191;
+
+
+	//Current Ammo
+	DrawNumber 3, HUDFONT_DOOM, Untranslated, Ammo1, alignment(center), 261, 180;
+	    
+    //Ammo
+    DrawBar "STAMB", "STAME", ammo(Clip), horizontal, interpolate(8), 296, 168;
+    DrawBar "STAMS", "STAME", ammo(Shell), horizontal, interpolate(8), 296, 176;
+    DrawBar "STAMR", "STAME", ammo(RocketAmmo), horizontal, interpolate(8), 296, 184;
+    DrawBar "STAMC", "STAME", ammo(Cell), horizontal, interpolate(8), 296, 192;
+    
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Clip), alignment(center), 312, 169;
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Shell), alignment(center), 312, 177;
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(RocketAmmo), alignment(center), 312, 185;
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Cell), alignment(center), 312, 193;
+
+	//Arms Numbers
+    DrawSwitchableImage Shotgun, "frame", "STWP2", 287, 169;
+    DrawSwitchableImage SuperShotgun, "frame", "STWP3", 287, 169;
+    DrawSwitchableImage WeaponSlot 4, "frame", "STWP4", 287, 169;
+    DrawSwitchableImage WeaponSlot 5, "frame", "STWP5", 287, 169;
+    DrawSwitchableImage WeaponSlot 6, "frame", "STWP6", 287, 169;
+    DrawSwitchableImage WeaponSlot 7, "frame", "STWP7", 287, 169;
+
+	//Level Tallies
+    DrawBar "DNfull", "DNempty", PoDanger, vertical, interpolate(8), 340, 168;	
+   
+	//Keys
+	DrawSwitchableImage KeySlot 2 && 5, "", "STKEYS0", "STKEYS3", "STKEYS6", 245, 169;
+	DrawSwitchableImage KeySlot 3 && 6, "", "STKEYS1", "STKEYS4", "STKEYS7", 258, 169;
+	DrawSwitchableImage KeySlot 1 && 4, "", "STKEYS2", "STKEYS5", "STKEYS8", 272, 169;
+
+	//Mugshot
+	Alpha 0.8
+	DrawSelectedInventory AlternateOnEmpty, INDEXFONT, 191, 223 // Inventory
+    {
+        DrawMugShot "STF", 5, disablepain, -51, 168;
+    }
+    
+    //Health and armour numbers
+	Alpha 0.5
+	DrawNumber 3, SMALLFONT, Grey, Health, alignment(center), whennotzero, -37, 159;
+	Alpha 0.5	
+	DrawNumber 3, SMALLFONT, Grey, Armor, alignment(center), whennotzero, -3, 159;
+
+}

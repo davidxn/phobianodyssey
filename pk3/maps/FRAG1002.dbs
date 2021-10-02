@@ -1,0 +1,151 @@
+type = "Doom Builder Map Settings Configuration";
+gameconfig = "GZDoom_DoomUDMF.cfg";
+strictpatches = 0;
+
+maps
+{
+	
+	FRAG1001
+	{
+		
+		resources
+		{
+		}
+		defaultfloortexture = "FLOOR0_1";
+		defaultceiltexture = "CEIL1_1";
+		defaulttoptexture = "STARTAN2";
+		defaultwalltexture = "STARTAN2";
+		defaultbottomtexture = "STARTAN2";
+		custombrightness = 196;
+		customfloorheight = 0;
+		customceilheight = 128;
+		overridefloortexture = false;
+		overrideceiltexture = false;
+		overridetoptexture = false;
+		overridemiddletexture = false;
+		overridebottomtexture = false;
+		overridefloorheight = false;
+		overrideceilheight = false;
+		overridebrightness = false;
+		uselongtexturenames = false;
+		useresourcesinreadonlymode = false;
+		viewpositionx = 689.585f;
+		viewpositiony = -255.153f;
+		viewscale = 0.8449994f;
+		scriptcompiler = "zdoom_acs.cfg";
+		
+		grid
+		{
+			background = "";
+			backsource = 0;
+			backoffsetx = 0;
+			backoffsety = 0;
+			backscalex = 100;
+			backscaley = 100;
+			gridsize = 16f;
+			gridrotate = 0f;
+			gridoriginx = 0f;
+			gridoriginy = 0f;
+		}
+		
+		fieldtypes
+		{
+			
+			sidedef
+			{
+				offsetx_mid = 1;
+			}
+		}
+		
+		scriptdocuments
+		{
+			
+			document0
+			{
+				filename = "DIALOGUE";
+				hash = 3588187714;
+				resource;
+				tabtype = 0;
+				scripttype = 18;
+			}
+			
+			document1
+			{
+				filename = "SCRIPTS";
+				hash = 3469170009;
+				resource;
+				tabtype = 0;
+				scripttype = 1;
+				activetab = true;
+			}
+		}
+	}
+	
+	FRAG1002
+	{
+		overrideceiltexture = false;
+		defaultceiltexture = "CEIL1_1";
+		useresourcesinreadonlymode = false;
+		customfloorheight = 0;
+		overridemiddletexture = false;
+		overridebrightness = false;
+		overridebottomtexture = false;
+		
+		resources
+		{
+		}
+		viewscale = 0.5382234f;
+		viewpositionx = 1376.205f;
+		overridefloorheight = false;
+		defaulttoptexture = "STARTAN2";
+		customceilheight = 128;
+		defaultfloortexture = "FLOOR0_1";
+		viewpositiony = -372.6295f;
+		overridefloortexture = false;
+		overrideceilheight = false;
+		defaultwalltexture = "STARTAN2";
+		overridetoptexture = false;
+		scriptcompiler = "zdoom_acs.cfg";
+		custombrightness = 196;
+		defaultbottomtexture = "STARTAN2";
+		uselongtexturenames = false;
+		
+		grid
+		{
+			backsource = 0;
+			backscaley = 100;
+			backscalex = 100;
+			gridsize = 32f;
+			gridoriginx = 0f;
+			background = "";
+			backoffsetx = 0;
+			gridrotate = 0f;
+			gridoriginy = 0f;
+			backoffsety = 0;
+		}
+		
+		plugins
+		{
+			
+			stairsectorbuilder
+			{
+				
+				prefabs
+				{
+				}
+			}
+		}
+		
+		fieldtypes
+		{
+			
+			sidedef
+			{
+				offsetx_mid = 1;
+				offsety_mid = 1;
+				offsetx_bottom = 1;
+				offsety_bottom = 1;
+			}
+		}
+	}
+}

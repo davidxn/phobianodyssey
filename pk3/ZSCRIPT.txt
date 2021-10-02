@@ -1,0 +1,156 @@
+version "4.0"
+
+class DataLibrary : Thinker
+{
+    //Level status index corresponds to map number
+    Dictionary dic;
+    Dictionary monsterParties;
+    Dictionary monsterPops;
+    
+    //Quick, make this a static thinker when we initialize
+    DataLibrary Init(void)
+	{
+		ChangeStatNum(STAT_STATIC);
+        dic = Dictionary.Create();
+        monsterParties = Dictionary.Create();
+        monsterPops = Dictionary.Create();
+        
+        int lumpindex = Wads.FindLump('MPARTY', 0, 0);
+        String lumpdata = Wads.ReadLump(lumpindex);
+
+        Array<String> lines; lumpdata.Split(lines, "\n");
+        for (int i = 0; i < lines.Size(); i++)
+        {
+            String line = lines[i];
+            if (line.Length() < 2) { continue; } //In the absence of trim()
+            Array<String> lineData; line.Split(lineData, ",");
+            String partyName = lineData[0];
+            monsterParties.Insert("monsterparty" .. partyName .. "Name", lineData[1]);
+            for (int t = 2; t < lineData.Size(); t++) {
+                monsterParties.Insert(partyName .. "-" .. t-2, lineData[t]);
+            }
+        }
+        
+        // ---
+        
+        lumpindex = Wads.FindLump('MPOPUL', 0, 0);
+        lumpdata = Wads.ReadLump(lumpindex);
+        Array<String> mPops; lumpdata.Split(mPops, "\n");
+        for (int i = 0; i < mPops.Size(); i++)
+        {
+            String line = mPops[i];
+            if (line.Length() < 2) { continue; } //In the absence of trim()
+            Array<String> lineData; line.Split(lineData, "=");
+            String popId = lineData[0];
+            console.printf("%s is %s", popId, lineData[1]);
+            monsterPops.Insert(popId, lineData[1]);
+        }
+        
+        // ---
+        
+        lumpindex = Wads.FindLump('SQUAREDT', 0, 0);
+        lumpdata = Wads.ReadLump(lumpindex);
+        Array<String> squareData; lumpdata.Split(squareData, "\n");
+        for (int i = 0; i < squareData.Size(); i++)
+        {
+            String line = squareData[i];
+            if (line.Length() < 2) { continue; } //In the absence of trim()
+            Array<String> lineData; line.Split(lineData, "=");
+            String key = lineData[0];
+            dic.Insert(key, lineData[1]);
+        }
+        
+		return self;
+	}
+
+    static DataLibrary GetOrCreateInstance(void)
+	{
+		ThinkerIterator it = ThinkerIterator.Create("DataLibrary", STAT_STATIC);
+		let p = DataLibrary(it.Next());
+		if (p) return p;
+        return new("DataLibrary").Init();
+	}
+    
+    static clearscope DataLibrary GetInstance(void)
+    {
+		ThinkerIterator it = ThinkerIterator.Create("DataLibrary", STAT_STATIC);
+		let p = DataLibrary(it.Next());
+		if (p) return p;
+        return NULL;
+    }
+    
+    //Static methods for calling from ACS - these will create an instance of the thinker if it doesn't already exist
+    static void WriteData(Actor activator, String position, String status)
+    {
+        DataLibrary.GetOrCreateInstance().dic.Insert(position, status);
+    }
+    
+    static String ReadData(String position)
+    {
+        return DataLibrary.GetOrCreateInstance().dic.At(position);
+    }
+    
+    static int ReadInt(String position)
+    {
+        return DataLibrary.GetOrCreateInstance().dic.At(position).ToInt();
+    }
+    
+    static String ReadMonsterParty(String party, String slot)
+    {
+        String key = party .. "-" .. slot;
+        console.printf("%s", key);
+        return DataLibrary.GetOrCreateInstance().monsterParties.At(key);
+    }
+    
+    static String ChooseMonsterParty(int mapnum, int square) {
+    
+        console.printf("%s", DataLibrary.GetOrCreateInstance().monsterPops.At("3"));
+        //To choose a monster party, get the population ID of this square
+        String key = "MP-" .. mapnum .. "-" .. square;
+        console.printf("%s", key);
+        String popId = DataLibrary.GetOrCreateInstance().dic.At(key);
+
+        //Ask the monsterpop dictionary which parties correspond to this population ID
+        console.printf("nnn%snnn", popId);
+        String monsterPartyString = DataLibrary.GetOrCreateInstance().monsterPops.At(popId);
+        console.printf("Monster parties: %s", monsterPartyString);
+        Array<String> monsterParties; monsterPartyString.Split(monsterParties, ",");
+        if (monsterParties.Size() == 0) {
+            console.printf("WARNING: No monster parties set for " .. key);
+            return "ZombieWeak";
+        }
+        int index = random(0, monsterParties.Size()-1);
+        console.printf("%d", index);
+        String chosenParty = monsterParties[index];
+        
+        return chosenParty;
+    }
+    
+    static int ReadDangerValue(int mapnum, int square)
+    {
+        String key = "DN-" .. mapnum .. "-" .. square;
+        int value = DataLibrary.GetOrCreateInstance().dic.At(key).ToInt();
+        console.printf("%s %d", key, value);
+        return value;
+    }
+}
+
+class LevelHelper : Thinker
+{
+    
+    //Quick, make this a static thinker when we initialize
+    LevelHelper Init(void)
+	{
+		ChangeStatNum(STAT_STATIC);
+		return self;
+	}
+
+    //Static methods for calling from ACS - these will create an instance of the thinker if it doesn't already exist
+    static bool IsPointInLevel(Actor activator, int x, int y, int z)
+    {
+        console.printf("Checking target point: %f %f %f", x >> 16, y >> 16, z >> 16);
+        Vector3 a = (x >> 16, y >> 16, z >> 16);
+        bool isPoint = level.IsPointInLevel(a);
+        return(isPoint);
+    }
+}

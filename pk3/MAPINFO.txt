@@ -1,0 +1,32 @@
+clearepisodes
+
+episode MAP02 {
+
+}
+
+cluster 1 {
+	hub
+}
+
+defaultmap
+{
+	checkswitchrange
+	SmoothLighting
+    lightmode = 0
+	sky1 = "RSKY1"
+    cluster = 1
+    NoIntermission
+}
+
+map MAP01 "Entry Point" {
+	levelnum = 1
+}
+
+map MAP02 "Surface Base" {
+	levelnum = 2
+}
+
+map ARENA2 "Blue Base Arenas" {
+    levelnum = 102
+    music = POFIGHT
+}
