@@ -1,0 +1,312 @@
+#library "POGLOBAL"
+#include "zcommon.acs"
+
+#define TURN_RATE 0.025
+#define STEP_RATE 8
+#define ANGLE_QUARTER_TURN 0.25
+#define TILE_SIZE 128
+
+//These are used to simulate passing multiple ints back from getPositionFromSquare
+int registerX = 0;
+int registerY = 0;
+int registerZ = 0;
+
+//script "return" RETURN {
+//	ACS_NamedExecuteAlways("enter", 0);
+//}
+
+script "enter" (void) {
+    int mapType = ScriptCall("DataLibrary", "LoadMapProperties");
+    FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
+    if (mapType == 1) {
+        ACS_NamedExecuteAlways("rpgMovement", 0);
+    } else if (mapType == 2) {
+        ACS_NamedExecuteAlways("setupArena", 0);
+    }
+    Log(s:"No map type");
+}
+
+script "openChest" (int chestNumber) {
+	SetActorState(0, "Opened");
+}
+
+script "rpgMovemens" (void) {
+
+	FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
+	int i;
+
+	SetPlayerProperty(1, 1, PROP_FROZEN);
+	ClearInventory();
+    Log(s:"Starting up");
+	ScriptCall("DataLibrary", "WriteData", "FieldMap", StrParam(d:GetLevelInfo(LEVELINFO_LEVELNUM)));
+    Log(s:"Starting up");
+	//If we're coming back from a FOE fight, destroy the FOE we marked
+	Log(s:"Destroying FOE if present...");
+	ScriptCall("FOEHelper", "DestroyCurrentFOE");
+
+	int startingSquare = ScriptCall("DataLibrary", "ReadInt", "FieldSquare");
+	Log(s:"Placing player at ", i:startingSquare);
+	if (startingSquare > 0) {
+		getPositionFromSquare(startingSquare);
+		SetActorPosition(0, registerX, registerY, registerZ, false);
+		SetActorAngle(0, ScriptCall("DataLibrary", "ReadInt", "FieldAngle"));
+	}
+	SetMusic("POEXPLR");
+
+	//OK, now fade in and start listening!
+
+	FadeTo(0.0, 0.0, 0.0, 0.0, 1.0);
+	delay(15);
+
+	while (true) {
+		delay(1);
+		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
+		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
+		if (buttons & BT_LEFT) {
+			SetActorAngle(0, quantizeAngle(GetActorAngle(0)));
+			int targetAngle = GetActorAngle(0) + 0.25;
+			for (i = 0; i < ANGLE_QUARTER_TURN/TURN_RATE; i++) {
+				ChangeActorAngle(0, GetActorAngle(0) + TURN_RATE);
+				delay(1);
+			}
+			ChangeActorAngle(0, targetAngle);
+			delay(2);
+		}
+		if (buttons & BT_RIGHT) {
+			SetActorAngle(0, quantizeAngle(GetActorAngle(0)));
+			targetAngle = GetActorAngle(0) - 0.25;
+			for (i = 0; i < ANGLE_QUARTER_TURN/TURN_RATE; i++) {
+				ChangeActorAngle(0, GetActorAngle(0) - TURN_RATE);
+				delay(1);
+			}
+			ChangeActorAngle(0, targetAngle);
+			delay(2);
+		}
+		if (buttons & BT_FORWARD || buttons & BT_BACK || buttons & BT_MOVELEFT || buttons & BT_MOVERIGHT) {
+
+			//Set the angle to move depending on the player's direction
+			int step_x = 0.0; int step_y = 0.0;
+			int currentAngle = quantizeAngle(GetActorAngle(0));
+			Log(s:"Quantized angle to ", f:currentAngle);
+			targetAngle = currentAngle;
+			int angleAdjustment = 0.0;
+			if (buttons & BT_BACK) { angleAdjustment = 0.5; }
+			if (buttons & BT_MOVELEFT) { angleAdjustment = 0.25; }
+			if (buttons & BT_MOVERIGHT) { angleAdjustment = -0.25; }
+
+			targetAngle += angleAdjustment;
+			if (targetAngle >= 1.0) targetAngle -= 1.0;
+			if (targetAngle < 0.0) targetAngle += 1.0;
+			Log(s:"Angle ", f:currentAngle, s:" translated -> ", f:targetAngle);
+
+			//Now work out the X and Y components from our angle
+			switch (targetAngle) {
+				case 0.0: step_x = 1.0; step_y = 0.0; break;
+				case 0.25: step_x = 0.0; step_y = 1.0; break;
+				case 0.5: step_x = -1.0; step_y = 0.0; break;
+				case 0.75: step_x = 0.0; step_y = -1.0; break;
+			}
+			int playerX = GetActorX(0);
+			int playerY = GetActorY(0);
+			int playerZ = GetActorZ(0);
+
+			//Check if next tile and points towards it are free
+			bool canMove = ScriptCall("LevelHelper", "IsPointInLevel", playerX + step_x * TILE_SIZE, playerY + step_y * TILE_SIZE, GetActorZ(0) + (24<<16));
+
+			for (i = 0.125; i <= 1.0; i+= 0.125) {
+				bool wasSpawned = SpawnForced("MapSpot", playerX + step_x * FixedMul(TILE_SIZE, i), playerY + step_y * FixedMul(TILE_SIZE, i), GetActorZ(0) + (16<<16), 999);
+				int nextSquareZDiff = (GetActorFloorZ(999)>>16) - (GetActorZ(0)>>16);
+				canMove &= !(nextSquareZDiff >= 32 || nextSquareZDiff <= -32);
+				Thing_Remove(999);
+				Log(s:"Next square Z difference ", d:nextSquareZDiff);
+			}
+
+			if (!canMove) {
+				continue;
+			}
+			PlaySound(0, "po/tread");
+
+			for (i = 0; i < TILE_SIZE/STEP_RATE; i++) {
+				bool moveSuccess = SetActorPosition(0, GetActorX(0) + step_x * STEP_RATE, GetActorY(0) + step_y * STEP_RATE, GetActorZ(0), false);
+				if (!moveSuccess) {
+					moveSuccess = SetActorPosition(0, GetActorX(0) + step_x * STEP_RATE, GetActorY(0) + step_y * STEP_RATE, GetActorZ(0) + (2<<16), false);
+				}
+				if (!moveSuccess) {
+					moveSuccess = SetActorPosition(0, GetActorX(0) + step_x * STEP_RATE, GetActorY(0) + step_y * STEP_RATE, GetActorZ(0) + (8<<16), false);
+				}
+				delay(1);
+			}
+			SetActorPosition(0, playerX + step_x * TILE_SIZE, playerY + step_y * TILE_SIZE, GetActorZ(0), false);
+
+			//What's our new square?
+			int squareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
+			Log(s:"New square is: ", d:squareNum);
+
+			//As a result of this move, have we hit an exit?
+			int exitMapNum = ScriptCall("LevelHelper", "HandleMapExit");
+			if (exitMapNum) {
+				FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
+				delay(35);
+				Teleport_NewMap(exitMapNum, 0, 0);
+				terminate;
+			}
+
+			//As a result of this move, have we hit a FOE?
+			int foeHit = ScriptCall("FOEHelper", "PlayerOverlapsAnyFOE");
+			if (foeHit > 0) {
+				//We've hit a FOE, so return to our square and go to an encounter!
+				SetActorPosition(0, playerX, playerY, playerZ, false);
+				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle, foeHit);
+				terminate; //Terminate here, as going back to this level will retrigger the script
+			}
+
+			//Now add the new square's danger value to the existing one
+			int dangerValue = ScriptCall("DataLibrary", "ReadDangerValue", LEVELINFO_LEVELNUM, squareNum);
+			Log(s:"Danger value: ", d:dangerValue);
+
+			dangerValue = Random(max(0, dangerValue-5), dangerValue);
+
+			GiveInventory("PoDanger", dangerValue);
+
+			//If we're over 100 danger, this is an encounter! Time to pick a monster party
+			if (CheckInventory("PoDanger") >= 100) {
+				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle);
+				terminate; //Terminate here, as going back to this level will retrigger the script
+			}
+
+			//Now move FOEs and start an encounter if one overlaps the player
+			foeHit = ScriptCall("FOEHelper", "moveFOEs");
+			if (foeHit > 0) {
+				Log(s:"FOE hit! ", d:foeHit);
+				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle, foeHit);
+				terminate; //Terminate here, as going back to this level will retrigger the script
+			}
+
+			//We're safe!
+			delay(2);
+		}
+	}
+}
+
+script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) {
+	FadeTo(1.0, 0.0, 0.0, 1.0, 0.0);
+	SetMusic("POFIGHT");
+	FadeTo(1.0, 0.0, 0.0, 0.0, 0.25);
+	Delay(5);
+	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
+	delay(35);
+	TakeInventory("PoDanger", CheckInventory("PoDanger"));
+	str monsterParty = "";
+	if (forcedPopulation > 0) {
+		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterPartyFromPopulationID", StrParam(d:forcedPopulation));
+	} else {
+		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterParty", LEVELINFO_LEVELNUM, squareNum);
+	}
+	ScriptCall("DataLibrary", "WriteData", "NextMonsterParty", monsterParty);
+	ScriptCall("DataLibrary", "WriteData", "FieldSquare", StrParam(d:squareNum));
+	ScriptCall("DataLibrary", "WriteData", "FieldAngle", StrParam(d:currentAngle));
+
+	int arenaMapNum = ScriptCall("DataLibrary", "ReadInt", "ArenaMap");
+
+	Teleport_NewMap(arenaMapNum, 0, 0);
+}
+
+/////////////////////////////////////
+
+script "setupArena" (void) {
+
+	FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
+	FadeTo(0.0, 0.0, 0.0, 0.0, 0.5);
+
+	str chosenMonsterParty = ScriptCall("DataLibrary", "ReadData", "NextMonsterParty");
+
+	int numberOfStarts = ThingCountName("BattleStart", 0);
+	int arenaTid = 100 * (Random(0, numberOfStarts - 1) + 1);
+
+	GiveInventory("SuperShotgun", 1);
+	GiveInventory("Shell", 50);
+
+	int battleStartTid = arenaTid + 1;
+
+	Thing_Move(0, battleStartTid, true);
+	SetActorAngle(0, GetActorAngle(battleStartTid));
+
+	//If this is a FOE fight, do a bit extra...
+	if (ScriptCall("DataLibrary", "ReadInt", "CurrentFOESquare") > 0) {
+		SpawnSpot("FOE", arenaTid, 999);
+		delay(20);
+		SetActorState(999, "Destroy");
+		delay(5);
+	}
+
+	SetPlayerProperty(1, 0, PROP_FROZEN);
+
+	//Spawn the monsters meant to go into each slot in this arena!
+	for (int i = 0; i < 10; i++) {
+		str monsterClass = ScriptCall("DataLibrary", "ReadMonsterParty", chosenMonsterParty, StrParam(d:i));
+		if (StrLen(monsterClass) > 0) {
+			SpawnSpot(monsterClass, arenaTid + i + 2, 999);
+			SpawnSpot("TeleportFog", arenaTid + i + 2);
+			delay(Random(5, 10));
+		}
+	}
+	NoiseAlert(0, 0);
+
+	while (ThingCount(T_NONE, 999) > 0) {
+		delay(35);
+	}
+
+	Log(s:"OK");
+	delay(35);
+
+	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
+	int vol = 1.0;
+	for (i = 0; i < 35; i++) {
+		vol -= 0.05;
+		SetMusicVolume(vol);
+		delay(1);
+	}
+	Thing_Remove(999);
+
+	//Return to previous map
+	int mapToReturn = ScriptCall("DataLibrary", "ReadInt", "FieldMap");
+	Log(s:"Returning to: ", i:mapToReturn);
+	Teleport_NewMap(mapToReturn, 0, 0);
+}
+
+
+//////////////////////////////////
+
+function int getSquareFromPosition(int x, int y) {
+	int squareNum = 10000;
+	squareNum += ((x>>16) / TILE_SIZE);
+	squareNum += ((y>>16)*100 / TILE_SIZE);
+	return squareNum;
+}
+
+function void getPositionFromSquare(int squareNum) {
+	squareNum -= 10000;
+	Log(i:squareNum);
+	registerX = ((squareNum % 100) * TILE_SIZE) << 16;
+	squareNum /= 100;
+	registerY = ((squareNum % 100) * TILE_SIZE) << 16;
+	SpawnForced("MapSpot", registerX, registerY, 0, 999);
+	registerZ = GetActorFloorZ(999);
+	Thing_Remove(999);
+}
+
+function int quantizeAngle(int angle) {
+	int x = round(FixedMul(angle, 4.0));
+	//Switch here to avoid fixed division errors
+	switch (x) {
+		case 0: case 4 << 16: x = 0; break;
+		case 1 << 16: x = 0.25; break;
+		case 2 << 16: x = 0.5; break;
+		case 3 << 16: x = 0.75; break;
+	}
+	return x;
+}
+
+function int max (int a, int b) {
+	return (a > b) ? a : b;
+}

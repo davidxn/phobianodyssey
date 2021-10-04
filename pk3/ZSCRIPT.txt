@@ -27,7 +27,9 @@ class DataLibrary : Thinker
             String partyName = lineData[0];
             monsterParties.Insert("monsterparty" .. partyName .. "Name", lineData[1]);
             for (int t = 2; t < lineData.Size(); t++) {
+                if (lineData[t] == "NONE") { continue; }
                 monsterParties.Insert(partyName .. "-" .. t-2, lineData[t]);
+                
             }
         }
         
@@ -42,7 +44,6 @@ class DataLibrary : Thinker
             if (line.Length() < 2) { continue; } //In the absence of trim()
             Array<String> lineData; line.Split(lineData, "=");
             String popId = lineData[0];
-            console.printf("%s is %s", popId, lineData[1]);
             monsterPops.Insert(popId, lineData[1]);
         }
         
@@ -98,32 +99,31 @@ class DataLibrary : Thinker
     static String ReadMonsterParty(String party, String slot)
     {
         String key = party .. "-" .. slot;
-        console.printf("%s", key);
         return DataLibrary.GetOrCreateInstance().monsterParties.At(key);
     }
     
     static String ChooseMonsterParty(int mapnum, int square) {
     
-        console.printf("%s", DataLibrary.GetOrCreateInstance().monsterPops.At("3"));
         //To choose a monster party, get the population ID of this square
         String key = "MP-" .. mapnum .. "-" .. square;
-        console.printf("%s", key);
         String popId = DataLibrary.GetOrCreateInstance().dic.At(key);
 
         //Ask the monsterpop dictionary which parties correspond to this population ID
-        console.printf("nnn%snnn", popId);
+        console.printf("Key %s has monster population ID %s", key, popId);
+        return ChooseMonsterPartyFromPopulationID(popId);
+    }
+    
+    static String ChooseMonsterPartyFromPopulationID(String popId) {
+        //Get the parties that correspond to this monster population
         String monsterPartyString = DataLibrary.GetOrCreateInstance().monsterPops.At(popId);
         console.printf("Monster parties: %s", monsterPartyString);
+        //Now split the string and return a name
         Array<String> monsterParties; monsterPartyString.Split(monsterParties, ",");
         if (monsterParties.Size() == 0) {
-            console.printf("WARNING: No monster parties set for " .. key);
+            console.printf("WARNING: No monster parties set for population %s", popId);
             return "ZombieWeak";
         }
-        int index = random(0, monsterParties.Size()-1);
-        console.printf("%d", index);
-        String chosenParty = monsterParties[index];
-        
-        return chosenParty;
+        return monsterParties[random(0, monsterParties.Size()-1)];
     }
     
     static int ReadDangerValue(int mapnum, int square)
@@ -133,10 +133,21 @@ class DataLibrary : Thinker
         console.printf("%s %d", key, value);
         return value;
     }
+    
+    static int LoadMapProperties(Actor activator)
+    {
+        MapDescriber m; ThinkerIterator it = ThinkerIterator.Create("MapDescriber");
+        while (m = MapDescriber(it.Next() ) ) {
+            DataLibrary.GetOrCreateInstance().WriteData(null, "ArenaMap", m.args[1] .. "");
+            return m.args[0];
+        }
+        return 0;
+    }
 }
 
 class LevelHelper : Thinker
 {
+    const TILE_SIZE = 128;
     
     //Quick, make this a static thinker when we initialize
     LevelHelper Init(void)
@@ -145,12 +156,204 @@ class LevelHelper : Thinker
 		return self;
 	}
 
-    //Static methods for calling from ACS - these will create an instance of the thinker if it doesn't already exist
     static bool IsPointInLevel(Actor activator, int x, int y, int z)
     {
         console.printf("Checking target point: %f %f %f", x >> 16, y >> 16, z >> 16);
         Vector3 a = (x >> 16, y >> 16, z >> 16);
         bool isPoint = level.IsPointInLevel(a);
         return(isPoint);
+    }
+    
+    static int getSquareFromPosition(float x, float y) {
+        int squareNum = 10000;
+        squareNum += (int) (x / TILE_SIZE);
+        squareNum += (int) (y*100 / TILE_SIZE);
+        return squareNum;
+    }
+
+    static int, int getPositionFromSquare(int squareNum) {
+        squareNum -= 10000;
+        int x = ((squareNum % 100) * TILE_SIZE);
+        squareNum /= 100;
+        int y = ((squareNum % 100) * TILE_SIZE);
+        return x, y;
+    }
+    
+    static int HandleMapExit(Actor activator)
+    {
+        ExitSpot spot; ThinkerIterator it = ThinkerIterator.Create("ExitSpot");
+        while (spot = ExitSpot(it.Next() ) ) {
+            if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
+                int squareNum = spot.args[1];
+                int myangleint = (int) (spot.angle);
+                double myangle = myangleint/360.0;
+                console.printf("%d", myangle);
+                DataLibrary.GetOrCreateInstance().WriteData(null, "FieldSquare", squareNum .. "");
+                DataLibrary.GetOrCreateInstance().WriteData(null, "FieldAngle",  myangle .. "");
+                return spot.args[0]; //This is the mapnum for the exit's target
+            }
+        }
+        return 0;
+    }
+}
+
+class FOE : FloatingSkull
+{
+
+    default {
+        Health 50;
+        Radius 20;
+        Height 60;
+        +SHOOTABLE;
+        +FLOATBOB;
+        +NOGRAVITY;
+        //$Arg0 Monster Population
+        //$Arg0Tooltip The ID of the monster population that this FOE will trigger.
+    }
+    States {
+        Spawn:
+            PAIN ABC 15;
+            Loop;
+        Destroy:
+            PAIN HIJKLM 8;
+            Stop;
+    }
+
+    bool overlapsPlayer(Actor other) {
+        return isAtPosition(other.pos.x, other.pos.y);
+    }
+    
+    bool isAtPosition(float x, float y) {
+        return (pos.x == x && pos.y == y);
+    }
+    
+    int getMonsterPop() {
+        return args[0];
+    }
+}
+
+class MonsterTurner : MapSpot
+{
+    default {
+        //$Sprite TURNA0
+    }
+}
+
+class FOESpot : MapSpot
+{
+    default {
+        //$Sprite PAINA0
+    }
+}
+
+class ExitSpot : MapSpot
+{
+    default {
+        //$Sprite SOULA0
+        //$Arg0 Go To Map
+        //$Arg0Tooltip The mapnum of this exit's target
+        //$Arg1 Go To Square
+        //$Arg1Tooltip The square number of this exit's target
+    }
+}
+
+class MapDescriber : MapSpot
+{
+    default {
+        //$Sprite MEGAA0
+        //$Arg0 Map Type
+        //$Arg0Tooltip 0 for no special, 1 to run RPG movement, 2 for arena
+        //$Arg1 Arena Mapnum
+        //$Arg1Tooltip Mapnum to use for arenas on this level
+    }
+}
+
+class FOEHelper : Thinker
+{
+    
+    //Quick, make this a static thinker when we initialize
+    FOEHelper Init(void)
+	{
+		ChangeStatNum(STAT_STATIC);
+		return self;
+	}
+    
+    static int moveFOEs(Actor activator)
+    {
+        int foeMonsterPop = 0;
+        FOE foe; ThinkerIterator foeIterator = ThinkerIterator.Create("FOE");
+        while (foe = FOE(foeIterator.Next() ) ) {
+            
+            //Move the monster one grid space according to its current angle
+            vector3 mypos = foe.Pos;
+            vector3 oldpos = mypos;
+            int myangle = (int) (foe.angle);
+            int deltaX = 0;
+            int deltaY = 0;
+            switch (myangle) {
+                case 0: deltaX = 128; break;
+                case 90: deltaY = 128; break;
+                case 180: deltaX = -128; break;
+                case 270: deltaY = -128; break;
+            }
+            mypos.x += deltaX;
+            mypos.y += deltaY;
+            foe.SetOrigin(mypos, true);
+            
+            if (foe.overlapsPlayer(activator)) {
+                foe.SetOrigin(oldpos, false);
+                int squareNum = LevelHelper.getSquareFromPosition(oldpos.x, oldpos.y);
+                DataLibrary.GetOrCreateInstance().WriteData(null, "CurrentFOESquare", squareNum .. "");
+                foeMonsterPop = foe.getMonsterPop();
+            }
+            
+            //If they've hit a turner, set their angle to match that turner
+            MonsterTurner turner; ThinkerIterator turnIterator = ThinkerIterator.Create("MonsterTurner");
+            while (turner = MonsterTurner(turnIterator.next())) {
+                vector3 turnpos = turner.Pos;
+                if (turnpos == mypos) {
+                    foe.angle = turner.angle;
+                }
+            }
+        }
+        
+        return foeMonsterPop; //This will be positive if a FOE has hit the player
+    }
+    
+    static int PlayerOverlapsAnyFOE(Actor activator)
+    {
+        FOE foe; ThinkerIterator foeIterator = ThinkerIterator.Create("FOE");
+        while (foe = FOE(foeIterator.Next() ) ) {
+            if (foe.overlapsPlayer(activator)) {
+                int squareNum = LevelHelper.getSquareFromPosition(foe.pos.x, foe.pos.y);
+                DataLibrary.GetOrCreateInstance().WriteData(null, "CurrentFOESquare", squareNum .. "");
+                return foe.getMonsterPop();
+            }
+        }
+        return 0;
+    }
+    
+    static void DestroyCurrentFOE()
+    {
+        console.printf("Attempting to destroy FOE");
+        String squareNum = DataLibrary.GetOrCreateInstance().ReadData("CurrentFOESquare");
+        console.printf("Square num for FOE: %s", squareNum);
+        if (!squareNum) {
+            return;
+        }
+        //Got a squarenum! Let's translate it
+        int x;
+        int y;
+        [x, y] = LevelHelper.getPositionFromSquare(squareNum.ToInt());
+        FOE foe; ThinkerIterator foeIterator = ThinkerIterator.Create("FOE");
+        while (foe = FOE(foeIterator.Next() ) ) {
+            console.printf("Looking for: %d %d", x, y);
+            if (foe.isAtPosition(x, y)) {
+                DataLibrary.GetOrCreateInstance().WriteData(null, "CurrentFOESquare", "");
+                foe.SetState(foe.FindState("Destroy"));
+                console.printf("Destroyed FOE");
+                break;
+            }
+        }
     }
 }

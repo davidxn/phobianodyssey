@@ -1,3 +1,5 @@
-1=ImpParty,ImpTroop
-2=ImpParty,ImpSquad,ImpHunters,ImpHunters2,ImpParty,ImpSquad
-3=ImpParty,ImpSquad
+1=ImpParty,ImpSquad
+2=ImpParty,ImpSquad,ImpHunters,ImpHunters2
+3=ImpParty,ImpSquad,DevilTrio
+4=Scientists
+1001=FOEBarons

@@ -1,0 +1,113 @@
+Class ZombieScientistHeadless : Actor
+{
+
+  int shots;
+  int baseangle;
+  bool donefirstfire;
+
+  Default
+  {
+    //$Category Monsters
+    Tag "Zombie Scientist Headless";
+    Species "Scientist";
+    obituary "%o stepped into a headless zombie's line of fire.";
+    health 40;
+    gibhealth 16;
+    mass 90;
+    speed 15;
+    Radius 20;
+    Height 44;
+    painchance 220;
+    seesound "monster/SZHDWAKE";
+    painsound "monster/SZHDPAIN";
+    deathsound "monster/SZHDDEAD";
+    activesound "monster/SZHDSNRL";
+    MeleeRange 64;
+    DropItem "Clip";
+    MONSTER;
+    +FLOORCLIP
+    +AVOIDMELEE
+    +MISSILEMORE
+    +MISSILEEVENMORE
+    +DROPOFF
+  }
+
+  States
+  {
+  Spawn:
+    SZHD AB 10 A_Look();
+    loop;
+  See:
+	SZHD A 0 A_JumpIf( !donefirstfire, "PrepareFirstFire");
+	SZHD ABCD 5 A_Chase();
+    loop;
+  PrepareFirstFire:
+    //We've woken! If we can see the player from where we are, fire at random
+	SZHD A 0
+    {
+      A_Chase(); //This ensures the "see" sound plays first time
+	  donefirstfire=true;
+	  A_FaceTarget();
+    }
+	SZHD E 0 A_JumpIfTargetInLOS("Missile");
+	goto See;
+  Melee:
+    //On melee, fire all you have at where you think the player is!
+	SZHD E 20
+    {
+      donefirstfire=true;
+	  shots=random(7, 10);
+	  A_PlaySound("10MM/Cock");
+      A_FaceTarget();
+    }
+  MeleeLoop:
+    SZHD E 1 A_PlaySound ("10MM/FIRE");
+    SZHD F 2 BRIGHT A_CustomBulletAttack(0, 0, 1, 3*random(1,3), "BulletPuff", 0, CBAF_AIMFACING | CBAF_NORANDOM);
+    SZHD E 0 { shots--; }
+    SZHD E 0 A_JumpIf(shots > 0, "MeleeLoop");
+    SZHD E 35;
+    goto See;
+  Missile:
+	SZHD E 6
+    {
+      shots=random(3, 5);
+      A_FaceTarget();
+	  baseangle=angle;
+      A_SetAngle(baseangle+random(-25, 25));
+    }
+  MissileLoop:
+    SZHD E 1 A_PlaySound ("10MM/FIRE");
+    SZHD F 3 BRIGHT A_CustomBulletAttack(0, 0, 1, 3*random(1,3), "BulletPuff", 0, CBAF_AIMFACING | CBAF_NORANDOM);
+    SZHD E 0
+    {
+      shots--;
+      A_SetAngle(baseangle + random(-25, 25));
+    }
+    SZHD E 0 A_JumpIf(shots > 0,"MissileLoop");
+	SZHD E 6;
+    goto See;
+  Pain:
+    SZHD G 3;
+    SZHD G 3 A_Pain();
+    goto See;
+  Death:
+    SZHD H 5;
+    SZHD I 5 A_Scream();
+    SZHD J 5 A_NoBlocking();
+    SZHD K 5;
+    SZHD L 5;
+    SZHD M 5;
+    SZHD N -1;
+    stop;
+  XDeath:
+    SZHD O 5;
+    SZHD P 5 A_XScream();
+    SZHD Q 5 A_NoBlocking();
+    SZHD RSTUV 5;
+    SZHD W -1;
+    stop;
+  Raise:
+    SZHD MLKJIH 5;
+    goto See;
+  }
+}

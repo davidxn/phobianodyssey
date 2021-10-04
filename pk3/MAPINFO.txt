@@ -1,5 +1,13 @@
 clearepisodes
 
+DoomEdNums {
+    2300 = FOE
+    9004 = MonsterTurner
+    9005 = FOESpot
+    9006 = ExitSpot
+    9007 = MapDescriber
+}
+
 episode MAP02 {
 
 }
