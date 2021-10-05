@@ -6,31 +6,39 @@
 #define ANGLE_QUARTER_TURN 0.25
 #define TILE_SIZE 128
 
+#define ENCOUNTER_TEXT_X 400.0
+#define ENCOUNTER_TEXT_Y 200.0
+#define ENCOUNTER_NAME_Y_OFFSET 60.0
+
 //These are used to simulate passing multiple ints back from getPositionFromSquare
 int registerX = 0;
 int registerY = 0;
 int registerZ = 0;
 
-//script "return" RETURN {
-//	ACS_NamedExecuteAlways("enter", 0);
-//}
+script "return" RETURN {
+    FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
+    HudMessageBold(s:""; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, 0, 0, 0, 0);
+    HudMessageBold(s:""; HUDMSG_PLAIN, 998, CR_UNTRANSLATED, 0, 0, 0, 0);
+	ACS_NamedExecuteAlways("enter", 0);
+}
 
-script "enter" (void) {
+script "enter" ENTER {
     int mapType = ScriptCall("DataLibrary", "LoadMapProperties");
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
     if (mapType == 1) {
         ACS_NamedExecuteAlways("rpgMovement", 0);
     } else if (mapType == 2) {
         ACS_NamedExecuteAlways("setupArena", 0);
+    } else {
+        Log(s:"No map type");
     }
-    Log(s:"No map type");
 }
 
 script "openChest" (int chestNumber) {
 	SetActorState(0, "Opened");
 }
 
-script "rpgMovemens" (void) {
+script "rpgMovement" (void) {
 
 	FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
 	int i;
@@ -49,7 +57,9 @@ script "rpgMovemens" (void) {
 	if (startingSquare > 0) {
 		getPositionFromSquare(startingSquare);
 		SetActorPosition(0, registerX, registerY, registerZ, false);
-		SetActorAngle(0, ScriptCall("DataLibrary", "ReadInt", "FieldAngle"));
+        int angleToSet = ScriptCall("DataLibrary", "ReadDouble", "FieldAngle");
+        Log(s:"Got angle to start at: ", d:angleToSet);
+		SetActorAngle(0, ScriptCall("DataLibrary", "ReadDouble", "FieldAngle"));
 	}
 	SetMusic("POEXPLR");
 
@@ -87,6 +97,7 @@ script "rpgMovemens" (void) {
 			//Set the angle to move depending on the player's direction
 			int step_x = 0.0; int step_y = 0.0;
 			int currentAngle = quantizeAngle(GetActorAngle(0));
+            int oldSquareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
 			Log(s:"Quantized angle to ", f:currentAngle);
 			targetAngle = currentAngle;
 			int angleAdjustment = 0.0;
@@ -112,20 +123,19 @@ script "rpgMovemens" (void) {
 
 			//Check if next tile and points towards it are free
 			bool canMove = ScriptCall("LevelHelper", "IsPointInLevel", playerX + step_x * TILE_SIZE, playerY + step_y * TILE_SIZE, GetActorZ(0) + (24<<16));
-
 			for (i = 0.125; i <= 1.0; i+= 0.125) {
 				bool wasSpawned = SpawnForced("MapSpot", playerX + step_x * FixedMul(TILE_SIZE, i), playerY + step_y * FixedMul(TILE_SIZE, i), GetActorZ(0) + (16<<16), 999);
 				int nextSquareZDiff = (GetActorFloorZ(999)>>16) - (GetActorZ(0)>>16);
 				canMove &= !(nextSquareZDiff >= 32 || nextSquareZDiff <= -32);
 				Thing_Remove(999);
-				Log(s:"Next square Z difference ", d:nextSquareZDiff);
 			}
 
 			if (!canMove) {
 				continue;
 			}
-			PlaySound(0, "po/tread");
+			PlaySound(0, "po/tread", CHAN_AUTO);
 
+            //Move the player forward, incrementing Z as needed
 			for (i = 0; i < TILE_SIZE/STEP_RATE; i++) {
 				bool moveSuccess = SetActorPosition(0, GetActorX(0) + step_x * STEP_RATE, GetActorY(0) + step_y * STEP_RATE, GetActorZ(0), false);
 				if (!moveSuccess) {
@@ -146,6 +156,7 @@ script "rpgMovemens" (void) {
 			int exitMapNum = ScriptCall("LevelHelper", "HandleMapExit");
 			if (exitMapNum) {
 				FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
+                PlaySound(0, "po/stairs", CHAN_AUTO);
 				delay(35);
 				Teleport_NewMap(exitMapNum, 0, 0);
 				terminate;
@@ -155,8 +166,9 @@ script "rpgMovemens" (void) {
 			int foeHit = ScriptCall("FOEHelper", "PlayerOverlapsAnyFOE");
 			if (foeHit > 0) {
 				//We've hit a FOE, so return to our square and go to an encounter!
+                PlaySound(0, "po/foe/attack", CHAN_AUTO);
 				SetActorPosition(0, playerX, playerY, playerZ, false);
-				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle, foeHit);
+				ACS_NamedExecute("beginEncounter", 0, oldSquareNum, currentAngle, foeHit);
 				terminate; //Terminate here, as going back to this level will retrigger the script
 			}
 
@@ -178,6 +190,7 @@ script "rpgMovemens" (void) {
 			foeHit = ScriptCall("FOEHelper", "moveFOEs");
 			if (foeHit > 0) {
 				Log(s:"FOE hit! ", d:foeHit);
+                PlaySound(0, "po/foe/attack", CHAN_AUTO);
 				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle, foeHit);
 				terminate; //Terminate here, as going back to this level will retrigger the script
 			}
@@ -189,26 +202,50 @@ script "rpgMovemens" (void) {
 }
 
 script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) {
-	FadeTo(1.0, 0.0, 0.0, 1.0, 0.0);
-	SetMusic("POFIGHT");
-	FadeTo(1.0, 0.0, 0.0, 0.0, 0.25);
-	Delay(5);
-	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
-	delay(35);
-	TakeInventory("PoDanger", CheckInventory("PoDanger"));
 	str monsterParty = "";
+    
+    //Load the next monster party data into data library
 	if (forcedPopulation > 0) {
 		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterPartyFromPopulationID", StrParam(d:forcedPopulation));
 	} else {
 		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterParty", LEVELINFO_LEVELNUM, squareNum);
 	}
-	ScriptCall("DataLibrary", "WriteData", "NextMonsterParty", monsterParty);
+
 	ScriptCall("DataLibrary", "WriteData", "FieldSquare", StrParam(d:squareNum));
 	ScriptCall("DataLibrary", "WriteData", "FieldAngle", StrParam(d:currentAngle));
+    
+	FadeTo(1.0, 0.0, 0.0, 1.0, 0.0);
+	SetMusic("POFIGHT");
+	FadeTo(1.0, 0.0, 0.0, 0.0, 0.25);
+    ACS_NamedExecute("displayEncounterText", 0, forcedPopulation);
+	Delay(5);
+	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
+	delay(35);
+	TakeInventory("PoDanger", CheckInventory("PoDanger"));
 
 	int arenaMapNum = ScriptCall("DataLibrary", "ReadInt", "ArenaMap");
 
 	Teleport_NewMap(arenaMapNum, 0, 0);
+}
+
+script "displayEncounterText" (int isSpecialEncounter) {
+    str partyName = ScriptCall("DataLibrary", "ReadData", "NextMonsterPartyName");
+    if (isSpecialEncounter) {
+        partyName = "Pain Elemental approaching!";
+    }
+	SetHudSize(800, 600, false);
+	delay(5);
+	PlaySound(0, "po/encounter", CHAN_AUTO);
+	if (isSpecialEncounter) { SetFont("HXT_ALRT"); } else { SetFont("HXT_ENC"); } HudMessageBold(s:"A"; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 10.0);
+	delay(3);
+	if (isSpecialEncounter) { SetFont("TXT_ALRT"); } else { SetFont("TXT_ENC"); } HudMessageBold(s:"A"; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 10.0);
+
+	delay(16);
+	PlaySound(0, "po/punch", CHAN_AUTO);
+    Log(s:"partyName");
+	SetFont("BIGFONT"); HudMessageBold(s:partyName; HUDMSG_PLAIN, 998, CR_WHITE, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 10.0);
+	delay(2);
+	HudMessageBold(s:partyName; HUDMSG_PLAIN, 998, CR_GOLD, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 10.0);    
 }
 
 /////////////////////////////////////
@@ -216,6 +253,15 @@ script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) 
 script "setupArena" (void) {
 
 	FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
+    SetHudSize(800, 600, false);
+    if (ScriptCall("DataLibrary", "ReadInt", "CurrentFOESquare") > 0) {
+        SetFont("TXT_ALRT"); HudMessageBold(s:"A"; HUDMSG_FADEOUT, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 0.5, 0.5);
+        SetFont("BIGFONT"); HudMessageBold(s:"Pain Elemental approaching!"; HUDMSG_FADEOUT, 998, CR_GOLD, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 0.5, 0.5);  
+    }
+    else {
+        SetFont("TXT_ENC"); HudMessageBold(s:"A"; HUDMSG_FADEOUT, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 0.5, 0.5);
+        SetFont("BIGFONT"); HudMessageBold(s:ScriptCall("DataLibrary", "ReadData", "NextMonsterPartyName"); HUDMSG_FADEOUT, 998, CR_GOLD, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 0.5, 0.5);  
+    }
 	FadeTo(0.0, 0.0, 0.0, 0.0, 0.5);
 
 	str chosenMonsterParty = ScriptCall("DataLibrary", "ReadData", "NextMonsterParty");
@@ -233,7 +279,7 @@ script "setupArena" (void) {
 
 	//If this is a FOE fight, do a bit extra...
 	if (ScriptCall("DataLibrary", "ReadInt", "CurrentFOESquare") > 0) {
-		SpawnSpot("FOE", arenaTid, 999);
+		SpawnSpotFacing("FOE", arenaTid, 999);
 		delay(20);
 		SetActorState(999, "Destroy");
 		delay(5);
@@ -253,6 +299,7 @@ script "setupArena" (void) {
 	NoiseAlert(0, 0);
 
 	while (ThingCount(T_NONE, 999) > 0) {
+        Log(d:ThingCount(T_NONE, 999));
 		delay(35);
 	}
 

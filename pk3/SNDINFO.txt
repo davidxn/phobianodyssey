@@ -1,1 +1,7 @@
 po/tread POTREAD
+po/foe/death POFOEDTH
+po/foe/attack POFOE
+po/chest POCHEST
+po/stairs POSTAIRS
+po/punch POPUNCH
+po/encounter POENCOUN

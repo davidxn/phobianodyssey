@@ -56,6 +56,6 @@ ACTOR PoChest : FloatingSkull 2200
     Spawn:
       CHST A -1
     Opened:
-      CHST B -1
+      CHST B -1 A_PlaySound("po/chest")
   }
 }

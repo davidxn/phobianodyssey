@@ -25,7 +25,7 @@ class DataLibrary : Thinker
             if (line.Length() < 2) { continue; } //In the absence of trim()
             Array<String> lineData; line.Split(lineData, ",");
             String partyName = lineData[0];
-            monsterParties.Insert("monsterparty" .. partyName .. "Name", lineData[1]);
+            monsterParties.Insert(partyName .. "-Name", lineData[1]);
             for (int t = 2; t < lineData.Size(); t++) {
                 if (lineData[t] == "NONE") { continue; }
                 monsterParties.Insert(partyName .. "-" .. t-2, lineData[t]);
@@ -81,20 +81,11 @@ class DataLibrary : Thinker
     }
     
     //Static methods for calling from ACS - these will create an instance of the thinker if it doesn't already exist
-    static void WriteData(Actor activator, String position, String status)
-    {
-        DataLibrary.GetOrCreateInstance().dic.Insert(position, status);
-    }
+    static void WriteData(Actor activator, String position, String status) { DataLibrary.GetOrCreateInstance().dic.Insert(position, status); }
     
-    static String ReadData(String position)
-    {
-        return DataLibrary.GetOrCreateInstance().dic.At(position);
-    }
-    
-    static int ReadInt(String position)
-    {
-        return DataLibrary.GetOrCreateInstance().dic.At(position).ToInt();
-    }
+    static String ReadData(String position) { return DataLibrary.GetOrCreateInstance().dic.At(position); }
+    static int ReadInt(String position) { return DataLibrary.GetOrCreateInstance().dic.At(position).ToInt(); }
+    static int ReadDouble(String position) { return DataLibrary.GetOrCreateInstance().dic.At(position).ToDouble(); }
     
     static String ReadMonsterParty(String party, String slot)
     {
@@ -121,9 +112,17 @@ class DataLibrary : Thinker
         Array<String> monsterParties; monsterPartyString.Split(monsterParties, ",");
         if (monsterParties.Size() == 0) {
             console.printf("WARNING: No monster parties set for population %s", popId);
+            DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterParty", "ZombieWeak");
+            DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterPartyName", "Nobody really");
             return "ZombieWeak";
         }
-        return monsterParties[random(0, monsterParties.Size()-1)];
+        
+        String chosenParty = monsterParties[random(0, monsterParties.Size()-1)];
+        DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterParty", chosenParty);
+        String chosenPartyName = DataLibrary.GetOrCreateInstance().ReadMonsterParty(chosenParty, "Name");
+        chosenPartyName.Replace("_", " ");
+        DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterPartyName", chosenPartyName);
+        return chosenParty;
     }
     
     static int ReadDangerValue(int mapnum, int square)
@@ -139,6 +138,7 @@ class DataLibrary : Thinker
         MapDescriber m; ThinkerIterator it = ThinkerIterator.Create("MapDescriber");
         while (m = MapDescriber(it.Next() ) ) {
             DataLibrary.GetOrCreateInstance().WriteData(null, "ArenaMap", m.args[1] .. "");
+            console.printf("Map describer found, map type is " .. m.args[0]);
             return m.args[0];
         }
         return 0;
@@ -185,9 +185,8 @@ class LevelHelper : Thinker
         while (spot = ExitSpot(it.Next() ) ) {
             if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
                 int squareNum = spot.args[1];
-                int myangleint = (int) (spot.angle);
-                double myangle = myangleint/360.0;
-                console.printf("%d", myangle);
+                double myangle = spot.angle * 182; //This converts from degrees to fixed-point angle
+                console.printf("Translated angle is %f", myangle);
                 DataLibrary.GetOrCreateInstance().WriteData(null, "FieldSquare", squareNum .. "");
                 DataLibrary.GetOrCreateInstance().WriteData(null, "FieldAngle",  myangle .. "");
                 return spot.args[0]; //This is the mapnum for the exit's target
@@ -204,7 +203,6 @@ class FOE : FloatingSkull
         Health 50;
         Radius 20;
         Height 60;
-        +SHOOTABLE;
         +FLOATBOB;
         +NOGRAVITY;
         //$Arg0 Monster Population
@@ -215,7 +213,8 @@ class FOE : FloatingSkull
             PAIN ABC 15;
             Loop;
         Destroy:
-            PAIN HIJKLM 8;
+            PAIN H 8 A_PlaySound("po/foe/death");
+            PAIN IJKLM 8;
             Stop;
     }
 
@@ -242,7 +241,7 @@ class MonsterTurner : MapSpot
 class FOESpot : MapSpot
 {
     default {
-        //$Sprite PAINA0
+        //$Sprite PAINA1
     }
 }
 

@@ -8,7 +8,7 @@ DoomEdNums {
     9007 = MapDescriber
 }
 
-episode MAP02 {
+episode MAP01 {
 
 }
 
