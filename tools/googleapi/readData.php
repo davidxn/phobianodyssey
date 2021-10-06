@@ -75,7 +75,7 @@ foreach($parties as $partyData) {
 
 file_put_contents($fileMonsterPopulations, $monsterPopulations);
 
-$results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!A1:L');
+$results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!B1:L');
 
 
 //Now interpret the map data

@@ -64,7 +64,7 @@ class DataLibrary : Thinker
 		return self;
 	}
 
-    static DataLibrary GetOrCreateInstance(void)
+    static DataLibrary inst(void)
 	{
 		ThinkerIterator it = ThinkerIterator.Create("DataLibrary", STAT_STATIC);
 		let p = DataLibrary(it.Next());
@@ -81,23 +81,23 @@ class DataLibrary : Thinker
     }
     
     //Static methods for calling from ACS - these will create an instance of the thinker if it doesn't already exist
-    static void WriteData(Actor activator, String position, String status) { DataLibrary.GetOrCreateInstance().dic.Insert(position, status); }
+    static void WriteData(Actor activator, String position, String value) { DataLibrary.inst().dic.Insert(position, value); }
     
-    static String ReadData(String position) { return DataLibrary.GetOrCreateInstance().dic.At(position); }
-    static int ReadInt(String position) { return DataLibrary.GetOrCreateInstance().dic.At(position).ToInt(); }
-    static int ReadDouble(String position) { return DataLibrary.GetOrCreateInstance().dic.At(position).ToDouble(); }
+    static String ReadData(String position) { return DataLibrary.inst().dic.At(position); }
+    static int ReadInt(String position) { return DataLibrary.inst().dic.At(position).ToInt(); }
+    static int ReadDouble(String position) { return DataLibrary.inst().dic.At(position).ToDouble(); }
     
     static String ReadMonsterParty(String party, String slot)
     {
         String key = party .. "-" .. slot;
-        return DataLibrary.GetOrCreateInstance().monsterParties.At(key);
+        return DataLibrary.inst().monsterParties.At(key);
     }
     
     static String ChooseMonsterParty(int mapnum, int square) {
     
         //To choose a monster party, get the population ID of this square
         String key = "MP-" .. mapnum .. "-" .. square;
-        String popId = DataLibrary.GetOrCreateInstance().dic.At(key);
+        String popId = DataLibrary.inst().dic.At(key);
 
         //Ask the monsterpop dictionary which parties correspond to this population ID
         console.printf("Key %s has monster population ID %s", key, popId);
@@ -106,29 +106,29 @@ class DataLibrary : Thinker
     
     static String ChooseMonsterPartyFromPopulationID(String popId) {
         //Get the parties that correspond to this monster population
-        String monsterPartyString = DataLibrary.GetOrCreateInstance().monsterPops.At(popId);
+        String monsterPartyString = DataLibrary.inst().monsterPops.At(popId);
         console.printf("Monster parties: %s", monsterPartyString);
         //Now split the string and return a name
         Array<String> monsterParties; monsterPartyString.Split(monsterParties, ",");
         if (monsterParties.Size() == 0) {
             console.printf("WARNING: No monster parties set for population %s", popId);
-            DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterParty", "ZombieWeak");
-            DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterPartyName", "Nobody really");
+            DataLibrary.inst().WriteData(null, "NextMonsterParty", "ZombieWeak");
+            DataLibrary.inst().WriteData(null, "NextMonsterPartyName", "Nobody really");
             return "ZombieWeak";
         }
         
         String chosenParty = monsterParties[random(0, monsterParties.Size()-1)];
-        DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterParty", chosenParty);
-        String chosenPartyName = DataLibrary.GetOrCreateInstance().ReadMonsterParty(chosenParty, "Name");
+        DataLibrary.inst().WriteData(null, "NextMonsterParty", chosenParty);
+        String chosenPartyName = DataLibrary.inst().ReadMonsterParty(chosenParty, "Name");
         chosenPartyName.Replace("_", " ");
-        DataLibrary.GetOrCreateInstance().WriteData(null, "NextMonsterPartyName", chosenPartyName);
+        DataLibrary.inst().WriteData(null, "NextMonsterPartyName", chosenPartyName);
         return chosenParty;
     }
     
     static int ReadDangerValue(int mapnum, int square)
     {
         String key = "DN-" .. mapnum .. "-" .. square;
-        int value = DataLibrary.GetOrCreateInstance().dic.At(key).ToInt();
+        int value = DataLibrary.inst().dic.At(key).ToInt();
         console.printf("%s %d", key, value);
         return value;
     }
@@ -137,7 +137,7 @@ class DataLibrary : Thinker
     {
         MapDescriber m; ThinkerIterator it = ThinkerIterator.Create("MapDescriber");
         while (m = MapDescriber(it.Next() ) ) {
-            DataLibrary.GetOrCreateInstance().WriteData(null, "ArenaMap", m.args[1] .. "");
+            DataLibrary.inst().WriteData(null, "ArenaMap", m.args[1] .. "");
             console.printf("Map describer found, map type is " .. m.args[0]);
             return m.args[0];
         }
@@ -187,12 +187,38 @@ class LevelHelper : Thinker
                 int squareNum = spot.args[1];
                 double myangle = spot.angle * 182; //This converts from degrees to fixed-point angle
                 console.printf("Translated angle is %f", myangle);
-                DataLibrary.GetOrCreateInstance().WriteData(null, "FieldSquare", squareNum .. "");
-                DataLibrary.GetOrCreateInstance().WriteData(null, "FieldAngle",  myangle .. "");
+                DataLibrary.inst().WriteData(null, "FieldSquare", squareNum .. "");
+                DataLibrary.inst().WriteData(null, "FieldAngle",  myangle .. "");
                 return spot.args[0]; //This is the mapnum for the exit's target
             }
         }
         return 0;
+    }
+    
+    static int IsOnWetFloor(Actor actor) {
+        String textureName = GetActorFloorTexture(actor);
+        String wetFloors = "F_WATER1, NUKAGE1";
+        if (wetFloors.indexOf(textureName) > -1) {
+            return 1;
+        }
+        return 0;
+    }
+    
+    static int IsOnDamagingFloor(Actor actor) {
+        String textureName = GetActorFloorTexture(actor);
+        String damagingFloors = "NUKAGE1";
+        if (damagingFloors.indexOf(textureName) > -1) {
+            return 1;
+        }
+        return 0;
+    }
+    
+    static String GetActorFloorTexture(Actor actor)
+    {
+        Sector sec = actor.CurSector;
+        TextureID tex = sec.GetTexture(0);
+        String name = TexMan.getName(tex);
+        return name;
     }
 }
 
@@ -302,7 +328,7 @@ class FOEHelper : Thinker
             if (foe.overlapsPlayer(activator)) {
                 foe.SetOrigin(oldpos, false);
                 int squareNum = LevelHelper.getSquareFromPosition(oldpos.x, oldpos.y);
-                DataLibrary.GetOrCreateInstance().WriteData(null, "CurrentFOESquare", squareNum .. "");
+                DataLibrary.inst().WriteData(null, "CurrentFOESquare", squareNum .. "");
                 foeMonsterPop = foe.getMonsterPop();
             }
             
@@ -310,7 +336,7 @@ class FOEHelper : Thinker
             MonsterTurner turner; ThinkerIterator turnIterator = ThinkerIterator.Create("MonsterTurner");
             while (turner = MonsterTurner(turnIterator.next())) {
                 vector3 turnpos = turner.Pos;
-                if (turnpos == mypos) {
+                if (turnpos.x == mypos.x && turnpos.y == mypos.y) {
                     foe.angle = turner.angle;
                 }
             }
@@ -325,7 +351,7 @@ class FOEHelper : Thinker
         while (foe = FOE(foeIterator.Next() ) ) {
             if (foe.overlapsPlayer(activator)) {
                 int squareNum = LevelHelper.getSquareFromPosition(foe.pos.x, foe.pos.y);
-                DataLibrary.GetOrCreateInstance().WriteData(null, "CurrentFOESquare", squareNum .. "");
+                DataLibrary.inst().WriteData(null, "CurrentFOESquare", squareNum .. "");
                 return foe.getMonsterPop();
             }
         }
@@ -335,7 +361,7 @@ class FOEHelper : Thinker
     static void DestroyCurrentFOE()
     {
         console.printf("Attempting to destroy FOE");
-        String squareNum = DataLibrary.GetOrCreateInstance().ReadData("CurrentFOESquare");
+        String squareNum = DataLibrary.inst().ReadData("CurrentFOESquare");
         console.printf("Square num for FOE: %s", squareNum);
         if (!squareNum) {
             return;
@@ -348,7 +374,7 @@ class FOEHelper : Thinker
         while (foe = FOE(foeIterator.Next() ) ) {
             console.printf("Looking for: %d %d", x, y);
             if (foe.isAtPosition(x, y)) {
-                DataLibrary.GetOrCreateInstance().WriteData(null, "CurrentFOESquare", "");
+                DataLibrary.inst().WriteData(null, "CurrentFOESquare", "");
                 foe.SetState(foe.FindState("Destroy"));
                 console.printf("Destroyed FOE");
                 break;

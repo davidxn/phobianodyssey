@@ -11,8 +11,8 @@ maps
 		resources
 		{
 		}
-		defaultfloortexture = "FLOOR5_3";
-		defaultceiltexture = "FLAT5_3";
+		defaultfloortexture = "0SANDB02";
+		defaultceiltexture = "0ROCKR01";
 		defaulttoptexture = "STARBR2";
 		defaultwalltexture = "STARBR2";
 		defaultbottomtexture = "STARBR2";
@@ -28,9 +28,9 @@ maps
 		overrideceilheight = false;
 		overridebrightness = false;
 		uselongtexturenames = false;
-		viewpositionx = 1257.305f;
-		viewpositiony = 2195.059f;
-		viewscale = 1.669888f;
+		viewpositionx = 1608.014f;
+		viewpositiony = 1824.735f;
+		viewscale = 0.988098f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid

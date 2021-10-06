@@ -133,7 +133,12 @@ script "rpgMovement" (void) {
 			if (!canMove) {
 				continue;
 			}
-			PlaySound(0, "po/tread", CHAN_AUTO);
+            
+            if (ScriptCall("LevelHelper", "IsOnWetFloor")) {
+                PlaySound(0, "po/treadwater", CHAN_AUTO);
+            } else {
+                PlaySound(0, "po/tread", CHAN_AUTO);
+            }
 
             //Move the player forward, incrementing Z as needed
 			for (i = 0; i < TILE_SIZE/STEP_RATE; i++) {
@@ -144,13 +149,22 @@ script "rpgMovement" (void) {
 				if (!moveSuccess) {
 					moveSuccess = SetActorPosition(0, GetActorX(0) + step_x * STEP_RATE, GetActorY(0) + step_y * STEP_RATE, GetActorZ(0) + (8<<16), false);
 				}
-				delay(1);
+                if (!moveSuccess) {
+					moveSuccess = SetActorPosition(0, GetActorX(0) + step_x * STEP_RATE, GetActorY(0) + step_y * STEP_RATE, GetActorZ(0) + (16<<16), false);
+				}
+                delay(1);
 			}
 			SetActorPosition(0, playerX + step_x * TILE_SIZE, playerY + step_y * TILE_SIZE, GetActorZ(0), false);
 
 			//What's our new square?
 			int squareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
 			Log(s:"New square is: ", d:squareNum);
+            
+            //As a result of this move, are we on a damaging floor?
+            if (ScriptCall("LevelHelper", "IsOnDamagingFloor")) {
+                PlaySound(0, "po/damage", CHAN_AUTO);
+                DamageActor(0, AAPTR_DEFAULT, 0, AAPTR_NULL, 5, "");
+            }
 
 			//As a result of this move, have we hit an exit?
 			int exitMapNum = ScriptCall("LevelHelper", "HandleMapExit");
@@ -269,8 +283,8 @@ script "setupArena" (void) {
 	int numberOfStarts = ThingCountName("BattleStart", 0);
 	int arenaTid = 100 * (Random(0, numberOfStarts - 1) + 1);
 
-	GiveInventory("SuperShotgun", 1);
-	GiveInventory("Shell", 50);
+	GiveInventory("Pistol", 1);
+	GiveInventory("Clip", 50);
 
 	int battleStartTid = arenaTid + 1;
 
@@ -291,7 +305,7 @@ script "setupArena" (void) {
 	for (int i = 0; i < 10; i++) {
 		str monsterClass = ScriptCall("DataLibrary", "ReadMonsterParty", chosenMonsterParty, StrParam(d:i));
 		if (StrLen(monsterClass) > 0) {
-			SpawnSpot(monsterClass, arenaTid + i + 2, 999);
+			SpawnSpotFacing(monsterClass, arenaTid + i + 2, 999);
 			SpawnSpot("TeleportFog", arenaTid + i + 2);
 			delay(Random(5, 10));
 		}
