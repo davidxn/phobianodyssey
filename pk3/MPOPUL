@@ -1,5 +1,7 @@
 1=ImpParty,ImpSquad
 2=ImpParty,ImpSquad,ImpHunters,ImpHunters2
 3=ImpParty,ImpSquad,DevilTrio
-4=Scientists
+4=DevilTrio,SciImps1,SciImps2,ScientistHeadless
+5=ZombieWeak,ZombieWeak2,IncompleteZombies,ScientistHeadless
+6=ZombieWeak,ZombieWeak2
 1001=FOEBarons

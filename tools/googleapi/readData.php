@@ -29,7 +29,7 @@ function getClient()
 // Get the API client and construct the service object.
 $client = getClient();
 $service = new Google_Service_Sheets($client);
-$mapSheets = [2];
+$mapSheets = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 $fileMonsterParties = "../../pk3/MPARTY";
 $fileMonsterPopulations = "../../pk3/MPOPUL";
@@ -40,7 +40,7 @@ $monsterPopulations = [];
 $squareData = [];
 
 //Get monster party information
-$results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!A1:L');
+$results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!A2:L');
 $parties = $results->getValues();
 
 foreach($parties as $partyData) {
@@ -56,8 +56,6 @@ foreach($parties as $partyData) {
 }
 
 file_put_contents($fileMonsterParties, $monsterParties);
-
-$results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!A1:L');
 
 //Get monster populations
 $results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterPartyGroup!A1:L');
@@ -80,9 +78,17 @@ $results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!B1:L
 
 //Now interpret the map data
 foreach ($mapSheets as $mapSheetNum) {
-    $sheet = $service->spreadsheets->get($spreadsheetId, ['includeGridData' => true, 'ranges' => 'Floor' . $mapSheetNum . '!A1:T20', 'fields' => 'sheets/data/rowData/values/effectiveFormat/backgroundColor,sheets/data/rowData/values/formattedValue']);
+    try {
+        $sheet = $service->spreadsheets->get($spreadsheetId, ['includeGridData' => true, 'ranges' => 'Floor' . $mapSheetNum . '!A1:T20', 'fields' => 'sheets/data/rowData/values/effectiveFormat/backgroundColor,sheets/data/rowData/values/formattedValue']);
+    }
+    catch (Google\Service\Exception $e) {
+        continue;
+    }
 
     $squareNumber = 11900;
+    if (!$sheet['sheets']) {
+        continue;
+    }
     foreach ($sheet['sheets']['0']['data']['0']['rowData'] as $rowData) {
         foreach ($rowData['values'] as $cellData) {
             $bgProperties = $cellData['effectiveFormat']['backgroundColor'] ?? [];

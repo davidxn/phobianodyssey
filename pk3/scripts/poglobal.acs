@@ -15,6 +15,9 @@ int registerX = 0;
 int registerY = 0;
 int registerZ = 0;
 
+int showingInventory = 0;
+int levelNum;
+
 script "return" RETURN {
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
     HudMessageBold(s:""; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, 0, 0, 0, 0);
@@ -24,8 +27,37 @@ script "return" RETURN {
 
 script "enter" ENTER {
     int mapType = ScriptCall("DataLibrary", "LoadMapProperties");
+    levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
+    ScriptCall("DataLibrary", "PrintInv");
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
     if (mapType == 1) {
+        ScriptCall("DataLibrary", "InventoryAdd", "MFIMegasphere", "-1");
+        ScriptCall("DataLibrary", "InventoryAdd", "MFIMedikit", "-1");
+        ScriptCall("DataLibrary", "InventoryAdd", "MFIRadsuit", "-1");
+        SetPlayerProperty(1, 1, PROP_FROZEN);
+        ClearInventory();
+        
+        ScriptCall("DataLibrary", "WriteData", "FieldMap", StrParam(d:levelNum));
+        //If we're coming back from a FOE fight, destroy the FOE we marked
+        Log(s:"Destroying FOE if present...");
+        ScriptCall("FOEHelper", "DestroyCurrentFOE");
+
+        int startingSquare = ScriptCall("DataLibrary", "ReadInt", "FieldSquare");
+        Log(s:"Placing player at ", i:startingSquare);
+        if (startingSquare > 0) {
+            getPositionFromSquare(startingSquare);
+            SetActorPosition(0, registerX, registerY, registerZ, false);
+            int angleToSet = ScriptCall("DataLibrary", "ReadInt", "FieldAngle");
+            Log(s:"Got angle to start at: ", d:angleToSet);
+            SetActorAngle(0, angleToSet);
+        }
+        SetMusic("POEXPLR");
+
+        //OK, now fade in and start listening for movement!
+
+        FadeTo(0.0, 0.0, 0.0, 0.0, 1.0);
+        delay(15);
+
         ACS_NamedExecuteAlways("rpgMovement", 0);
     } else if (mapType == 2) {
         ACS_NamedExecuteAlways("setupArena", 0);
@@ -38,36 +70,23 @@ script "openChest" (int chestNumber) {
 	SetActorState(0, "Opened");
 }
 
+script "listenInventory" ENTER {
+    while (true) {
+		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
+		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
+        if (buttons & BT_USER2 || !oldButtons & BT_USER2) {
+            showingInventory = ScriptCall("DataLibrary", "ReadInt", "showInvScreen");
+            showingInventory = !showingInventory;
+            ScriptCall("DataLibrary", "WriteData", "showInvScreen", StrParam(d:showingInventory));
+            delay(2);
+        }
+        delay(2);
+    }
+}
+
 script "rpgMovement" (void) {
 
-	FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
 	int i;
-
-	SetPlayerProperty(1, 1, PROP_FROZEN);
-	ClearInventory();
-    Log(s:"Starting up");
-	ScriptCall("DataLibrary", "WriteData", "FieldMap", StrParam(d:GetLevelInfo(LEVELINFO_LEVELNUM)));
-    Log(s:"Starting up");
-	//If we're coming back from a FOE fight, destroy the FOE we marked
-	Log(s:"Destroying FOE if present...");
-	ScriptCall("FOEHelper", "DestroyCurrentFOE");
-
-	int startingSquare = ScriptCall("DataLibrary", "ReadInt", "FieldSquare");
-	Log(s:"Placing player at ", i:startingSquare);
-	if (startingSquare > 0) {
-		getPositionFromSquare(startingSquare);
-		SetActorPosition(0, registerX, registerY, registerZ, false);
-        int angleToSet = ScriptCall("DataLibrary", "ReadDouble", "FieldAngle");
-        Log(s:"Got angle to start at: ", d:angleToSet);
-		SetActorAngle(0, ScriptCall("DataLibrary", "ReadDouble", "FieldAngle"));
-	}
-	SetMusic("POEXPLR");
-
-	//OK, now fade in and start listening!
-
-	FadeTo(0.0, 0.0, 0.0, 0.0, 1.0);
-	delay(15);
-
 	while (true) {
 		delay(1);
 		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
@@ -121,8 +140,14 @@ script "rpgMovement" (void) {
 			int playerY = GetActorY(0);
 			int playerZ = GetActorZ(0);
 
+            bool canMove = true;
 			//Check if next tile and points towards it are free
-			bool canMove = ScriptCall("LevelHelper", "IsPointInLevel", playerX + step_x * TILE_SIZE, playerY + step_y * TILE_SIZE, GetActorZ(0) + (24<<16));
+			for (i = 0.125; i <= 1.0; i += 0.125) {
+                canMove &= ScriptCall("LevelHelper", "IsPointInLevel", playerX + step_x * FixedMul(TILE_SIZE, i), playerY + step_y * FixedMul(TILE_SIZE, i), GetActorZ(0) + (24<<16));
+            }
+            
+            if (!canMove) { continue; }
+            
 			for (i = 0.125; i <= 1.0; i+= 0.125) {
 				bool wasSpawned = SpawnForced("MapSpot", playerX + step_x * FixedMul(TILE_SIZE, i), playerY + step_y * FixedMul(TILE_SIZE, i), GetActorZ(0) + (16<<16), 999);
 				int nextSquareZDiff = (GetActorFloorZ(999)>>16) - (GetActorZ(0)>>16);
@@ -130,15 +155,10 @@ script "rpgMovement" (void) {
 				Thing_Remove(999);
 			}
 
-			if (!canMove) {
-				continue;
-			}
+			if (!canMove) { continue; }
             
-            if (ScriptCall("LevelHelper", "IsOnWetFloor")) {
-                PlaySound(0, "po/treadwater", CHAN_AUTO);
-            } else {
-                PlaySound(0, "po/tread", CHAN_AUTO);
-            }
+            if (ScriptCall("LevelHelper", "IsOnWetFloor")) { PlaySound(0, "po/treadwater", CHAN_AUTO); }
+            else {                                           PlaySound(0, "po/tread", CHAN_AUTO);      }
 
             //Move the player forward, incrementing Z as needed
 			for (i = 0; i < TILE_SIZE/STEP_RATE; i++) {
@@ -175,6 +195,12 @@ script "rpgMovement" (void) {
 				Teleport_NewMap(exitMapNum, 0, 0);
 				terminate;
 			}
+            
+            //As a result of this move, have we hit an event?
+            str scriptName = ScriptCall("LevelHelper", "HandleEvent");
+            if (StrLen(scriptName) > 0) {
+                ACS_NamedExecuteWait(scriptName, 0);
+            }
 
 			//As a result of this move, have we hit a FOE?
 			int foeHit = ScriptCall("FOEHelper", "PlayerOverlapsAnyFOE");
@@ -187,7 +213,7 @@ script "rpgMovement" (void) {
 			}
 
 			//Now add the new square's danger value to the existing one
-			int dangerValue = ScriptCall("DataLibrary", "ReadDangerValue", LEVELINFO_LEVELNUM, squareNum);
+			int dangerValue = ScriptCall("DataLibrary", "ReadDangerValue", levelNum, squareNum);
 			Log(s:"Danger value: ", d:dangerValue);
 
 			dangerValue = Random(max(0, dangerValue-5), dangerValue);
@@ -222,8 +248,10 @@ script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) 
 	if (forcedPopulation > 0) {
 		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterPartyFromPopulationID", StrParam(d:forcedPopulation));
 	} else {
-		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterParty", LEVELINFO_LEVELNUM, squareNum);
+		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterParty", levelNum, squareNum);
 	}
+    
+    Log(s:"Retrieved monster party key: ", s:monsterParty);
 
 	ScriptCall("DataLibrary", "WriteData", "FieldSquare", StrParam(d:squareNum));
 	ScriptCall("DataLibrary", "WriteData", "FieldAngle", StrParam(d:currentAngle));
@@ -256,7 +284,6 @@ script "displayEncounterText" (int isSpecialEncounter) {
 
 	delay(16);
 	PlaySound(0, "po/punch", CHAN_AUTO);
-    Log(s:"partyName");
 	SetFont("BIGFONT"); HudMessageBold(s:partyName; HUDMSG_PLAIN, 998, CR_WHITE, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 10.0);
 	delay(2);
 	HudMessageBold(s:partyName; HUDMSG_PLAIN, 998, CR_GOLD, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 10.0);    
@@ -313,7 +340,6 @@ script "setupArena" (void) {
 	NoiseAlert(0, 0);
 
 	while (ThingCount(T_NONE, 999) > 0) {
-        Log(d:ThingCount(T_NONE, 999));
 		delay(35);
 	}
 

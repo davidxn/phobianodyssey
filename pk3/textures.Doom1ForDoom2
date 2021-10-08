@@ -1,0 +1,476 @@
+texture AASTINKY, 24, 72
+{
+    Patch WALL00_3, 0, 0
+    Patch WALL00_3, 12, 65530
+}
+texture BRNBIGC, 128, 128
+{
+    Patch W113_1, 0, 0
+}
+texture BRNBIGL, 32, 128
+{
+    Patch W113_2, 0, 0
+}
+texture BRNBIGR, 32, 128
+{
+    Patch W113_3, 0, 0
+}
+texture BRNPOIS1, 64, 128
+{
+    Patch WALL62_2, 0, 0
+    Patch PS20A0, 1, 60
+}
+texture BRNPOIS2, 64, 128
+{
+    Patch WALL62_1, 0, 0
+    Patch PS20A0, 0, 57
+}
+texture COMP2, 256, 128
+{
+    Patch COMP02_1, 0, 0
+    Patch COMP02_2, 64, 0
+    Patch COMP02_4, 128, 0
+    Patch COMP02_3, 192, 0
+    Patch COMP02_6, 0, 64
+    Patch COMP02_8, 64, 64
+    Patch COMP02_7, 128, 64
+    Patch COMP02_5, 192, 64
+    Patch STEP08, 0, 56
+    Patch STEP08, 32, 56
+    Patch STEP08, 64, 56
+    Patch STEP08, 96, 56
+    Patch STEP08, 128, 56
+    Patch STEP08, 160, 56
+    Patch STEP08, 192, 56
+    Patch STEP08, 224, 56
+    Patch STEP08, 0, 120
+    Patch STEP08, 32, 120
+    Patch STEP08, 64, 120
+    Patch STEP08, 96, 120
+    Patch STEP08, 128, 120
+    Patch STEP08, 160, 120
+    Patch STEP08, 192, 120
+    Patch STEP08, 224, 120
+}
+texture COMPTILE, 128, 128
+{
+    Patch COMP03_7, 0, 0
+    Patch COMP03_1, 32, 0
+    Patch COMP03_6, 96, 0
+    Patch COMP03_7, 0, 64
+    Patch COMP03_1, 32, 64
+    Patch COMP03_6, 96, 64
+}
+texture COMPUTE1, 128, 128
+{
+    Patch COMP01_5, 26, 64
+    Patch COMP01_1, 0, 64
+    Patch W33_8, 0, 56
+    Patch W33_8, 64, 56
+    Patch W33_8, 0, 120
+    Patch W33_8, 64, 120
+    Patch COMP01_5, 28, 0
+    Patch COMP1C_6, 72, 64
+    Patch COMP01_6, 72, 0
+    Patch COMP1B_4, 0, 0
+}
+texture COMPUTE2, 256, 56
+{
+    Patch COMP02_1, 0, 0
+    Patch COMP02_2, 64, 0
+    Patch COMP02_3, 128, 0
+    Patch COMP02_7, 192, 0
+}
+texture COMPUTE3, 128, 128
+{
+    Patch SW11_4, 0, 4
+    Patch SW11_5, 32, 4
+    Patch SW11_4, 64, 4
+    Patch COMP02_1, 0, 0
+    Patch SW11_5, 96, 4
+    Patch COMP02_2, 64, 0
+    Patch STEP08, 0, 56
+    Patch STEP08, 32, 56
+    Patch STEP08, 64, 56
+    Patch STEP08, 96, 56
+}
+texture LITE2, 64, 128
+{
+    Patch WALL02_2, 0, 56
+    Patch WALL02_2, 0, 0
+    Patch FLAMP, 5, 0
+    Patch FLAMP, 35, 0
+}
+texture LITE4, 16, 128
+{
+    Patch T14_5, 0, 56
+    Patch WLITA0, 0, 0
+    Patch WLITC0, 8, 0
+    Patch WLITA0, 0, 48
+    Patch WLITC0, 8, 48
+    Patch WLITA0, 0, 40
+    Patch WLITC0, 8, 40
+    Patch WLITA0, 0, 32
+    Patch WLITC0, 8, 32
+    Patch WLITA0, 0, 24
+    Patch WLITC0, 8, 24
+    Patch WLITA0, 0, 16
+    Patch WLITC0, 8, 16
+    Patch WLITA0, 0, 8
+    Patch WLITC0, 8, 8
+}
+texture LITEBLU2, 16, 72
+{
+    Patch W13_A, 0, 0
+}
+texture LITEBLU3, 16, 128
+{
+    Patch W13_8, 0, 0
+    Patch W13_8, 0, 56
+}
+texture NUKESLAD, 64, 128
+{
+    Patch WALL57_1, 0, 0
+}
+texture PLANET1, 256, 128
+{
+    Patch AG128_1, 0, 0
+    Patch TSCRN2, 4, 69
+    Patch AG128_1, 64, 0
+    Patch TSCRN3, 68, 69
+    Patch AG128_1, 128, 0
+    Patch TSCRN4, 132, 69
+    Patch TSCRN5, 68, 7
+    Patch TSCRN6, 4, 7
+    Patch TSCRN8, 132, 7
+    Patch AG128_1, 192, 0
+}
+texture REDWALL1, 128, 128
+{
+    Patch W15_4, 0, 56
+    Patch W15_5, 64, 56
+    Patch W15_4, 0, 0
+    Patch W15_5, 64, 0
+}
+texture SLADPOIS, 64, 128
+{
+    Patch WLA128_1, 0, 0
+    Patch PS20A0, 1, 49
+}
+texture SLADRIP1, 64, 128
+{
+    Patch WALL57_2, 0, 0
+}
+texture SLADRIP2, 64, 128
+{
+    Patch WALL57_3, 0, 0
+}
+texture SLADRIP3, 64, 128
+{
+    Patch WALL57_4, 0, 0
+}
+texture STARTAN1, 64, 128
+{
+    Patch SW12_4, 0, 0
+    Patch SW12_5, 32, 0
+}
+texture STEP11, 32, 8
+{
+    Patch STEP04, 0, 0
+}
+texture STEP21, 32, 8
+{
+    Patch STEP03, 0, 0
+}
+texture STEP31, 32, 8
+{
+    Patch STEP05, 0, 0
+}
+texture STEP51, 32, 16
+{
+    Patch STEP09, 0, 0
+    Patch STEP09, 0, 8
+}
+texture STONPOIS, 64, 128
+{
+    Patch WALL01_1, 0, 0
+    Patch WALL01_2, 16, 0
+    Patch WALL01_3, 32, 0
+    Patch WALL01_4, 48, 0
+    Patch WALL01_1, 0, 72
+    Patch WALL01_2, 16, 72
+    Patch WALL01_3, 32, 72
+    Patch WALL01_4, 48, 72
+    Patch W33_8, 0, 64
+    Patch W33_8, 0, 120
+    Patch PS20A0, 1, 43
+}
+texture SUPPORT2, 64, 128
+{
+    Patch SUPPORT2, 19, 72
+    Patch SUPPORT2, 19, 0
+    Patch SUPPORT2, 0, 0
+    Patch SUPPORT2, 0, 72
+    Patch SUPPORT2, 40, 0
+    Patch SUPPORT2, 40, 72
+}
+texture SW1BRN1, 64, 128
+{
+    Patch WALL02_2, 0, 56
+    Patch WALL02_2, 0, 0
+    Patch SW3S0, 16, 75
+}
+texture SW1BRNGN, 64, 128
+{
+    Patch WALL62_2, 0, 0
+    Patch SW4S0, 20, 80
+}
+texture SW1STARG, 128, 128
+{
+    Patch SW19_3, 64, 0
+    Patch SW19_4, 0, 0
+    Patch SW3S0, 48, 76
+}
+texture SW1STON2, 64, 128
+{
+    Patch W28_5, 0, 0
+    Patch W28_8, 0, 64
+    Patch WARNB0, 24, 73
+}
+texture SW1STONE, 64, 128
+{
+    Patch WALL01_1, 0, 0
+    Patch WALL01_2, 16, 0
+    Patch WALL01_3, 32, 0
+    Patch WALL01_4, 48, 0
+    Patch WALL01_1, 0, 72
+    Patch WALL01_2, 16, 72
+    Patch WALL01_3, 32, 72
+    Patch WALL01_4, 48, 72
+    Patch W33_8, 0, 64
+    Patch W33_8, 0, 120
+    Patch SW1S0, 16, 72
+}
+texture SW2BRN1, 64, 128
+{
+    Patch STEP07, 32, 72
+    Patch STEP07, 0, 72
+    Patch WALL02_2, 0, 56
+    Patch WALL02_2, 0, 0
+    Patch SW3S1, 16, 75
+}
+texture SW2STARG, 128, 128
+{
+    Patch SW19_3, 64, 0
+    Patch SW19_4, 0, 0
+    Patch SW3S1, 48, 76
+}
+texture SW2STON2, 64, 128
+{
+    Patch W28_8, 0, 64
+    Patch WARNA0, 24, 73
+    Patch W28_5, 0, 0
+}
+texture SW2STONE, 64, 128
+{
+    Patch WALL01_1, 0, 0
+    Patch WALL01_2, 16, 0
+    Patch WALL01_3, 32, 0
+    Patch WALL01_4, 48, 0
+    Patch WALL01_1, 0, 72
+    Patch WALL01_2, 16, 72
+    Patch WALL01_3, 32, 72
+    Patch WALL01_4, 48, 72
+    Patch W33_8, 0, 64
+    Patch W33_8, 0, 120
+    Patch SW1S1, 16, 72
+}
+texture TEKWALL2, 128, 128
+{
+    Patch WALL24_1, 0, 0
+}
+texture TEKWALL3, 128, 112
+{
+    Patch W17_1, 65432, 0
+}
+texture TEKWALL5, 128, 128
+{
+    Patch WALL24_1, 65416, 65528
+}
+texture ASHWALL, 64, 128
+{
+    Patch W104_1, 0, 0
+}
+texture BLODGR1, 32, 128
+{
+    Patch TP5_1, 0, 0
+}
+texture BLODGR2, 32, 128
+{
+    Patch TP5_2, 0, 0
+}
+texture BLODGR3, 32, 128
+{
+    Patch TP5_3, 0, 0
+}
+texture BLODGR4, 32, 128
+{
+    Patch TP5_4, 0, 0
+}
+texture BROVINE, 256, 128
+{
+    Patch WALL02_2, 0, 56
+    Patch WALL02_2, 0, 0
+    Patch WALL02_1, 88, 56
+    Patch WALL02_1, 88, 0
+    Patch WALL02_3, 64, 56
+    Patch WALL02_3, 64, 0
+    Patch WALL02_3, 152, 56
+    Patch WALL02_3, 152, 0
+    Patch WALL02_3, 232, 56
+    Patch WALL02_2, 176, 56
+    Patch WALL02_3, 232, 0
+    Patch WALL02_2, 176, 0
+    Patch W107_1, 0, 0
+}
+texture BROWNWEL, 256, 72
+{
+    Patch WALL03_4, 0, 0
+    Patch WALL03_3, 128, 0
+    Patch WALL03_4, 64, 0
+    Patch WALL03_4, 192, 0
+}
+texture CEMPOIS, 128, 128
+{
+    Patch WALL52_1, 0, 0
+    Patch PS20A0, 0, 28
+}
+texture COMPOHSO, 128, 128
+{
+    Patch WALL21_1, 64, 70
+    Patch WALL21_5, 0, 70
+    Patch WALL21_3, 0, 65534
+    Patch WALL21_1, 64, 65534
+}
+texture DOORHI, 64, 128
+{
+    Patch DOOR2_3, 0, 0
+    Patch DOOR2_3, 0, 32
+    Patch DOOR2_3, 0, 96
+    Patch DOOR2_3, 0, 64
+}
+texture GRAYDANG, 64, 128
+{
+    Patch W33_7, 0, 0
+    Patch W33_7, 0, 64
+    Patch PS15A0, 14, 74
+}
+texture ICKDOOR1, 64, 72
+{
+    Patch WALL69_4, 0, 9
+    Patch WALL70_3, 0, 0
+}
+texture ICKWALL6, 64, 128
+{
+    Patch WALL69_4, 0, 0
+    Patch WALL70_2, 4, 0
+    Patch W32_4, 0, 64
+}
+texture LITE96, 64, 128
+{
+    Patch WALL62_1, 65535, 0
+    Patch FLAMP, 4, 18
+    Patch FLAMP, 38, 18
+}
+texture LITEMET, 128, 128
+{
+    Patch WALL03_7, 0, 0
+    Patch WALL03_7, 64, 0
+    Patch WALL03_7, 0, 64
+    Patch WALL03_7, 64, 64
+    Patch FLAMP, 81, 34
+    Patch FLAMP, 19, 34
+}
+texture LITERED, 16, 128
+{
+    Patch W15_6, 65532, 56
+    Patch W15_6, 65532, 0
+}
+texture LITESTON, 64, 128
+{
+    Patch W28_5, 0, 0
+    Patch W28_8, 0, 64
+    Patch FLAMP, 7, 27
+    Patch FLAMP, 37, 27
+}
+texture MIDVINE1, 256, 128
+{
+    Patch W106_1, 0, 0
+}
+texture MIDVINE2, 256, 128
+{
+    Patch W107_1, 0, 0
+}
+texture NUKEPOI1, 64, 128
+{
+    Patch WALL04_3, 0, 0
+    Patch WALL04_4, 16, 0
+    Patch WALL04_5, 32, 0
+    Patch WALL04_2, 48, 0
+    Patch NUKEDGE, 0, 104
+    Patch WALL04_3, 0, 33
+    Patch WALL04_4, 16, 33
+    Patch WALL04_5, 32, 33
+    Patch WALL04_2, 48, 33
+    Patch PS20A0, 65535, 68
+}
+texture SHAWN11, 128, 128
+{
+    Patch W13_1, 64, 56
+    Patch W13_1, 0, 56
+    Patch CYL1_1, 0, 0
+    Patch WALL01_1, 118, 0
+    Patch WALL01_1, 117, 56
+}
+texture SKINBORD, 64, 128
+{
+    Patch HELL6_1, 0, 0
+    Patch HELL8_3, 32, 0
+}
+texture SKINTEK1, 256, 128
+{
+    Patch W109_1, 0, 0
+    Patch W109_2, 128, 0
+}
+texture SKINTEK2, 256, 128
+{
+    Patch W110_1, 0, 0
+}
+texture SKULWAL3, 128, 128
+{
+    Patch WALL76_1, 65524, 0
+    Patch WALL76_1, 116, 0
+}
+texture SKULWALL, 128, 128
+{
+    Patch WALL79_1, 65532, 0
+    Patch WALL79_1, 124, 0
+}
+texture SP_ROCK2, 128, 128
+{
+    Patch WALL63_2, 0, 0
+}
+texture STONGARG, 128, 128
+{
+    Patch W28_6, 64, 64
+    Patch W28_7, 64, 0
+    Patch W28_6, 0, 0
+    Patch W28_7, 0, 64
+    Patch SW2_3, 0, 79
+    Patch SW2_3, 64, 15
+}
+texture WOODSKUL, 64, 128
+{
+    Patch WALL40_1, 0, 0
+    Patch SW2_2, 24, 70
+}

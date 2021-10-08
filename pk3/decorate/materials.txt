@@ -47,15 +47,3 @@ ACTOR MonsterStart : MapSpot 9003
 {
   //$Sprite TROOA1
 }
-
-ACTOR PoChest : FloatingSkull 2200
-{
-  +USESPECIAL
-  Activation THINGSPEC_ThingActs | THINGSPEC_ClearSpecial
-  States {
-    Spawn:
-      CHST A -1
-    Opened:
-      CHST B -1 A_PlaySound("po/chest")
-  }
-}

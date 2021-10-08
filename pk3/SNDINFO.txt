@@ -7,3 +7,8 @@ po/stairs POSTAIRS
 po/punch POPUNCH
 po/encounter POENCOUN
 po/damage PODAMAG
+po/heal POHEAL
+po/deny PODENY
+po/inventory/up POINVUP
+po/inventory/down POINVDN
+po/inventory/bin POBIN

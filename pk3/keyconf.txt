@@ -1,0 +1,9 @@
+addkeysection "Phobian Odyssey" MrFriendly
+
+addmenukey "Quest List" questscreen
+alias questscreen "+user1; wait 1; -user1"
+defaultbind Q questscreen
+
+addmenukey "Open Inventory" invscreen
+alias invscreen "+user2; wait 1; -user2"
+defaultbind E invscreen

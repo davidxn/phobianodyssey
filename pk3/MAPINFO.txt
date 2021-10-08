@@ -1,11 +1,17 @@
+GameInfo {
+    AddEventHandlers = "FriendlyUIHandler"
+}
+
 clearepisodes
 
 DoomEdNums {
+    2200 = POChest
     2300 = FOE
     9004 = MonsterTurner
     9005 = FOESpot
     9006 = ExitSpot
     9007 = MapDescriber
+    9008 = EventSpot
 }
 
 episode MAP01 {
@@ -26,12 +32,27 @@ defaultmap
     NoIntermission
 }
 
-map MAP01 "Entry Point" {
+map MAP01 "Surface Cave" {
 	levelnum = 1
+    NoJump
+    NoCrouch
 }
 
-map MAP02 "Surface Base" {
+map MAP02 "Mysterious Base" {
 	levelnum = 2
+    NoJump
+    NoCrouch
+}
+
+map MAP03 "Undercaves" {
+	levelnum = 3
+    NoJump
+    NoCrouch
+}
+
+map ARENA1 "Cave Arenas" {
+    levelnum = 101
+    music = POFIGHT
 }
 
 map ARENA2 "Blue Base Arenas" {

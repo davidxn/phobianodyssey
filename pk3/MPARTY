@@ -1,5 +1,6 @@
-ZombieWeak,Wandering_Zombies,NONE,NONE,ZombieMan,ZombieMan,NONE,ZombieMan,NONE,ZombieMan,NONE,NONE
+ZombieWeak,Wandering_Zombies,NONE,NONE,ZombieMan,NONE,NONE,ZombieMan,NONE,NONE,NONE,NONE
 ZombieWeak2,Wandering_Zombies,NONE,ZombieMan,NONE,NONE,ZombieMan,NONE,NONE,NONE,ZombieMan,NONE
+ScientistHead1,Incomplete_Zombies,NONE,NONE,NONE,ZombieMan,NONE,ZombieMan,NONE,ZombieScientistHeadless,NONE,NONE
 ZombieSquad,Zombie_Squad,ZombieMan,NONE,NONE,ShotgunGuy,NONE,ZombieMan,ZombieMan,ZombieMan,NONE,ZombieMan
 ZombieDet,Zombie_Detachment,NONE,ZombieMan,ZombieMan,ShotgunGuy,NONE,ZombieMan,ZombieMan,NONE,NONE,NONE
 ZombieTroop,Zombie_Troop,ZombieMan,ShotgunGuy,ZombieMan,ShotgunGuy,ChaingunGuy,ZombieMan,ZombieMan,ZombieMan,ZombieMan,ZombieMan
@@ -7,11 +8,13 @@ ImpHorde,Imp_Horde,DoomImp,DoomImp,Devil,DoomImp,DoomImp,DoomImp,Devil,Devil,Doo
 ImpParty,Imp_Party,DoomImp,NONE,DoomImp,DoomImp,NONE,DoomImp,NONE,NONE,NONE,NONE
 ImpSquad,Imp_Squad,NONE,DoomImp,NONE,DoomImp,Devil,DoomImp,NONE,DoomImp,NONE,DoomImp
 ImpHunters,Imp_Hunters,NONE,DoomImp,NONE,NONE,DoomImp,NONE,Demon,NONE,Demon,NONE
-ImpHunters2,Imp_Hunters,NONE,NONE,DoomImp,NONE,Devil,Demon,NONE,NONE,NONE,NONE
+ImpHunters2,Imp_Hunters,NONE,NONE,DoomImp,NONE,Devil,Demon,NONE,Demon,NONE,NONE
 TwoArchviles,Archvile_Twins,NONE,Archvile,NONE,NONE,NONE,NONE,Archvile,NONE,NONE,NONE
 Scientists,Scientist_Squad,ZombieScientistPlasma,NONE,ZombieScientistPlasma,NONE,ZombieScientistHeadless,NONE,ZombieScientistPlasma,NONE,ZombieScientistHeadless,NONE
-ScientistWeak,,NONE,NONE,NONE,ZombieScientistPlasma,NONE,ZombieScientistPlasma,NONE,NONE,NONE,NONE
+ScientistWeak,Wandering_Scientists,NONE,NONE,NONE,ZombieScientistPlasma,NONE,ZombieScientistPlasma,NONE,NONE,NONE,NONE
 DevilTrio,Devil_Trio,Devil,NONE,NONE,NONE,Devil,NONE,NONE,Devil,NONE,NONE
 MixtureEasy,Satanic_Smorgasbord,ZombieMan,ZombieMan,ShotgunGuy,DoomImp,DoomImp,Devil,Demon,Demon,Spectre,ZombieMan
 FOEBarons,,NONE,BaronOfHell,NONE,BaronOfHell,NONE,BaronOfHell,NONE,BaronOfHell,NONE,NONE
-ScientistHeadless,,NONE,ZombieScientistHeadless,NONE,NONE,ZombieScientistHeadless,NONE,NONE,NONE,NONE,ZombieScientistHeadless
+ScientistHeadless,Headless_Horrors,NONE,ZombieScientistHeadless,NONE,NONE,ZombieScientistHeadless,NONE,NONE,NONE,NONE,ZombieScientistHeadless
+SciImps1,Science_Alliance,NONE,ZombieScientistPlasma,NONE,ZombieScientistHeadless,NONE,Devil,NONE,DoomImp,NONE,NONE
+SciImps2,Projectile_Partnership,ZombieScientistPlasma,NONE,ZombieScientistPlasma,NONE,DoomImp,NONE,DoomImp,NONE,NONE,NONE
