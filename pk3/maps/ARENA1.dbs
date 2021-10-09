@@ -5,17 +5,17 @@ strictpatches = 0;
 maps
 {
 	
-	MAP01
+	ARENA2
 	{
 		
 		resources
 		{
 		}
-		defaultfloortexture = "0SANDB02";
-		defaultceiltexture = "0ROCKR01";
-		defaulttoptexture = "STARBR2";
-		defaultwalltexture = "STARBR2";
-		defaultbottomtexture = "STARBR2";
+		defaultfloortexture = "FLAT14";
+		defaultceiltexture = "CEIL5_1";
+		defaulttoptexture = "GRAY7";
+		defaultwalltexture = "GRAY7";
+		defaultbottomtexture = "GRAY7";
 		custombrightness = 196;
 		customfloorheight = 0;
 		customceilheight = 128;
@@ -28,20 +28,20 @@ maps
 		overrideceilheight = false;
 		overridebrightness = false;
 		uselongtexturenames = false;
-		viewpositionx = 2270.92f;
-		viewpositiony = 1255.721f;
-		viewscale = 1.652958f;
+		viewpositionx = 473.1339f;
+		viewpositiony = 1629.803f;
+		viewscale = 0.7744997f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid
 		{
-			background = "E:\\DoomWork\\rpggrid.png";
-			backsource = 2;
-			backoffsetx = -320;
-			backoffsety = -320;
-			backscalex = 200;
-			backscaley = 200;
-			gridsize = 16;
+			background = "";
+			backsource = 0;
+			backoffsetx = 0;
+			backoffsety = 0;
+			backscalex = 100;
+			backscaley = 100;
+			gridsize = 8;
 			gridrotate = 0;
 			gridoriginx = 0;
 			gridoriginy = 0;
@@ -83,24 +83,9 @@ maps
 				offsetx_mid = 1;
 				offsety_mid = 1;
 				offsetx_top = 1;
-				offsety_top = 1;
 				offsetx_bottom = 1;
+				offsety_top = 1;
 				offsety_bottom = 1;
-			}
-			
-			sector
-			{
-				xpanningceiling = 1;
-				ypanningceiling = 1;
-				rotationceiling = 1;
-				xscaleceiling = 1;
-				yscaleceiling = 1;
-				xpanningfloor = 1;
-				ypanningfloor = 1;
-				rotationfloor = 1;
-				xscalefloor = 1;
-				yscalefloor = 1;
-				fadecolor = 0;
 			}
 		}
 		
@@ -123,7 +108,6 @@ maps
 				resource;
 				tabtype = 0;
 				scripttype = 1;
-				caretposition = 22;
 				activetab = true;
 			}
 		}

@@ -31,9 +31,6 @@ script "enter" ENTER {
     ScriptCall("DataLibrary", "PrintInv");
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
     if (mapType == 1) {
-        ScriptCall("DataLibrary", "InventoryAdd", "MFIMegasphere", "-1");
-        ScriptCall("DataLibrary", "InventoryAdd", "MFIMedikit", "-1");
-        ScriptCall("DataLibrary", "InventoryAdd", "MFIRadsuit", "-1");
         SetPlayerProperty(1, 1, PROP_FROZEN);
         ClearInventory();
         
@@ -77,6 +74,7 @@ script "listenInventory" ENTER {
         if (buttons & BT_USER2 || !oldButtons & BT_USER2) {
             showingInventory = ScriptCall("DataLibrary", "ReadInt", "showInvScreen");
             showingInventory = !showingInventory;
+            PlaySound(0, "po/inventory/open", CHAN_AUTO);
             ScriptCall("DataLibrary", "WriteData", "showInvScreen", StrParam(d:showingInventory));
             delay(2);
         }
@@ -117,7 +115,6 @@ script "rpgMovement" (void) {
 			int step_x = 0.0; int step_y = 0.0;
 			int currentAngle = quantizeAngle(GetActorAngle(0));
             int oldSquareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
-			Log(s:"Quantized angle to ", f:currentAngle);
 			targetAngle = currentAngle;
 			int angleAdjustment = 0.0;
 			if (buttons & BT_BACK) { angleAdjustment = 0.5; }
@@ -127,7 +124,6 @@ script "rpgMovement" (void) {
 			targetAngle += angleAdjustment;
 			if (targetAngle >= 1.0) targetAngle -= 1.0;
 			if (targetAngle < 0.0) targetAngle += 1.0;
-			Log(s:"Angle ", f:currentAngle, s:" translated -> ", f:targetAngle);
 
 			//Now work out the X and Y components from our angle
 			switch (targetAngle) {
@@ -178,7 +174,9 @@ script "rpgMovement" (void) {
 
 			//What's our new square?
 			int squareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
-			Log(s:"New square is: ", d:squareNum);
+            
+            //Move turn-based things in the level forward a step here
+            
             
             //As a result of this move, are we on a damaging floor?
             if (ScriptCall("LevelHelper", "IsOnDamagingFloor")) {
@@ -214,7 +212,6 @@ script "rpgMovement" (void) {
 
 			//Now add the new square's danger value to the existing one
 			int dangerValue = ScriptCall("DataLibrary", "ReadDangerValue", levelNum, squareNum);
-			Log(s:"Danger value: ", d:dangerValue);
 
 			dangerValue = Random(max(0, dangerValue-5), dangerValue);
 
@@ -229,7 +226,6 @@ script "rpgMovement" (void) {
 			//Now move FOEs and start an encounter if one overlaps the player
 			foeHit = ScriptCall("FOEHelper", "moveFOEs");
 			if (foeHit > 0) {
-				Log(s:"FOE hit! ", d:foeHit);
                 PlaySound(0, "po/foe/attack", CHAN_AUTO);
 				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle, foeHit);
 				terminate; //Terminate here, as going back to this level will retrigger the script
@@ -250,8 +246,6 @@ script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) 
 	} else {
 		monsterParty = ScriptCall("DataLibrary", "ChooseMonsterParty", levelNum, squareNum);
 	}
-    
-    Log(s:"Retrieved monster party key: ", s:monsterParty);
 
 	ScriptCall("DataLibrary", "WriteData", "FieldSquare", StrParam(d:squareNum));
 	ScriptCall("DataLibrary", "WriteData", "FieldAngle", StrParam(d:currentAngle));
@@ -343,7 +337,7 @@ script "setupArena" (void) {
 		delay(35);
 	}
 
-	Log(s:"OK");
+	PlaySound(0, "po/victory", CHAN_AUTO);
 	delay(35);
 
 	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
@@ -373,7 +367,6 @@ function int getSquareFromPosition(int x, int y) {
 
 function void getPositionFromSquare(int squareNum) {
 	squareNum -= 10000;
-	Log(i:squareNum);
 	registerX = ((squareNum % 100) * TILE_SIZE) << 16;
 	squareNum /= 100;
 	registerY = ((squareNum % 100) * TILE_SIZE) << 16;

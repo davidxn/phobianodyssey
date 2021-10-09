@@ -11,7 +11,6 @@ class LevelHelper : Thinker
 
     static bool IsPointInLevel(Actor activator, int x, int y, int z)
     {
-        console.printf("Checking target point: %f %f %f", x >> 16, y >> 16, z >> 16);
         Vector3 a = (x >> 16, y >> 16, z >> 16);
         bool isPoint = level.IsPointInLevel(a);
         return(isPoint);

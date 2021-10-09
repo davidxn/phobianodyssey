@@ -12,6 +12,7 @@ DoomEdNums {
     9006 = ExitSpot
     9007 = MapDescriber
     9008 = EventSpot
+    2301 = FireballTrap
 }
 
 episode MAP01 {

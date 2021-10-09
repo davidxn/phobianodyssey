@@ -6,6 +6,7 @@ class DataLibrary : Thinker
     Dictionary monsterPops;
     Array<MFInventoryItem> MFinventory;
     int inventorySize;
+    POChest chestToOpen;
     
     //Quick, make this a static thinker when we initialize
     DataLibrary Init(void)
@@ -112,6 +113,15 @@ class DataLibrary : Thinker
         return false;
     }
     
+    static clearscope bool InventoryIsFull() {
+        for (int i = 0; i < DataLibrary.GetInstance().inventorySize; i++) {
+            if (DataLibrary.GetInstance().MFinventory[i].getClassName() == "MFIEmpty") {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     static void PrintInv() {
         for (int i = 0; i < DataLibrary.inst().inventorySize; i++) {
             MFInventoryItem x = DataLibrary.inst().MFinventory[i];
@@ -191,7 +201,6 @@ class DataLibrary : Thinker
     {
         String key = "DN-" .. mapnum .. "-" .. square;
         int value = DataLibrary.inst().dic.At(key).ToInt();
-        console.printf("%s %d", key, value);
         return value;
     }
     
@@ -204,5 +213,19 @@ class DataLibrary : Thinker
             return m.args[0];
         }
         return 0;
+    }
+    
+    static void setChestToOpen(POChest chest) {
+        DataLibrary.GetInstance().chestToOpen = chest;
+    }
+    
+    static clearscope POChest getChestToOpen() {
+        return DataLibrary.GetInstance().chestToOpen;
+    }
+    
+    static void startConversation(String convId) {
+        DataLibrary.WriteData(null, "eventDialogPage", "1");
+        DataLibrary.WriteData(null, "eventDialogConversation", convId);
+        DataLibrary.WriteData(null, "showEventDialog", "1");
     }
 }

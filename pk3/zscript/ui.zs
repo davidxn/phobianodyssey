@@ -111,7 +111,8 @@ class FriendlyUIHandler : EventHandler
 	play bool shouldClearUIGrabbedItem;
 	ui bool hoveringDropButton;
     
-    ui double dialogTransparency;
+    ui double dialogOpacity;
+    ui double textPercentDisplayed;
 
 	// inventory stacks
 	const INV_STACK_BUTTON_START_X = 0.095;
@@ -135,19 +136,39 @@ class FriendlyUIHandler : EventHandler
 	
     ui void DrawDialog()
     {
-        if (dialogTransparency < 1.0) dialogTransparency += 0.01;
-        ScreenDrawTexture(dialogBackFrame, 0.5, 0.75, alpha: dialogTransparency, centerX: true, centerY: true);
+        if (DataLibrary.GetInstance().dic.At("shouldHideDialog").ToInt() == 1) { dialogOpacity = 0; DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "0"); }
+        if (DataLibrary.GetInstance().dic.At("shouldEraseText").ToInt() == 1) { textPercentDisplayed = 0; DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0"); }
         
-        if (dialogTransparency < 1.0) {
+        if (dialogOpacity < 1.0) dialogOpacity += 0.01;
+        ScreenDrawTexture(dialogBackFrame, 0.5, 0.75, alpha: dialogOpacity, centerX: true, centerY: true);
+        
+        if (dialogOpacity < 1.0) {
             return;
         }
         
-        int eventDialogPage = DataLibrary.GetInstance().dic.At("eventDialogPage").ToInt();
         String eventDialogConversation = DataLibrary.GetInstance().dic.At("eventDialogConversation");
-        String dialogKey = "$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage;
-        String s = StringTable.Localize(dialogKey);
-        ScreenDrawString(s, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7);
+        int eventDialogPage = DataLibrary.GetInstance().dic.At("eventDialogPage").ToInt();
+        String s = StringTable.Localize("$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage);
         
+        if (s.IndexOf("$chestitem$") > 0) {
+            POChest chest = DataLibrary.GetInstance().chestToOpen;
+            if (!chest.containedItem) {
+                //No item - check for coins or ammo instead
+                if (chest.containedCoins) {
+                    s.Substitute("$chestitem$", (chest.containedCoins .. " coins"));
+                }
+                if (chest.containedAmmo) {
+                    s.Substitute("$chestitem$", (chest.containedAmmo .. " ammo"));
+                }
+            } else {
+                ScreenDrawTextureWithinArea(chest.containedItem.getTexture(), 0.5, 0.2, 0.3, 0.3, centerX:true);
+                s.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
+            }
+        }
+        
+        s = s.Left((int)(s.Length() * textPercentDisplayed));
+        ScreenDrawString(s, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7);
+        if (textPercentDisplayed < 1.0) textPercentDisplayed += 0.005;
         DrawMouseCursor();
         return;
     }
@@ -305,11 +326,13 @@ class FriendlyUIHandler : EventHandler
         }
         else if ( e.Name == "ClickedPastDialog" ) {
             //Advance the conversation
-            int eventDialogPage = DataLibrary.GetInstance().dic.At("eventDialogPage").ToInt() + 1;
+            int eventDialogPage = DataLibrary.ReadInt("eventDialogPage") + 1;
             String eventDialogConversation = DataLibrary.GetInstance().dic.At("eventDialogConversation");
             String dialogKey = "$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage;
             String theString = StringTable.Localize(dialogKey);
+            DataLibrary.GetInstance().dic.Insert("shouldEraseText", "1");
             if (theString == "STOP") {
+                DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "1");
                 DataLibrary.WriteData(NULL, "showEventDialog", "0");
                 DataLibrary.WriteData(NULL, "eventDialogPage", "");
                 DataLibrary.WriteData(NULL, "eventDialogConversation", "");
@@ -417,7 +440,8 @@ class FriendlyUIHandler : EventHandler
                 return true;   
             }
             // process keyup events else inputs active when screen invoked bleed & stay on
-            else if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
+            
+            if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
             return true;
         }
         
@@ -440,7 +464,7 @@ class FriendlyUIHandler : EventHandler
         if ( DataLibrary.GetInstance().dic.At("showEventDialog") == "1" ) {
             DrawDialog();
         } else {
-            dialogTransparency = 0;
+            dialogOpacity = 0;
         }
 	}
     

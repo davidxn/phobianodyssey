@@ -12,3 +12,5 @@ po/deny PODENY
 po/inventory/up POINVUP
 po/inventory/down POINVDN
 po/inventory/bin POBIN
+po/victory POVICTOR
+po/inventory/open POPACK
