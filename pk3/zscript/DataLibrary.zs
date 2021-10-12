@@ -5,6 +5,7 @@ class DataLibrary : Thinker
     Dictionary monsterParties;
     Dictionary monsterPops;
     Array<MFInventoryItem> MFinventory;
+    Array<POWeaponSlot> weaponSlots;
     int inventorySize;
     POChest chestToOpen;
     
@@ -16,10 +17,22 @@ class DataLibrary : Thinker
         monsterParties = Dictionary.Create();
         monsterPops = Dictionary.Create();
         inventorySize = 4;
+        
         //Set up inventory slots
         for (int i = 0; i < inventorySize; i++) {
             MFInventoryItem newItem = MFInventoryItem(new("MFIEmpty")).Init();
             MFinventory.Push(newItem);
+        }
+        
+        //Set up weapon slots
+        weaponSlots.push(new("POWeaponSlotFist").Init());
+        for (int i = 0; i < 4; i++) {
+            POWeaponSlot w = POWeaponSlot(new("POWeaponSlotEmpty").Init());
+            weaponSlots.push(w);
+        }
+        
+        for (int i = 0; i < 5; i++) {
+            console.printf("%s", weaponSlots[i].myTexture());
         }
         
         int lumpindex = Wads.FindLump('MPARTY', 0, 0);
@@ -148,6 +161,39 @@ class DataLibrary : Thinker
         return inventoryItem;
     }
     
+    static clearscope POWeaponSlot getWeaponSlot(int i) {
+        return DataLibrary.GetInstance().weaponSlots[i];
+    }
+    
+    static clearscope int getNextFreeWeaponSlot() {
+        for (int i = 0; i < 5; i++) {
+            POWeaponSlot s = DataLibrary.GetInstance().WeaponSlots[i];
+            if (s.getClassName() == "POWeaponSlotEmpty") {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    static void setWeaponSlot(int i, POWeaponSlot s) {
+        DataLibrary.inst().weaponSlots[i] = s;
+    }
+    
+    static void AddWeapon(String type, String element) {
+        int i = DataLibrary.inst().getNextFreeWeaponSlot();
+        if (i == -1) {
+            //No free slots!
+            return;
+        }
+        type = "PoWeaponSlot" .. type;
+        POWeaponSlot s = POWeaponSlot(new(type)).Init();
+        if (!s) {
+            console.printf("Bad weapon type: %s", type);
+        }
+        s.weaponElement = (element != "") ? element : "None";
+        DataLibrary.inst().setWeaponSlot(i, s);
+    }
+    
     static void InventoryExpand(int slots) {
         if (slots < DataLibrary.GetInstance().MFinventory.Size()) {
             return;
@@ -201,6 +247,7 @@ class DataLibrary : Thinker
     {
         String key = "DN-" .. mapnum .. "-" .. square;
         int value = DataLibrary.inst().dic.At(key).ToInt();
+        console.printf("%s = %d", key, value);
         return value;
     }
     

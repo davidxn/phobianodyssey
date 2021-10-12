@@ -15,7 +15,7 @@ StatusBar normal, forcescaled
 
 
 	//Current Ammo
-	DrawNumber 3, HUDFONT_DOOM, Untranslated, Ammo1, alignment(center), 261, 180;
+	DrawNumber 3, HUDFONT_DOOM, Untranslated, Ammo1, alignment(center), 271, 180;
 	    
     //Ammo
     DrawBar "STAMB", "STAME", ammo(Clip), horizontal, interpolate(8), 296, 168;
@@ -27,17 +27,12 @@ StatusBar normal, forcescaled
 	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Shell), alignment(center), 312, 177;
 	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(RocketAmmo), alignment(center), 312, 185;
 	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Cell), alignment(center), 312, 193;
+    
+    //Coins
+    drawnumber 6, INDEXFONT_DOOM, untranslated, POCoin, alignment(right), interpolate(4), 288, 170;
 
-	//Arms Numbers
-    DrawSwitchableImage Shotgun, "frame", "STWP2", 287, 169;
-    DrawSwitchableImage SuperShotgun, "frame", "STWP3", 287, 169;
-    DrawSwitchableImage WeaponSlot 4, "frame", "STWP4", 287, 169;
-    DrawSwitchableImage WeaponSlot 5, "frame", "STWP5", 287, 169;
-    DrawSwitchableImage WeaponSlot 6, "frame", "STWP6", 287, 169;
-    DrawSwitchableImage WeaponSlot 7, "frame", "STWP7", 287, 169;
-
-	//Level Tallies
-    DrawBar "DNfull", "DNempty", PoDanger, vertical, interpolate(8), 340, 168;	
+	//Danger level
+    DrawBar "DNfull", "DNempty", PoDanger, vertical, interpolate(8), 340, 168;
    
 	//Keys
 	DrawSwitchableImage KeySlot 2 && 5, "", "STKEYS0", "STKEYS3", "STKEYS6", 245, 169;

@@ -1,4 +1,0 @@
-ACTOR PoImp : DoomImp REPLACES DoomImp
-{
-  DropItem "PoMaterialHorn", 255
-}

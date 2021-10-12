@@ -1,0 +1,219 @@
+class POFist : Fist replaces Fist {
+    Default {
+      Weapon.SelectionOrder 3700;
+      Weapon.Kickback 100;
+      Weapon.SlotNumber 1;
+      Obituary "$OB_MPFIST";
+      Tag "$TAG_FIST";
+      +WEAPON.WIMPY_WEAPON;
+      +WEAPON.MELEEWEAPON;
+      -INVENTORY.UNDROPPABLE;
+    }
+    
+      States
+      {
+      Ready:
+        PUNG A 1 A_WeaponReady;
+        Loop;
+      Deselect:
+        PUNG A 1 A_Lower(12);
+        Loop;
+      Select:
+        PUNG A 1 A_Raise(12);
+        Loop;
+      Fire:
+        PUNG B 2;
+        PUNG C 2 A_Punch;
+        PUNG D 5;
+        PUNG C 5;
+        PUNG B 4 A_ReFire;
+        Goto Ready;
+      }
+}
+
+class POWeapon : Weapon {
+    
+    String myWeaponType;
+    String myElement;
+    property WeaponType : myWeaponType;
+    property Element : myElement;
+    Default {
+        Weapon.AmmoGive 0;
+        POWeapon.WeaponType "Pistol";
+        POWeapon.Element "None";
+        Weapon.SlotNumber 2;
+        
+        Weapon.SelectionOrder 1900;
+		Weapon.AmmoUse 1;
+		Weapon.AmmoType "Clip";
+		Obituary "$OB_MPPISTOL";
+		+WEAPON.WIMPY_WEAPON;
+		Inventory.Pickupmessage "$PICKUP_PISTOL_DROPPED";
+		Tag "$TAG_PISTOL";
+    }
+    
+    States
+	{
+	Ready:
+        PISG A 0 { invoker.changeWeaponType(invoker.myWeaponType, invoker.myElement); }
+		PISG A 0 A_JumpIf(invoker.myWeaponType == "Pistol", "ReadyPistol");
+        PISG A 0 A_JumpIf(invoker.myWeaponType == "Shotgun", "ReadyShotgun");
+        PISG A 0 A_JumpIf(invoker.myWeaponType == "Chaingun", "ReadyChaingun");
+        PISG A 0 A_JumpIf(invoker.myWeaponType == "RocketLauncher", "ReadyRocketLauncher");
+        PISG A 0 A_JumpIf(invoker.myWeaponType == "PlasmaRifle", "ReadyPlasmaRifle");
+	Deselect:
+        #### A 1 A_Lower(12);
+        Loop;
+    Select:
+		PISG A 0 A_JumpIf(invoker.myWeaponType == "Pistol", "SelectPistol");
+		PISG A 0 A_JumpIf(invoker.myWeaponType == "Shotgun", "SelectShotgun");
+        PISG A 0 A_JumpIf(invoker.myWeaponType == "Chaingun", "SelectChaingun");
+        PISG A 0 A_JumpIf(invoker.myWeaponType == "RocketLauncher", "SelectRocketLauncher");
+        PISG A 0 A_JumpIf(invoker.myWeaponType == "PlasmaRifle", "SelectPlasmaRifle");
+        Stop;
+	Fire:
+        #### A 0 A_JumpIf(invoker.myWeaponType == "Pistol", "FirePistol");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "Shotgun", "FireShotgun");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "Chaingun", "FireChaingun");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "RocketLauncher", "FireRocketLauncher");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "PlasmaRifle", "FirePlasmaRifle");
+	Flash:
+        #### A 0 A_JumpIf(invoker.myWeaponType == "Pistol", "FlashPistol");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "Shotgun", "FlashShotgun");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "Chaingun", "FlashChaingun");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "RocketLauncher", "FlashRocketLauncher");
+        #### A 0 A_JumpIf(invoker.myWeaponType == "PlasmaRifle", "FlashPlasmaRifle");
+    Spawn:
+        TNT1 A 1;
+		PIST A -1;
+		Stop;
+
+    // Pistol!
+    ReadyPistol:
+		PISG A 1 A_WeaponReady;
+		Loop;
+	SelectPistol:
+		PISG A 1 A_Raise(12);
+		Loop;
+	FirePistol:
+		PISG A 4;
+		PISG B 6 A_FirePistol;
+		PISG C 4;
+		PISG B 5 A_ReFire;
+		Goto ReadyPistol;
+	FlashPistol:
+		PISF A 7 Bright A_Light1;
+		Goto LightDone;
+    
+    // Shotgun!
+    ReadyShotgun:
+        SHTG A 1 A_WeaponReady;
+        Loop;
+    SelectShotgun:
+        SHTG A 1 A_Raise(12);
+        Loop;
+    FireShotgun:
+        SHTG A 3 {console.printf("%s", invoker.AmmoType1.getClassName()); }
+        SHTG A 7 A_FireShotgun;
+        SHTG BC 5;
+        SHTG D 4;
+        SHTG CB 5;
+        SHTG A 3;
+        SHTG A 7 A_ReFire;
+        Goto ReadyShotgun;
+    FlashShotgun:
+        SHTF A 4 Bright A_Light1;
+        SHTF B 3 Bright A_Light2;
+        Goto LightDone;
+
+    //Chaingun!
+    ReadyChaingun:
+        CHGG A 1 A_WeaponReady;
+        Loop;
+    SelectChaingun:
+        CHGG A 1 A_Raise(12);
+        Loop;
+    FireChaingun:
+        CHGG AB 4 A_FireCGun;
+        CHGG B 0 A_ReFire;
+        Goto ReadyChaingun;
+    FlashChaingun:
+        CHGF A 5 Bright A_Light1;
+        Goto LightDone;
+        CHGF B 5 Bright A_Light1;
+        Goto LightDone;
+
+    ReadyRocketLauncher:
+        MISG A 1 A_WeaponReady;
+        Loop;
+    SelectRocketLauncher:
+        MISG A 1 A_Raise(12);
+        Loop;
+    FireRocketLauncher:
+        MISG B 8 A_GunFlash;
+        MISG B 12 A_FireMissile;
+        MISG B 0 A_ReFire;
+        Goto ReadyRocketLauncher;
+    FlashRocketLauncher:
+        MISF A 3 Bright A_Light1;
+        MISF B 4 Bright;
+        MISF CD 4 Bright A_Light2;
+        Goto LightDone;
+
+    //Plasma!
+    ReadyPlasmaRifle:
+        PLSG A 1 A_WeaponReady;
+        Loop;
+    SelectPlasmaRifle:
+        PLSG A 1 A_Raise(12);
+        Loop;
+    FirePlasmaRifle:
+        PLSG A 3 A_FirePlasma;
+        PLSG B 20 A_ReFire;
+        Goto ReadyPlasmaRifle;
+    FlashPlasmaRifle:
+        PLSF A 4 Bright A_Light1;
+        Goto LightDone;
+        PLSF B 4 Bright A_Light1;
+        Goto LightDone;
+
+	}
+    
+    void changeWeaponType(String type, String element) {
+        self.myWeaponType = type;
+        if (type == "Pistol" || type == "Chaingun") {
+            self.AmmoType1 = "Clip";
+        }
+        if (type == "Shotgun") {
+            self.AmmoType1 = "Shell";
+        }
+        if (type == "RocketLauncher") {
+            self.AmmoType1 = "RocketAmmo";
+        }
+        if (type == "PlasmaRifle") {
+            self.AmmoType1 = "Cell";
+        }
+    }
+}
+
+//The weapon slots all inherit from the unified weapon
+class POWeapon2 : POWeapon {
+    Default {
+        Weapon.SlotNumber 2;
+    }
+}
+class POWeapon3 : POWeapon {
+    Default {
+        Weapon.SlotNumber 3;
+    }
+}
+class POWeapon4 : POWeapon {
+    Default {
+        Weapon.SlotNumber 4;
+    }
+}
+class POWeapon5 : POWeapon {
+    Default {
+        Weapon.SlotNumber 5;
+    }
+}

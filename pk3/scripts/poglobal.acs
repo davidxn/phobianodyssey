@@ -18,6 +18,15 @@ int registerZ = 0;
 int showingInventory = 0;
 int levelNum;
 
+//Cheats/debug
+script "poarsenal" (int type, int element) {
+    str weapons[5] = {"Pistol", "Shotgun", "Chaingun", "RocketLauncher", "PlasmaRifle"};
+    str typestring = weapons[type];
+    str elements[5] = {"None", "Fire", "Ice", "Lightning", "Poison"};
+    str elementstring = elements[element];
+    ScriptCall("DataLibrary", "AddWeapon", typestring, elementstring);
+}
+
 script "return" RETURN {
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
     HudMessageBold(s:""; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, 0, 0, 0, 0);
@@ -31,9 +40,11 @@ script "enter" ENTER {
     ScriptCall("DataLibrary", "PrintInv");
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
     if (mapType == 1) {
+        SetMusic("POSILENT");
         SetPlayerProperty(1, 1, PROP_FROZEN);
-        ClearInventory();
-        
+        ScriptCall("LevelHelper", "StashWeapons");
+        TakeInventory("PoDanger", CheckInventory("PoDanger"));
+
         ScriptCall("DataLibrary", "WriteData", "FieldMap", StrParam(d:levelNum));
         //If we're coming back from a FOE fight, destroy the FOE we marked
         Log(s:"Destroying FOE if present...");
@@ -48,13 +59,9 @@ script "enter" ENTER {
             Log(s:"Got angle to start at: ", d:angleToSet);
             SetActorAngle(0, angleToSet);
         }
-        SetMusic("POEXPLR");
 
         //OK, now fade in and start listening for movement!
-
         FadeTo(0.0, 0.0, 0.0, 0.0, 1.0);
-        delay(15);
-
         ACS_NamedExecuteAlways("rpgMovement", 0);
     } else if (mapType == 2) {
         ACS_NamedExecuteAlways("setupArena", 0);
@@ -83,6 +90,9 @@ script "listenInventory" ENTER {
 }
 
 script "rpgMovement" (void) {
+
+    delay(15);
+    SetMusic("POEXPLR");
 
 	int i;
 	while (true) {
@@ -176,7 +186,7 @@ script "rpgMovement" (void) {
 			int squareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
             
             //Move turn-based things in the level forward a step here
-            
+            ScriptCall("LevelHelper", "AdvanceTurnBasedTraps");
             
             //As a result of this move, are we on a damaging floor?
             if (ScriptCall("LevelHelper", "IsOnDamagingFloor")) {
@@ -257,7 +267,6 @@ script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) 
 	Delay(5);
 	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
 	delay(35);
-	TakeInventory("PoDanger", CheckInventory("PoDanger"));
 
 	int arenaMapNum = ScriptCall("DataLibrary", "ReadInt", "ArenaMap");
 
@@ -304,8 +313,7 @@ script "setupArena" (void) {
 	int numberOfStarts = ThingCountName("BattleStart", 0);
 	int arenaTid = 100 * (Random(0, numberOfStarts - 1) + 1);
 
-	GiveInventory("Pistol", 1);
-	GiveInventory("Clip", 50);
+    ScriptCall("LevelHelper", "PrepareWeapons");
 
 	int battleStartTid = arenaTid + 1;
 
@@ -337,8 +345,9 @@ script "setupArena" (void) {
 		delay(35);
 	}
 
-	PlaySound(0, "po/victory", CHAN_AUTO);
-	delay(35);
+	ACS_NamedExecute("displayClearText", 0);
+    TakeInventory("PoDanger", CheckInventory("PoDanger"));
+	delay(35 * 4);
 
 	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
 	int vol = 1.0;
@@ -347,12 +356,24 @@ script "setupArena" (void) {
 		SetMusicVolume(vol);
 		delay(1);
 	}
+    ScriptCall("LevelHelper", "CleanupArena");
 	Thing_Remove(999);
+    SetPlayerProperty(1, 1, PROP_FROZEN);
+    ScriptCall("LevelHelper", "StopActor");
+    delay(1);
 
 	//Return to previous map
 	int mapToReturn = ScriptCall("DataLibrary", "ReadInt", "FieldMap");
 	Log(s:"Returning to: ", i:mapToReturn);
 	Teleport_NewMap(mapToReturn, 0, 0);
+}
+
+script "displayClearText" (void) {
+	SetHudSize(800, 600, false);
+	PlaySound(0, "po/victory", CHAN_AUTO);
+	SetFont("HXT_CLR"); HudMessageBold(s:"A"; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 10.0);
+	delay(3);
+	SetFont("TXT_CLR"); HudMessageBold(s:"A"; HUDMSG_FADEOUT, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 3.0, 0.5); 
 }
 
 

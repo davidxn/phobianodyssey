@@ -1,110 +1,33 @@
-class MFInventoryItem : Thinker abstract {
-
-    virtual clearscope String myTexture() { return "SOULA0"; }
-    virtual clearscope String myName() { return ""; }
-    virtual virtualscope bool use() { return true; }
-
-    MFInventoryItem Init(void) {
-        ChangeStatNum(STAT_STATIC);
-        return self;
-    }
-    
-    clearscope String getName() { return myName(); }
-    
-    clearscope TextureID getTexture() {
-        return TexMan.CheckForTexture(myTexture(), TexMan.Type_Sprite);
-    }
-    
-}
-
-class MFIMegasphere : MFInventoryItem {
-    override String myTexture() { return "MEGAA0"; }
-    override String myName() { return "Megasphere!"; }
-    override bool use() {
-        console.printf("Used a megasphere");
-        return true;
-    }
-}
-
-class MFIRadsuit : MFInventoryItem {
-    override String myTexture() { return "SUITA0"; }
-    override String myName() { return "Radiation suit"; }
-    override bool use() {
-        console.printf("Used a radiation suit");
-        return true;
-    }
-}
-
-class MFIMedikit : MFInventoryItem {
-    override String myTexture() { return "MEDIA0"; }
-    override String myName() { return "Medikit"; }
-    override bool use() {
-        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
-        if (p.Health >= 100) {
-            return false;
-        }
-        p.Health = min(p.Health + 25, 100);
-        p.A_PlaySound("po/heal");
-        console.printf("Used a medikit on %s", p.getClassName());
-        return true;
-    }
-}
-
-class MFIEmpty : MFInventoryItem {
-    override String myTexture() { return ""; }
-    override String myName() { return ""; }
-}
-
 class FriendlyUIHandler : EventHandler
 {
 	const UI_WIDTH = 400;
 	const UI_HEIGHT = 300;
 	const UI_SHADE_ALPHA = 0.5;
+
 	// % vertical space between lines of dialogFont
 	const DIALOG_VSPACE = 0.05;
-	// read numbers from a text file every frame and update liveValue# variables
-	const LIVE_TUNE_ENABLED = 0;
-	// ReadLump assumes a max 8-character filename, *including* extension >:[
-	const LIVE_TUNE_LUMP_NAME = "tuning";
-	// # of ticks to display messages queued from ACS etc
-	const QUEUED_MESSAGE_DURATION = 90;
-	const QUEUED_MESSAGE_START_FADE = 35;
+
 	// mouse movement will be multiplied by this
 	const MOUSE_SENSITIVITY_FACTOR_X = 0.6;
     const MOUSE_SENSITIVITY_FACTOR_Y = 1.5;
 	
 	ui bool initialized;
+    
 	// drawing
-	ui transient Font titleFont;
-	ui transient Font dialogFont;
 	ui transient Font tinyFont;
 	ui transient Font journalFont;
 	ui TextureID blackGradTex;
-	ui TextureID uiBGFrame;
-	ui TextureID dialogBG;
-	ui TextureID questBGFrame;
 	ui TextureID invBGFrame;
     ui TextureID invBGClosedFrame;
 	ui TextureID invItemBG;
 	ui TextureID invHilight;
-	ui TextureID invHoldIcon;
-	ui TextureID invDropIcon;
-	ui TextureID invButtonHilight;
-	ui TextureID invCancelHilight;
-	ui TextureID questIconTex;
-	ui TextureID boxTex, boxCheckTex;
-	ui TextureID bubbleTex;
-	ui TextureID crosshairTex;
-	ui TextureID samplerNoTex;
-	ui TextureID sampGridTex;
 	ui TextureID mouseMiniCursorTex;
-	ui TextureID flash1Tex;
     ui TextureID dialogBackFrame;
-	// input handling
+	
+    // input handling
 	ui Vector2 mouseCursorPos;
-	// quest screen
-	ui int questScreenPage;
-	// inventory screen
+	
+    // inventory screen
 	ui int hoveredInvStack;
 	ui MFInventoryItem uiGrabbedItem;
 	play MFInventoryItem newGrabbedItem;
@@ -114,7 +37,7 @@ class FriendlyUIHandler : EventHandler
     ui double dialogOpacity;
     ui double textPercentDisplayed;
 
-	// inventory stacks
+	// inventory boxes
 	const INV_STACK_BUTTON_START_X = 0.095;
 	const INV_STACK_BUTTON_START_Y = 0.72;
 	const INV_STACK_BUTTON_WIDTH = 0.08;
@@ -123,16 +46,17 @@ class FriendlyUIHandler : EventHandler
 	const INV_STACK_BUTTON_MARGIN_INNERPCT = 0.25;
 	const INV_STACK_BUTTON_ROWS = 4;
 	const INV_STACK_BUTTON_COLUMNS = 4;
-	// inventory area
-	const INV_STACK_AREA_MIN_X = INV_STACK_BUTTON_START_X;
-	const INV_STACK_AREA_MAX_X = INV_STACK_AREA_MIN_X + (INV_STACK_BUTTON_WIDTH + INV_STACK_BUTTON_MARGIN) * INV_STACK_BUTTON_COLUMNS;
-	const INV_STACK_AREA_MIN_Y = INV_STACK_BUTTON_START_Y;
-	const INV_STACK_AREA_MAX_Y = INV_STACK_AREA_MIN_Y + (INV_STACK_BUTTON_HEIGHT + INV_STACK_BUTTON_MARGIN) * INV_STACK_BUTTON_ROWS;
+
 	// drop button
 	const INV_DROP_BUTTON_X = 0.335;
 	const INV_DROP_BUTTON_Y = 0.865;
 	const INV_DROP_BUTTON_WIDTH = 0.08;
 	const INV_DROP_BUTTON_HEIGHT = 0.1;
+    
+    // Weapon boxes
+    const WEAPON_START_X = 0.49;
+    const WEAPON_START_Y = 0.886;
+    const WEAPON_WIDTH = 0.053;
 	
     ui void DrawDialog()
     {
@@ -230,8 +154,6 @@ class FriendlyUIHandler : EventHandler
 	
 	ui void InitFonts()
 	{
-		dialogFont = Font.GetFont("fonts/chicago.lmp");
-		titleFont = Font.GetFont("fonts/pixels_r_us.lmp");
 		tinyFont = Font.GetFont("fonts/jimmy_tinyfont.lmp");
 		journalFont = Font.GetFont("fonts/jimmy_APOS_BOK.lmp");
 	}
@@ -241,36 +163,16 @@ class FriendlyUIHandler : EventHandler
 		initialized = true;
 		InitFonts();
 		blackGradTex = TexMan.CheckForTexture("blkgrad", 0);
-		uiBGFrame = TexMan.CheckForTexture("uiframe", 0);
-		dialogBG = TexMan.CheckForTexture("dialogbg", 0);
-		questBGFrame = TexMan.CheckForTexture("questbg", 0);
 		invBGFrame = TexMan.CheckForTexture("invbg", 0);
         invBGClosedFrame = TexMan.CheckForTexture("invbgcl", 0);
 		invItemBG = TexMan.CheckForTexture("invitmbg", 0);
 		invHilight = TexMan.CheckForTexture("invsel", 0);
-		invHoldIcon = TexMan.CheckForTexture("uw1hold", 0);
-		invDropIcon = TexMan.CheckForTexture("uw1drop", 0);
-		invButtonHilight = TexMan.CheckForTexture("invbuthi", 0);
-		invCancelHilight = TexMan.CheckForTexture("invbgcan", 0);
-		// heretic = 2, doom = 1, chex = 16
-		questIconTex = TexMan.CheckForTexture("qmarA0", 0);
-		// objective checkbox
-		boxTex = TexMan.CheckForTexture("checkbox", 0);
-		// objective checkbox check mark
-		// (roughly 12x12 px)
-		if ( gameinfo.gametype == 2 )
-		    boxCheckTex = TexMan.CheckForTexture("IN_X", 0);
-		else
-		    boxCheckTex = TexMan.CheckForTexture("BLUDC0", 0);
-		crosshairTex = TexMan.CheckForTexture("crosshsm", 0);
-		bubbleTex = TexMan.CheckForTexture("thotbubl", 0);
-		samplerNoTex = TexMan.CheckForTexture("samnotex", 0);
-		sampGridTex = TexMan.CheckForTexture("sampgrid", 0);
-		mouseMiniCursorTex = TexMan.CheckForTexture("invcurs", 0);
-		flash1Tex = TexMan.CheckForTexture("IFOGA0", 0);
+
         dialogBackFrame = TexMan.CheckForTexture("DIALBACK", 0);
+
+		mouseMiniCursorTex = TexMan.CheckForTexture("invcurs", 0);
 		mouseCursorPos = (UI_WIDTH/2, UI_HEIGHT/2);
-		questScreenPage = 0;
+
 		hoveredInvStack = -1;
 	}
 
@@ -348,10 +250,6 @@ class FriendlyUIHandler : EventHandler
 		else if ( e.Name == "UINegativeFeedback" )
 		{
 			p.A_PlaySound("po/deny");
-		}
-		else if ( e.Name == "QuestScreenPageTurn" )
-		{
-			p.A_PlaySound("QuestPage");
 		}
 	}
 	
@@ -453,7 +351,21 @@ class FriendlyUIHandler : EventHandler
 	{
 		// fonts must be transient; if we're loading a savegame they'll be null so reinit
 		if ( !initialized ) Init();
-		if ( !(dialogFont) ) InitFonts();
+		if ( !(tinyFont) ) InitFonts();
+        
+        //Always draw the weapon slots
+        double weaponX = WEAPON_START_X;
+        double weaponY = WEAPON_START_Y;
+        
+        for (int i = 0; i < 5; i++) {
+            POWeaponSlot w = DataLibrary.getWeaponSlot(i);
+            if (w) {
+                ScreenDrawTexture(w.getTexture(), weaponX, weaponY);
+            }
+            weaponX += WEAPON_WIDTH;
+        }
+        
+        //Then do the rest conditionally
 		if ( automapactive ) return;
 		if ( DataLibrary.GetInstance().dic.At("showInvScreen") == "1" ) {
 			DrawInvScreen();
@@ -462,6 +374,7 @@ class FriendlyUIHandler : EventHandler
             ScreenDrawTexture(invBGClosedFrame, 0, 0, alpha: 0.9);
         }
         if ( DataLibrary.GetInstance().dic.At("showEventDialog") == "1" ) {
+            DataLibrary.GetInstance().dic.Insert("showInvScreen", "0");
             DrawDialog();
         } else {
             dialogOpacity = 0;
@@ -631,12 +544,9 @@ class FriendlyUIHandler : EventHandler
 		[tw, th] = TexMan.GetSize(tex);
 		int w = int(tw * scale);
 		int h = int(th * scale);
-		if ( centerX )
-			x -= w / 2;
-		if ( centerY )
-			y -= h / 2;
-		//Console.Printf("%i, %i", w, h);
-		// DrawTexture(TextureID tex, bool animate, double x, double y, ...);
+		if ( centerX ) x -= w / 2;
+		if ( centerY ) y -= h / 2;
+
 		Screen.DrawTexture(tex, true, x, y, DTA_Alpha, alpha,
 						   DTA_DestWidth, w, DTA_DestHeight, h,
 						   DTA_VirtualWidth, UI_WIDTH,
@@ -646,15 +556,7 @@ class FriendlyUIHandler : EventHandler
 						   DTA_TopOffset, 0);
 	}
 
-	ui void DrawCheckBox(double x, double y, bool checked)
-	{
-		x -= 0.04;
-		ScreenDrawTexture(boxTex, x, y);
-		if ( checked )
-			ScreenDrawTexture(boxCheckTex, x, y);
-	}
-	
-	ui void DrawMouseCursor()
+    ui void DrawMouseCursor()
 	{
 		TextureID tex;
 		Vector2 v = RealToVirtual(mouseCursorPos);

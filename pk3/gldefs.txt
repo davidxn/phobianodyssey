@@ -1,4 +1,4 @@
-object TrapFireball
+object POFireball
 {
     frame BAL1A { light IMPBALL    }
     frame BAL1B { light IMPBALL    }
@@ -6,4 +6,15 @@ object TrapFireball
     frame BAL1C { light IMPBALL_X1 }
     frame BAL1D { light IMPBALL_X2 }
     frame BAL1E { light IMPBALL_X3 }
+}
+
+PointLight HazmatZombieAttack
+{
+    Color 0.0 0.0 1.0
+    Size 28
+}
+
+Object HazmatZombie
+{
+    Frame HMZPF { Light HazmatZombieAttack }
 }

@@ -1,0 +1,8 @@
+Hazmat Zombie
+
+Code: scalliano, Ghastly (ZScript conversion)
+GLDefs: scalliano
+Sounds: Id Software, Volition
+Sprites: Id Software (Zombieman), Enjay (Hazmat Head)
+Sprite Edit: scalliano
+Idea Base: The UAC's apparent lack of staff

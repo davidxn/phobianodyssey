@@ -19,3 +19,7 @@ CONV_OPEN_CHEST_2 = "STOP";
 
 CONV_CANNOT_TAKE_CHEST_1 = "Your pack is already full - you'll need to free a space before opening this chest.";
 CONV_CANNOT_TAKE_CHEST_2 = "STOP";
+
+CONV_START_DOOR_1 = "You jump as the door you came through rumbles closed behind you.";
+CONV_START_DOOR_2 = "Hopefully you can find another way out by squeezing through the rocks...";
+CONV_START_DOOR_3 = "STOP";

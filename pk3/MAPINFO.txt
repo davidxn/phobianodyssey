@@ -1,5 +1,7 @@
 GameInfo {
     AddEventHandlers = "FriendlyUIHandler"
+    PlayerClasses = "PoPlayer"
+    ForceTextInMenus = true
 }
 
 clearepisodes
@@ -7,6 +9,8 @@ clearepisodes
 DoomEdNums {
     2200 = POChest
     2300 = FOE
+    9002 = BattleStart
+    9003 = MonsterStart
     9004 = MonsterTurner
     9005 = FOESpot
     9006 = ExitSpot

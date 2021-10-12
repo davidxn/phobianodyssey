@@ -14,3 +14,11 @@ po/inventory/down POINVDN
 po/inventory/bin POBIN
 po/victory POVICTOR
 po/inventory/open POPACK
+po/hp POHPUP
+
+po/ammo1 POAMMO1
+po/ammo2 POAMMO2
+
+po/cash POCASH
+
+hazmat/tazer	DSTAZER

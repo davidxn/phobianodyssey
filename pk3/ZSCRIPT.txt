@@ -1,7 +1,0 @@
-version "4.0"
-
-#include "zscript/DataLibrary.zs"
-#include "zscript/FOE.zs"
-#include "zscript/LevelHelper.zs"
-#include "zscript/MapStuff.zs"
-#include "zscript/ui.zs"

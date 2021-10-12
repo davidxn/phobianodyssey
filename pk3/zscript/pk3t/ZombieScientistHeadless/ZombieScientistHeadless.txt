@@ -1,4 +1,4 @@
-Class ZombieScientistHeadless : Actor
+Class ZombieScientistHeadless : POMonster
 {
 
   int shots;
@@ -23,7 +23,6 @@ Class ZombieScientistHeadless : Actor
     deathsound "monster/SZHDDEAD";
     activesound "monster/SZHDSNRL";
     MeleeRange 64;
-    DropItem "Clip";
     MONSTER;
     +FLOORCLIP
     +AVOIDMELEE
@@ -110,4 +109,16 @@ Class ZombieScientistHeadless : Actor
     SZHD MLKJIH 5;
     goto See;
   }
+  
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        poDropItemWithProbability("PoClip5", 70);
+        poDropItemWithProbability("PoClip1", 50);
+        poDropItemWithProbability("PoClip1", 40);
+
+        poDropItemWithProbability("PoCoin5", 100);
+        poDropItemWithProbability("PoCoin1", 80);
+        poDropItemWithProbability("PoCoin1", 60);
+
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
 }

@@ -89,4 +89,53 @@ class LevelHelper : Thinker
         String name = TexMan.getName(tex);
         return name;
     }
+    
+    static void CleanupArena()
+    {
+        PoDroppable m; ThinkerIterator it = ThinkerIterator.Create("PoDroppable");
+        while (m = PoDroppable(it.Next() ) ) {
+            m.Destroy();
+        }
+        PoAmmo a; it = ThinkerIterator.Create("PoAmmo");
+        while (a = PoAmmo(it.Next() ) ) {
+            a.Destroy();
+        }
+    }
+    
+    static void StopActor(Actor activator)
+    {
+        activator.vel.X = 0;
+        activator.vel.Y = 0;
+        activator.vel.Z = 0;
+    }
+    
+    static void PrepareWeapons(Actor activator) {
+        activator.GiveInventoryType("POFist");
+        for (int i = 1; i < 5; i++) {
+            POWeaponSlot s = DataLibrary.getWeaponSlot(i);
+            if(!s) continue;
+            if (s.getClassName() != "POWeaponSlotEmpty") {
+                POWeapon weapon = POWeapon(activator.GiveInventoryType("POWeapon" .. i+1));
+                if (weapon) {
+                    weapon.changeWeaponType(s.myType(), "");
+                } else {
+                    console.printf("Failed to add weapon %s", "POWeapon" .. i+1);
+                }
+                
+            }
+        }        
+    }
+    
+    static void StashWeapons(Actor activator) {
+        activator.TakeInventory("POFist", 1);
+        activator.TakeInventory("POWeapon2", 1);
+        activator.TakeInventory("POWeapon3", 1);
+        activator.TakeInventory("POWeapon4", 1);
+        activator.TakeInventory("POWeapon5", 1);
+    }
+    
+    static void AdvanceTurnBasedTraps()
+    {
+        return;
+    }
 }

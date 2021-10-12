@@ -1,7 +1,7 @@
-ZombieWeak,Wandering_Zombies,NONE,NONE,ZombieMan,NONE,NONE,ZombieMan,NONE,ZombieMan,NONE,NONE
-ZombieWeak2,Wandering_Zombies,NONE,ZombieMan,NONE,NONE,ZombieMan,NONE,ZombieMan,NONE,ZombieMan,NONE
-ScientistHead1,Incomplete_Zombies,NONE,NONE,NONE,ZombieMan,NONE,ZombieMan,NONE,ZombieScientistHeadless,NONE,ZombieScientistHeadless
-ScientistHead2,Incomplete_Zombies,ZombieMan,ZombieMan,ZombieMan,NONE,NONE,ZombieScientistHeadless,NONE,NONE,NONE,NONE
+ZombieWeak,Wandering_Zombies,NONE,NONE,ZombieMan,NONE,NONE,HazmatZombie,NONE,HazmatZombie,NONE,NONE
+ZombieWeak2,Wandering_Zombies,NONE,HazmatZombie,NONE,NONE,HazmatZombie,NONE,ZombieMan,NONE,ZombieMan,NONE
+ScientistHead1,Incomplete_Zombies,NONE,NONE,NONE,ZombieMan,NONE,HazmatZombie,NONE,ZombieScientistHeadless,NONE,ZombieScientistHeadless
+ScientistHead2,Incomplete_Zombies,HazmatZombie,ZombieMan,HazmatZombie,NONE,NONE,ZombieScientistHeadless,NONE,NONE,NONE,NONE
 ZombieSquad,Zombie_Squad,ZombieMan,NONE,NONE,ShotgunGuy,NONE,ZombieMan,ZombieMan,ZombieMan,NONE,ZombieMan
 ZombieDet,Zombie_Detachment,NONE,ZombieMan,ZombieMan,ShotgunGuy,NONE,ZombieMan,ZombieMan,NONE,NONE,NONE
 ZombieTroop,Zombie_Troop,ZombieMan,ShotgunGuy,ZombieMan,ShotgunGuy,ChaingunGuy,ZombieMan,ZombieMan,ZombieMan,ZombieMan,ZombieMan
