@@ -39,10 +39,16 @@ class POChest : FloatingSkull
                 DataLibrary.InventoryAdd(self.containedItem.getClassName(), -1);
             }
             if (self.containedAmmo) {
-                user.GiveInventory("Clip", containedAmmo);
+                switch (self.containedAmmoType) {
+                    case 2: user.GiveInventory("Shell", containedAmmo); break;
+                    case 3: user.GiveInventory("RocketAmmo", containedAmmo); break;
+                    case 4: user.GiveInventory("Cell", containedAmmo); break;
+                    default: user.GiveInventory("Clip", containedAmmo); break;
+                }
+                
             }
             if (self.containedCoins) {
-                user.GiveInventory("POCoin1", containedCoins);
+                user.GiveInventory("POCoin", containedCoins);
             }
             hasBeenOpened = true;
             return true;
@@ -57,6 +63,7 @@ class POChest : FloatingSkull
             case 1: containedItem = new("MFIMegasphere"); break;
             case 2: containedItem = new("MFIRadsuit"); break;
             case 3: containedItem = new("MFIMedikit"); break;
+            case 4: containedItem = new("MFIStimpack"); break;
         }
         containedCoins = self.args[1];
         containedAmmo = self.args[2];

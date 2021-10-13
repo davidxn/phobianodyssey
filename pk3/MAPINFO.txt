@@ -2,6 +2,7 @@ GameInfo {
     AddEventHandlers = "FriendlyUIHandler"
     PlayerClasses = "PoPlayer"
     ForceTextInMenus = true
+    cursorpic = "invcurs"
 }
 
 clearepisodes
@@ -20,7 +21,7 @@ DoomEdNums {
 }
 
 episode MAP01 {
-
+    noskillmenu
 }
 
 cluster 1 {
@@ -51,6 +52,12 @@ map MAP02 "Mysterious Base" {
 
 map MAP03 "Undercaves" {
 	levelnum = 3
+    NoJump
+    NoCrouch
+}
+
+map MAP04 "Maintenance Tunnels" {
+	levelnum = 4
     NoJump
     NoCrouch
 }

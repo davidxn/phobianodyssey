@@ -9,7 +9,7 @@ class FriendlyUIHandler : EventHandler
 
 	// mouse movement will be multiplied by this
 	const MOUSE_SENSITIVITY_FACTOR_X = 0.6;
-    const MOUSE_SENSITIVITY_FACTOR_Y = 1.5;
+    const MOUSE_SENSITIVITY_FACTOR_Y = 1.9;
 	
 	ui bool initialized;
     
@@ -66,9 +66,7 @@ class FriendlyUIHandler : EventHandler
         if (dialogOpacity < 1.0) dialogOpacity += 0.01;
         ScreenDrawTexture(dialogBackFrame, 0.5, 0.75, alpha: dialogOpacity, centerX: true, centerY: true);
         
-        if (dialogOpacity < 1.0) {
-            return;
-        }
+
         
         String eventDialogConversation = DataLibrary.GetInstance().dic.At("eventDialogConversation");
         int eventDialogPage = DataLibrary.GetInstance().dic.At("eventDialogPage").ToInt();
@@ -82,16 +80,26 @@ class FriendlyUIHandler : EventHandler
                     s.Substitute("$chestitem$", (chest.containedCoins .. " coins"));
                 }
                 if (chest.containedAmmo) {
-                    s.Substitute("$chestitem$", (chest.containedAmmo .. " ammo"));
+                    String ammoType = "bullets";
+                    switch (chest.containedAmmoType) {
+                        case 2: ammoType = "shells"; break;
+                        case 3: ammoType = "rockets"; break;
+                        case 4: ammoType = "plasma cells"; break;
+                    }
+                    s.Substitute("$chestitem$", (chest.containedAmmo .. " " .. ammoType));
                 }
             } else {
-                ScreenDrawTextureWithinArea(chest.containedItem.getTexture(), 0.5, 0.2, 0.3, 0.3, centerX:true);
+                ScreenDrawTextureWithinArea(chest.containedItem.getTexture(), 0.5, 0.2, 0.3, 0.3, alpha:dialogOpacity, centerX:true);
                 s.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
             }
         }
         
-        s = s.Left((int)(s.Length() * textPercentDisplayed));
-        ScreenDrawString(s, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7);
+        //Don't actually do anything with the string until dialog opacity is 1.0
+        if (dialogOpacity < 1.0) {
+            return;
+        }
+        
+        ScreenDrawString(s, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7, displayPercent: textPercentDisplayed);
         if (textPercentDisplayed < 1.0) textPercentDisplayed += 0.005;
         DrawMouseCursor();
         return;
@@ -192,7 +200,7 @@ class FriendlyUIHandler : EventHandler
 			if ( !(newGrabbedItem) )
 			{
                 if (invItem.getClassName() != "MFIEmpty") {
-                    console.printf("Grabbed item %s from %d without replacing", invItem.getClassName(), stackIndex);
+                    //console.printf("DEBUG: Grabbed item %s from %d without replacing", invItem.getClassName(), stackIndex);
                     newGrabbedItem = invItem;
                     DataLibrary.GetInstance().InventoryRemove(stackIndex);
                     p.A_PlaySound("po/inventory/up", CHAN_VOICE);
@@ -201,13 +209,13 @@ class FriendlyUIHandler : EventHandler
 			//If we do have a grabbed item, put it there. If we have an item in there already, it becomes the new grabbed item
 			else
 			{
-                console.printf("We have an already-grabbed item %s", newGrabbedItem.getClassName());
+                //console.printf("DEBUG: We have an already-grabbed item %s", newGrabbedItem.getClassName());
 				MFInventoryItem itemToGrab = (invItem.getClassName() == "MFIEmpty" ? NULL : invItem);
                 if (!itemToGrab) {
-                    console.printf("No item already there in slot %d", stackIndex);
+                    //console.printf("DEBUG: No item already there in slot %d", stackIndex);
                     shouldClearUIGrabbedItem = true;
                 } else {
-                    console.printf("Replacing with %s in slot %d", newGrabbedItem.getClassName(), stackIndex);
+                    //console.printf("DEBUG: Replacing with %s in slot %d", newGrabbedItem.getClassName(), stackIndex);
                 }
                 DataLibrary.GetInstance().InventoryAdd(newGrabbedItem.getClassName(), stackIndex);
 				p.A_PlaySound("po/inventory/down", CHAN_VOICE);
@@ -233,6 +241,28 @@ class FriendlyUIHandler : EventHandler
             String dialogKey = "$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage;
             String theString = StringTable.Localize(dialogKey);
             DataLibrary.GetInstance().dic.Insert("shouldEraseText", "1");
+            
+            if (eventDialogConversation == "OPEN_MAINDOOR" && eventDialogPage == 4) {
+                console.printf("------------------------------------------------------------------------");
+                console.printf("    ____  __          __    _            "); //Trust me
+                console.printf("   / __ \\/ /_  ____  / /_  (_)___ _____  ");
+                console.printf("  / /_/ / __ \\/ __ \\/ __ \\/ / __ `/ __ \\ ");
+                console.printf(" / ____/ / / / /_/ / /_/ / / /_/ / / / / ");
+                console.printf("/_/___/_/ /_/\\____/_.___/_/\\__,_/_/ /_/  ");
+                console.printf("  / __ \\____/ /_  _______________  __  __");
+                console.printf(" / / / / __  / / / / ___/ ___/ _ \\/ / / /");
+                console.printf("/ /_/ / /_/ / /_/ (__  |__  )  __/ /_/ / ");
+                console.printf("\\____/\\__,_/\\__, /____/____/\\___/\\__, /  ");
+                console.printf("           /____/               /____/   ");
+                console.printf("------------------------------------------------------------------------");
+                console.printf("That's the end of the Phobian Odyssey demo so far.");
+                console.printf("Thanks for giving it a try - more dungeon crawling will be coming later!");
+                console.printf("------------------------------------------------------------------------");
+                DataLibrary y = DataLibrary.GetInstance();
+                y = null;
+                let x = y.getClassName();
+            }
+            
             if (theString == "STOP") {
                 DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "1");
                 DataLibrary.WriteData(NULL, "showEventDialog", "0");
@@ -255,6 +285,10 @@ class FriendlyUIHandler : EventHandler
 	
 	override bool InputProcess(InputEvent e)
 	{
+        let dl = DataLibrary.GetInstance();
+        if (!dl) {
+            return false;
+        }
         bool showInvScreen = (DataLibrary.GetInstance().dic.At("showInvScreen") == "1");
         bool showEventDialog = (DataLibrary.GetInstance().dic.At("showEventDialog") == "1");
 		if ( !initialized ) return false;
@@ -383,7 +417,7 @@ class FriendlyUIHandler : EventHandler
     
     ///////////////////////////////////
     
-	ui void ScreenDrawString(String s, Color c, Font f, double pct_x, double pct_y, double lineHeight = DIALOG_VSPACE, double wrapWidth = 1.0, bool dropShadow = true, bool centerX = false, double centerYHeight = -1, double alpha = 1)
+	ui void ScreenDrawString(String s, Color c, Font f, double pct_x, double pct_y, double lineHeight = DIALOG_VSPACE, double wrapWidth = 1.0, bool dropShadow = true, bool centerX = false, double centerYHeight = -1, double alpha = 1, double displayPercent = 1.0)
 	{
 		// thanks gwHero https://forum.zdoom.org/viewtopic.php?f=122&t=59381&p=1039574
 		int x = int(pct_x * UI_WIDTH);
@@ -394,43 +428,63 @@ class FriendlyUIHandler : EventHandler
 		// split strings separated by \n into multiple lines
 		Array<String> lines;
 		s.Split(lines, "\n");
+        
+        int totalCharacterCount = 0;
+        Array<String> dLines;
+        //Let's work out our total number of lines and characters first
 		for ( int i = 0; i < lines.Size(); i++ )
 		{
-			// wrap line into multiple lines if it runs over
 			BrokenLines blines = f.BreakLines(lines[i], int(wrapWidth * UI_WIDTH));
 			for ( int n = 0; n < blines.Count(); n++ )
-			{
-				// center wrapped line horizontally
-				int x = int(pct_x * UI_WIDTH);
-				if ( centerX )
-					x -= f.StringWidth(blines.StringAt(n)) / 2;
-				if ( dropShadow )
-				{
-					// line color codes will mess up shadow color, strip em
-					String plainText = blines.StringAt(n);
-					plainText.Replace("\cg", "");
-					plainText.Replace("\ck", "");
-					plainText.Replace("\cd", "");
-					plainText.Replace("\cv", "");
-					plainText.Replace("\cl", "");
-					Screen.DrawText(f, Font.CR_BLACK, x + 1, y + 1,
-									plainText,
-									DTA_VirtualWidth, UI_WIDTH,
-									DTA_VirtualHeight, UI_HEIGHT,
-									DTA_Alpha, alpha);
-				}
-				// void DrawText(Font font, int normalcolor, double x, double y, String text, ...);
-				Screen.DrawText(f, c, x, y, blines.StringAt(n),
-								DTA_VirtualWidth, UI_WIDTH,
-								DTA_VirtualHeight, UI_HEIGHT,
-								DTA_Alpha, alpha);
-				// between wrap-breaks and \n-breaks, don't carriage return twice
-				if ( blines.Count() > 1 )
-					y += int(lineHeight * UI_HEIGHT);
-			}
-			if ( blines.Count() == 1 )
-				y += int(lineHeight * UI_HEIGHT);
-		}
+            {
+                String plainText = bLines.StringAt(n);
+                dLines.push(plainText);
+                totalCharacterCount += plainText.Length();
+            }
+        }
+        
+        //Now write each line until we exceed our limit
+        int charactersDisplayed = 0;
+        int charactersToDisplay = int(totalCharacterCount * displayPercent);
+        for (int i = 0; i < dLines.Size(); i++)
+		{
+            String textToDisplay = dlines[i];
+            //If the characters already displayed total above our display target, we can break
+            if (charactersDisplayed >= charactersToDisplay) { break; }
+
+            // If the target would be hit by drawing this line, we have to truncate
+            if (charactersDisplayed + textToDisplay.Length() > charactersToDisplay) {
+                int charactersToDisplayThisLine = (charactersToDisplay - charactersDisplayed);
+                textToDisplay = textToDisplay.Left(charactersToDisplaythisLine);
+            }
+            // center wrapped line horizontally
+            int x = int(pct_x * UI_WIDTH);
+            if ( centerX )
+                x -= f.StringWidth(textToDisplay) / 2;
+            if ( dropShadow )
+            {
+                // line color codes will mess up shadow color, strip em
+                String plainText = textToDisplay;
+                plainText.Replace("\cg", "\cm");
+                plainText.Replace("\ck", "\cm");
+                plainText.Replace("\cd", "\cm");
+                plainText.Replace("\cv", "\cm");
+                plainText.Replace("\cl", "\cm");
+                Screen.DrawText(f, Font.CR_BLACK, x + 1, y + 1,
+                                plainText,
+                                DTA_VirtualWidth, UI_WIDTH,
+                                DTA_VirtualHeight, UI_HEIGHT,
+                                DTA_Alpha, alpha);
+            }
+            // void DrawText(Font font, int normalcolor, double x, double y, String text, ...);
+            Screen.DrawText(f, c, x, y, textToDisplay,
+                            DTA_VirtualWidth, UI_WIDTH,
+                            DTA_VirtualHeight, UI_HEIGHT,
+                            DTA_Alpha, alpha);
+            // between wrap-breaks and \n-breaks, don't carriage return twice
+            if ( dLines.Size() > 1 ) { y += int(lineHeight * UI_HEIGHT); }
+            charactersDisplayed += textToDisplay.Length();
+        }
 	}
 	
 	ui void ScreenDrawShadedBox(double pct_x, double pct_y, double pct_w, double pct_h)
@@ -565,12 +619,17 @@ class FriendlyUIHandler : EventHandler
 		double iconArea = 0.05;
 		v.x /= UI_WIDTH;
 		v.y /= UI_HEIGHT;
-        if (uiGrabbedItem) {
-            ScreenDrawTextureWithinArea(uiGrabbedItem.getTexture(), v.x + iconPadX, v.y + iconPadY, iconArea, iconArea);
-        }
 		Screen.DrawTexture(mouseMiniCursorTex, true,
 						   mouseCursorPos.x, mouseCursorPos.y,
 						   DTA_DestWidth, 24, DTA_DestHeight, 24);
+        
+        //The rest of this is only for the inventory screen
+        if (DataLibrary.GetInstance().dic.At("showInvScreen") != "1") { return; }
+
+        if (uiGrabbedItem) {
+            ScreenDrawTextureWithinArea(uiGrabbedItem.getTexture(), v.x + iconPadX, v.y + iconPadY, iconArea, iconArea);
+        }
+
 		// tooltip-style text for grabbed / hovered item
 		MFInventoryItem item;
 		if ( uiGrabbedItem ) { item = uiGrabbedItem; }
@@ -585,5 +644,11 @@ class FriendlyUIHandler : EventHandler
 						toolTipText,
 						DTA_VirtualWidth, UI_WIDTH,
 						DTA_VirtualHeight, UI_HEIGHT);
+                        
+		String descriptionText = StringTable.Localize("$INV_" .. item.getClassName());
+        if ((descriptionText == "$INV_" .. item.getClassName()) || !descriptionText) {
+            return;   
+        }
+        ScreenDrawString(descriptionText, Font.CR_WHITE, tinyFont, 0.5, 0.5, wrapWidth: 0.3);
 	}
 }

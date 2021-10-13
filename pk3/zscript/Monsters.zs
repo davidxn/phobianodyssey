@@ -18,7 +18,6 @@ class POMonster : Actor
     bool poDropItemWithProbability(String classname, int rollThreshold) {
         if (!hasRolled) {
             dropRoll = random(0, 100);
-            console.printf("Made new drop roll %d", dropRoll);
             hasRolled = true;
             //Offset for luck here if I implement it
         }
@@ -32,6 +31,10 @@ class POMonster : Actor
     
     void doDrop(String classname) {
         let spawnedActor = Actor.Spawn(classname, (pos.x, pos.y, pos.z + (height/2)));
+        if (!spawnedActor) {
+            console.printf("No spawned actor found for dropped item");
+            return;
+        }
         spawnedActor.vel.X = frandom(-3, 3);
         spawnedActor.vel.Y = frandom(-3, 3);
         spawnedActor.vel.Z = frandom(5, 10);
@@ -102,9 +105,8 @@ class POZombieMan : POMonster replaces ZombieMan
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
         poDropItemWithProbability("PoClip1", 100);
         poDropItemWithProbability("PoClip1", 100);
-        poDropItemWithProbability("PoClip1", 80);
-        poDropItemWithProbability("PoClip1", 50);
-        poDropItemWithProbability("PoClip1", 50);
+        poDropItemWithProbability("PoClip1", 100);
+        poDropItemWithProbability("PoClip5", 50);
         
         poDropItemWithProbability("PoCoin1", 100);
         poDropItemWithProbability("PoCoin1", 100);
@@ -146,7 +148,7 @@ Class HazmatZombie : POMonster
     HMZP AABBCCDD 4 A_Chase();
     loop;
   Melee:
-    HMZP E 4 A_FaceTarget();
+    HMZP E 10 A_FaceTarget();
     HMZP F 4 Bright
     {
       A_PlaySound("hazmat/tazer");
@@ -185,9 +187,9 @@ Class HazmatZombie : POMonster
         poDropItemWithProbability("PoCoin1", 70);
 
         poDropItemWithProbability("PoHeal1", 90);
-        poDropItemWithProbability("PoHeal1", 80);
         poDropItemWithProbability("PoHeal1", 70);
         poDropItemWithProbability("PoHeal1", 60);
+        poDropItemWithProbability("PoHeal1", 50);
         poDropItemWithProbability("PoHeal5", 50);
         
         super.doBurst();       
@@ -255,13 +257,14 @@ class PoImp : POMonster REPLACES DoomImp
 	}
     
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
-        poDropItemWithProbability("PoHorn", 50);
+        poDropItemWithProbability("PoHorn", 66);
         
-        poDropItemWithProbability("PoCoin1", 100);
-        poDropItemWithProbability("PoCoin1", 100);
-        poDropItemWithProbability("PoCoin1", 60);
-        poDropItemWithProbability("PoCoin1", 40);
-        poDropItemWithProbability("PoCoin5", 20);
+        poDropItemWithProbability("PoCoin1", 50);
+        poDropItemWithProbability("PoCoin1", 50);
+        poDropItemWithProbability("PoCoin1", 50);
+        poDropItemWithProbability("PoCoin5", 90);
+        
+        poDropItemWithProbability("PoHeal5", 40);
         
         super.doBurst();       
         super.Die(source, inflictor, dmgflags, MeansOfDeath);

@@ -62,7 +62,7 @@ class POWeapon : Weapon {
         PISG A 0 A_JumpIf(invoker.myWeaponType == "RocketLauncher", "ReadyRocketLauncher");
         PISG A 0 A_JumpIf(invoker.myWeaponType == "PlasmaRifle", "ReadyPlasmaRifle");
 	Deselect:
-        #### A 1 A_Lower(12);
+        #### A 1 A_Lower(18);
         Loop;
     Select:
 		PISG A 0 A_JumpIf(invoker.myWeaponType == "Pistol", "SelectPistol");
@@ -97,7 +97,9 @@ class POWeapon : Weapon {
 		Loop;
 	FirePistol:
 		PISG A 4;
-		PISG B 6 A_FirePistol;
+        PISG B 0 A_PlaySound("weapons/pistol", CHAN_WEAPON);
+		PISG B 0 A_FireBullets (3.5, 0.5, 1, 8 + random(0,5), "BulletPuff", FBF_NORANDOM);
+        PISG B 6 A_GunFlash;
 		PISG C 4;
 		PISG B 5 A_ReFire;
 		Goto ReadyPistol;
@@ -113,8 +115,10 @@ class POWeapon : Weapon {
         SHTG A 1 A_Raise(12);
         Loop;
     FireShotgun:
-        SHTG A 3 {console.printf("%s", invoker.AmmoType1.getClassName()); }
-        SHTG A 7 A_FireShotgun;
+        SHTG A 1;
+        SHTG A 0 A_FireBullets (5.6, 0, 7, 15 + random(0,5), "BulletPuff", FBF_NORANDOM);
+        SHTG A 0 A_PlaySound ("weapons/shotgf", CHAN_WEAPON);
+        SHTG A 7 A_GunFlash;
         SHTG BC 5;
         SHTG D 4;
         SHTG CB 5;
@@ -143,6 +147,7 @@ class POWeapon : Weapon {
         CHGF B 5 Bright A_Light1;
         Goto LightDone;
 
+    //Rocket launcher!
     ReadyRocketLauncher:
         MISG A 1 A_WeaponReady;
         Loop;

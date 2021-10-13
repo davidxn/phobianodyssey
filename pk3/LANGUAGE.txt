@@ -1,7 +1,7 @@
 [enu default]
 
 CONV_START_UNEASE_1 = "An uneasy sensation crawls along your spine as you wander the tunnels. You don't think you're alone in here.";
-CONV_START_UNEASE_2 = "\cgBe prepared and watch the danger meter on the right - the higher it is, the greater the chance of an encounter!";
+CONV_START_UNEASE_2 = "\ckBe prepared and watch the danger meter on the right - the higher it is, the greater the chance of an encounter!";
 CONV_START_UNEASE_3 = "STOP";
 
 CONV_START_PISTOL_1 = "Beginning to get used to your new method of ambulation as you walk between the pits, you discover another marine with his vital organs conspicuously absent.";
@@ -9,17 +9,44 @@ CONV_START_PISTOL_2 = "His weapon lies beside him, a pistol with a handful of bu
 CONV_START_PISTOL_3 = "STOP";
 
 CONV_START_START_1 = "Well, this is a strange place to wake up. Perhaps you overdid it at the UAC Halloween party last night.";
-CONV_START_START_2 = "You've certainly regained consciousness in worse places - the time your friends put you on a train to Slough comes to mind - but what's more disconcerting is that you currently seem only able to move in a grid.";
+CONV_START_START_2 = "You've certainly regained consciousness in worse places - like that time you passed out on a pub crawl and your squadmates dumped you in MAP21 - but what's more disconcerting is that you currently seem only able to move in a grid.";
 CONV_START_START_3 = "Knocking yourself on the side of the head in an attempt to make your eyes focus, you stumble forward in erratic lurches. Maybe you'd better find out where you are.";
-CONV_START_START_4 = "\cgIn this game, you'll explore the dungeons on a 90 degree grid by going forwards, backwards or sidestepping on each move. You can still look around with the mouse, or use the Turn Left and Turn Right keys if you prefer.";
+CONV_START_START_4 = "\ckIn this game, you'll explore the dungeons on a 90 degree grid by going forwards, backwards or sidestepping on each move. You can still look around with the mouse, or use the Turn Left and Turn Right keys if you prefer.";
 CONV_START_START_5 = "STOP";
 
-CONV_OPEN_CHEST_1 = "You take $chestitem$ from the chest!";
+CONV_OPEN_CHEST_1 = "You take \ck$chestitem$ \cjfrom the chest!";
 CONV_OPEN_CHEST_2 = "STOP";
 
 CONV_CANNOT_TAKE_CHEST_1 = "Your pack is already full - you'll need to free a space before opening this chest.";
 CONV_CANNOT_TAKE_CHEST_2 = "STOP";
 
-CONV_START_DOOR_1 = "You jump as the door you came through rumbles closed behind you.";
-CONV_START_DOOR_2 = "Hopefully you can find another way out by squeezing through the rocks...";
+CONV_START_DOOR_1 = "You jump as the door you just opened rumbles closed again behind you.";
+CONV_START_DOOR_2 = "The only way forward is to squeeze through the rocks and hope there's another way out...";
 CONV_START_DOOR_3 = "STOP";
+
+CONV_MAP3_IMPS_1 = "As you cross the narrow bridge back from the cave, a group of brown horned creatures leap out of the water!";
+CONV_MAP3_IMPS_2 = "With no chance to escape, you unholster your weapon!";
+CONV_MAP3_IMPS_3 = "STOP";
+
+CONV_START_STAIRS_1 = "As you step on to the button, ancient mechanisms creak into action and the rocks in front of you lower to form a staircase back to the entrance.";
+CONV_START_STAIRS_2 = "What a useful shortcut!";
+CONV_START_STAIRS_3 = "STOP";
+
+CONV_START_INVENTORY_1 = "\ckItems like the medikit are stored in your inventory and can be used when you need them.";
+CONV_START_INVENTORY_2 = "\ckYou can open your inventory with the \clQ (USER2) \ckkey at any time and organize it as you like. Use items by \clright-clicking \ckthem.";
+CONV_START_INVENTORY_3 = "STOP";
+
+CONV_OPEN_MAINDOOR_1 = "As you step on the button, the familiar grinding of machinery starts up from the entrance.";
+CONV_OPEN_MAINDOOR_2 = "With relief, you see the bars blocking the door lowering, offering you an escape from this strange cave.";
+CONV_OPEN_MAINDOOR_3 = "Who knows what lies outside? You hope that nothing aborts the ZScript VM by trying to read from address zero or anything before you find out...";
+CONV_OPEN_MAINDOOR_4 = "STOP";
+
+CONV_NO_SKULL_KEY_1 = "A strange carving is set into the wall here. It looks like it could be switched, toggled or messed with somehow.";
+CONV_NO_SKULL_KEY_2 = "Try as you might, you can't seem to get it to react. Reluctantly, you move on.";
+CONV_NO_SKULL_KEY_3 = "STOP";
+
+INV_MFIMedikit = "Restores 50hp when used, up to a maximum of 100hp";
+INV_MFIStimpack = "Restores 20hp when used, up to a maximum of 100hp";
+INV_MFIRadsuit = "Allows you to walk on damaging floors without injury for 30 moves";
+INV_MFIMegasphere = "Completely fills your life to 200hp, no questions asked";
+INV_MFIEmpty = "";

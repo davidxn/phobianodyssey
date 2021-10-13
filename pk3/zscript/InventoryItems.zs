@@ -26,16 +26,19 @@ class MFIMegasphere : MFInventoryItem {
     override String myTexture() { return "MEGAA0"; }
     override String myName() { return "Megasphere!"; }
     override bool use() {
-        console.printf("Used a megasphere");
+        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        if (p.Health >= 200) {
+            return false;
+        }
+        p.GiveInventory("Health", 200);
         return true;
     }
 }
 
 class MFIRadsuit : MFInventoryItem {
     override String myTexture() { return "SUITA0"; }
-    override String myName() { return "Radiation suit"; }
+    override String myName() { return "Radsuit"; }
     override bool use() {
-        console.printf("Used a radiation suit");
         return true;
     }
 }
@@ -48,9 +51,22 @@ class MFIMedikit : MFInventoryItem {
         if (p.Health >= 100) {
             return false;
         }
-        p.Health = min(p.Health + 25, 100);
+        p.GiveInventory("Health", 50);
         p.A_PlaySound("po/heal");
-        console.printf("Used a medikit on %s", p.getClassName());
+        return true;
+    }
+}
+
+class MFIStimpack : MFInventoryItem {
+    override String myTexture() { return "STIMA0"; }
+    override String myName() { return "Stimpack"; }
+    override bool use() {
+        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        if (p.Health >= 100) {
+            return false;
+        }
+        p.GiveInventory("Health", 20);
+        p.A_PlaySound("po/heal");
         return true;
     }
 }

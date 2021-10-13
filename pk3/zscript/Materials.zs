@@ -62,7 +62,7 @@ class POAmmo : Ammo {
         super.Tick();
     }
 
-    void applySprite() { self.sprite = GetSpriteIndex(mySprite); }
+    action void applySprite() {self.sprite = GetSpriteIndex(invoker.mySprite); }
 
 }
 
@@ -137,6 +137,7 @@ class PODroppable : Inventory {
         M001 A 0;
         M002 A 0;
         M003 A 0;
+        M004 A 0;
       Spawn:
         M001 A 4 { applySprite(); }
         M001 B 4 { applySprite(); }
@@ -162,7 +163,7 @@ class PODroppable : Inventory {
         super.Tick();
     }
 
-    void applySprite() { self.sprite = GetSpriteIndex(mySprite); }
+    action void applySprite() {self.sprite = GetSpriteIndex(invoker.mySprite); }
 
 }
 
@@ -206,7 +207,7 @@ class POHeal1 : PODroppable
     }
     
     override void AttachToOwner(Actor owner) {
-        owner.health = min(owner.GetMaxHealth(true), owner.health+1);
+        owner.GiveInventory("Health", 1);
         self.Destroy();
     }
 }
@@ -221,7 +222,7 @@ class POHeal5 : PODroppable
     }
     
     override void AttachToOwner(Actor owner) {
-        owner.health = min(owner.GetMaxHealth(true), owner.health+5);
+        owner.GiveInventory("Health", 5);
         self.Destroy();
     }
 }

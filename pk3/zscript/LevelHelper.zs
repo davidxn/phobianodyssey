@@ -38,7 +38,7 @@ class LevelHelper : Thinker
             if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
                 int squareNum = spot.args[1];
                 double myangle = spot.angle * 182; //This converts from degrees to fixed-point angle
-                console.printf("Translated angle is %f", myangle);
+                //console.printf("DEBUG: Translated angle is %f", myangle);
                 DataLibrary.inst().WriteData(null, "FieldSquare", squareNum .. "");
                 DataLibrary.inst().WriteData(null, "FieldAngle",  myangle .. "");
                 return spot.args[0]; //This is the mapnum for the exit's target
@@ -52,9 +52,9 @@ class LevelHelper : Thinker
         EventSpot spot; ThinkerIterator it = ThinkerIterator.Create("EventSpot");
         while (spot = EventSpot(it.Next() ) ) {
             if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
-                console.printf("Hit event number " .. spot.args[0]);
+                //console.printf("DEBUG: Hit event number " .. spot.args[0]);
                 int blocked = DataLibrary.inst().ReadInt("blockEvent" .. spot.args[0]);
-                console.printf("Blocked? %d", blocked);
+                //console.printf("DEBUG: Blocked? %d", blocked);
                 if (!blocked) {
                     return "runEvent" .. spot.args[0];
                 }

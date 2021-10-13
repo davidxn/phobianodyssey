@@ -18,6 +18,9 @@ int registerZ = 0;
 int showingInventory = 0;
 int levelNum;
 
+int currentAngle;
+int squareNum;
+
 //Cheats/debug
 script "poarsenal" (int type, int element) {
     str weapons[5] = {"Pistol", "Shotgun", "Chaingun", "RocketLauncher", "PlasmaRifle"};
@@ -25,6 +28,12 @@ script "poarsenal" (int type, int element) {
     str elements[5] = {"None", "Fire", "Ice", "Lightning", "Poison"};
     str elementstring = elements[element];
     ScriptCall("DataLibrary", "AddWeapon", typestring, elementstring);
+}
+
+script "powish" (int type) {
+    str items[4] = {"MFIMegasphere", "MFIRadsuit", "MFIMedikit", "MFIStimpack"};
+    str typestring = items[type];
+    ScriptCall("DataLibrary", "InventoryAdd", typestring, -1);
 }
 
 script "return" RETURN {
@@ -37,7 +46,6 @@ script "return" RETURN {
 script "enter" ENTER {
     int mapType = ScriptCall("DataLibrary", "LoadMapProperties");
     levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
-    ScriptCall("DataLibrary", "PrintInv");
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
     if (mapType == 1) {
         SetMusic("POSILENT");
@@ -47,26 +55,23 @@ script "enter" ENTER {
 
         ScriptCall("DataLibrary", "WriteData", "FieldMap", StrParam(d:levelNum));
         //If we're coming back from a FOE fight, destroy the FOE we marked
-        Log(s:"Destroying FOE if present...");
         ScriptCall("FOEHelper", "DestroyCurrentFOE");
 
         int startingSquare = ScriptCall("DataLibrary", "ReadInt", "FieldSquare");
-        Log(s:"Placing player at ", i:startingSquare);
         if (startingSquare > 0) {
             getPositionFromSquare(startingSquare);
             SetActorPosition(0, registerX, registerY, registerZ, false);
             int angleToSet = ScriptCall("DataLibrary", "ReadInt", "FieldAngle");
-            Log(s:"Got angle to start at: ", d:angleToSet);
             SetActorAngle(0, angleToSet);
         }
 
         //OK, now fade in and start listening for movement!
         FadeTo(0.0, 0.0, 0.0, 0.0, 1.0);
-        ACS_NamedExecuteAlways("rpgMovement", 0);
+        ACS_NamedExecute("rpgMovement", 0);
     } else if (mapType == 2) {
-        ACS_NamedExecuteAlways("setupArena", 0);
+        ACS_NamedExecute("setupArena", 0);
     } else {
-        Log(s:"No map type");
+        Log(s:"ERROR: No map type");
     }
 }
 
@@ -123,7 +128,7 @@ script "rpgMovement" (void) {
 
 			//Set the angle to move depending on the player's direction
 			int step_x = 0.0; int step_y = 0.0;
-			int currentAngle = quantizeAngle(GetActorAngle(0));
+			currentAngle = quantizeAngle(GetActorAngle(0));
             int oldSquareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
 			targetAngle = currentAngle;
 			int angleAdjustment = 0.0;
@@ -183,7 +188,7 @@ script "rpgMovement" (void) {
 			SetActorPosition(0, playerX + step_x * TILE_SIZE, playerY + step_y * TILE_SIZE, GetActorZ(0), false);
 
 			//What's our new square?
-			int squareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
+			squareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
             
             //Move turn-based things in the level forward a step here
             ScriptCall("LevelHelper", "AdvanceTurnBasedTraps");
@@ -216,7 +221,7 @@ script "rpgMovement" (void) {
 				//We've hit a FOE, so return to our square and go to an encounter!
                 PlaySound(0, "po/foe/attack", CHAN_AUTO);
 				SetActorPosition(0, playerX, playerY, playerZ, false);
-				ACS_NamedExecute("beginEncounter", 0, oldSquareNum, currentAngle, foeHit);
+				ACS_NamedExecute("beginEncounter", 0, foeHit, true);
 				terminate; //Terminate here, as going back to this level will retrigger the script
 			}
 
@@ -229,7 +234,7 @@ script "rpgMovement" (void) {
 
 			//If we're over 100 danger, this is an encounter! Time to pick a monster party
 			if (CheckInventory("PoDanger") >= 100) {
-				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle);
+				ACS_NamedExecute("beginEncounter", 0);
 				terminate; //Terminate here, as going back to this level will retrigger the script
 			}
 
@@ -237,7 +242,7 @@ script "rpgMovement" (void) {
 			foeHit = ScriptCall("FOEHelper", "moveFOEs");
 			if (foeHit > 0) {
                 PlaySound(0, "po/foe/attack", CHAN_AUTO);
-				ACS_NamedExecute("beginEncounter", 0, squareNum, currentAngle, foeHit);
+				ACS_NamedExecute("beginEncounter", 0, foeHit, true);
 				terminate; //Terminate here, as going back to this level will retrigger the script
 			}
 
@@ -247,7 +252,7 @@ script "rpgMovement" (void) {
 	}
 }
 
-script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) {
+script "beginEncounter" (int forcedPopulation, int isFoe) {
 	str monsterParty = "";
     
     //Load the next monster party data into data library
@@ -263,7 +268,7 @@ script "beginEncounter" (int squareNum, int currentAngle, int forcedPopulation) 
 	FadeTo(1.0, 0.0, 0.0, 1.0, 0.0);
 	SetMusic("POFIGHT");
 	FadeTo(1.0, 0.0, 0.0, 0.0, 0.25);
-    ACS_NamedExecute("displayEncounterText", 0, forcedPopulation);
+    ACS_NamedExecute("displayEncounterText", 0, isFoe);
 	Delay(5);
 	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
 	delay(35);
@@ -364,7 +369,6 @@ script "setupArena" (void) {
 
 	//Return to previous map
 	int mapToReturn = ScriptCall("DataLibrary", "ReadInt", "FieldMap");
-	Log(s:"Returning to: ", i:mapToReturn);
 	Teleport_NewMap(mapToReturn, 0, 0);
 }
 
@@ -380,17 +384,17 @@ script "displayClearText" (void) {
 //////////////////////////////////
 
 function int getSquareFromPosition(int x, int y) {
-	int squareNum = 10000;
-	squareNum += ((x>>16) / TILE_SIZE);
-	squareNum += ((y>>16)*100 / TILE_SIZE);
-	return squareNum;
+	int sqNum = 10000;
+	sqNum += ((x>>16) / TILE_SIZE);
+	sqNum += ((y>>16)*100 / TILE_SIZE);
+	return sqNum;
 }
 
-function void getPositionFromSquare(int squareNum) {
-	squareNum -= 10000;
-	registerX = ((squareNum % 100) * TILE_SIZE) << 16;
-	squareNum /= 100;
-	registerY = ((squareNum % 100) * TILE_SIZE) << 16;
+function void getPositionFromSquare(int sqNum) {
+	sqNum -= 10000;
+	registerX = ((sqNum % 100) * TILE_SIZE) << 16;
+	sqNum /= 100;
+	registerY = ((sqNum % 100) * TILE_SIZE) << 16;
 	SpawnForced("MapSpot", registerX, registerY, 0, 999);
 	registerZ = GetActorFloorZ(999);
 	Thing_Remove(999);

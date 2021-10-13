@@ -100,9 +100,7 @@ class FOEHelper : Thinker
     
     static void DestroyCurrentFOE()
     {
-        console.printf("Attempting to destroy FOE");
         String squareNum = DataLibrary.inst().ReadData("CurrentFOESquare");
-        console.printf("Square num for FOE: %s", squareNum);
         if (!squareNum) {
             return;
         }
@@ -112,11 +110,9 @@ class FOEHelper : Thinker
         [x, y] = LevelHelper.getPositionFromSquare(squareNum.ToInt());
         FOE foe; ThinkerIterator foeIterator = ThinkerIterator.Create("FOE");
         while (foe = FOE(foeIterator.Next() ) ) {
-            console.printf("Looking for: %d %d", x, y);
             if (foe.isAtPosition(x, y)) {
                 DataLibrary.inst().WriteData(null, "CurrentFOESquare", "");
                 foe.SetState(foe.FindState("Destroy"));
-                console.printf("Destroyed FOE");
                 break;
             }
         }

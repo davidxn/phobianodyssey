@@ -31,10 +31,6 @@ class DataLibrary : Thinker
             weaponSlots.push(w);
         }
         
-        for (int i = 0; i < 5; i++) {
-            console.printf("%s", weaponSlots[i].myTexture());
-        }
-        
         int lumpindex = Wads.FindLump('MPARTY', 0, 0);
         String lumpdata = Wads.ReadLump(lumpindex);
 
@@ -111,7 +107,7 @@ class DataLibrary : Thinker
         let thing = MFInventoryItem(new(classname)).Init();
         if (slot >= 0 && slot < DataLibrary.inst().inventorySize) {
             DataLibrary.inst().MFinventory[slot] = thing;
-            console.printf("Added %s to inventory at position %d", classname, slot);
+            //console.printf("DEBUG: Added %s to inventory at position %d", classname, slot);
             return true;
         }
         
@@ -119,7 +115,7 @@ class DataLibrary : Thinker
         for (int i = 0; i < DataLibrary.inst().inventorySize; i++) {
             if (DataLibrary.inst().MFinventory[i].getClassName() == "MFIEmpty") {
                 DataLibrary.inst().MFinventory[i] = thing;
-                console.printf("Added %s to inventory at position %d", classname, i);
+                //console.printf("DEBUG: Added %s to inventory at position %d", classname, i);
                 return true;
             }
         }
@@ -133,17 +129,6 @@ class DataLibrary : Thinker
             }
         }
         return true;
-    }
-    
-    static void PrintInv() {
-        for (int i = 0; i < DataLibrary.inst().inventorySize; i++) {
-            MFInventoryItem x = DataLibrary.inst().MFinventory[i];
-            if (!x) {
-                console.printf("?Nothing");
-            } else {
-                console.printf("%s", x.getName());
-            }
-        }
     }
 
 	static bool InventoryRemove(int i)
@@ -217,14 +202,14 @@ class DataLibrary : Thinker
         String popId = DataLibrary.inst().dic.At(key);
 
         //Ask the monsterpop dictionary which parties correspond to this population ID
-        console.printf("Key %s has monster population ID %s", key, popId);
+        //console.printf("DEBUG: Key %s has monster population ID %s", key, popId);
         return ChooseMonsterPartyFromPopulationID(popId);
     }
     
     static String ChooseMonsterPartyFromPopulationID(String popId) {
         //Get the parties that correspond to this monster population
         String monsterPartyString = DataLibrary.inst().monsterPops.At(popId);
-        console.printf("Monster parties: %s", monsterPartyString);
+        //console.printf("DEBUG: Monster parties: %s", monsterPartyString);
         //Now split the string and return a name
         Array<String> monsterParties; monsterPartyString.Split(monsterParties, ",");
         if (monsterParties.Size() == 0) {
@@ -235,7 +220,7 @@ class DataLibrary : Thinker
         }
         
         String chosenParty = monsterParties[random(0, monsterParties.Size()-1)];
-        console.printf("Chosen party is: %s", chosenParty);
+        //console.printf("DEBUG: Chosen party is: %s", chosenParty);
         DataLibrary.inst().WriteData(null, "NextMonsterParty", chosenParty);
         String chosenPartyName = DataLibrary.inst().ReadMonsterParty(chosenParty, "Name");
         chosenPartyName.Replace("_", " ");
@@ -247,7 +232,6 @@ class DataLibrary : Thinker
     {
         String key = "DN-" .. mapnum .. "-" .. square;
         int value = DataLibrary.inst().dic.At(key).ToInt();
-        console.printf("%s = %d", key, value);
         return value;
     }
     
@@ -256,7 +240,6 @@ class DataLibrary : Thinker
         MapDescriber m; ThinkerIterator it = ThinkerIterator.Create("MapDescriber");
         while (m = MapDescriber(it.Next() ) ) {
             DataLibrary.inst().WriteData(null, "ArenaMap", m.args[1] .. "");
-            console.printf("Map describer found, map type is " .. m.args[0]);
             return m.args[0];
         }
         return 0;

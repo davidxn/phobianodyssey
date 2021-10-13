@@ -2,9 +2,12 @@
 2=ImpParty,ImpSquad,ImpHunters,ImpHunters2
 3=ImpParty,ImpSquad,DevilTrio
 4=DevilTrio,SciImps1,SciImps2,ScientistHeadless
-5=ZombieWeak,ZombieWeak2,IncompleteZombies,ScientistHeadless
-6=ZombieWeak,ZombieWeak2
-7=ScientistHead2,ScientistHead2,ScientistHead1
+5=ScientistHead1,ZombieWeak2,Zombiemen4,ScientistHeadless,IntroMixture,ScientistHead2
+6=
+7=ZombieWeak,ZombieWeak2
 8=
-9=
+9=IntroMixture,ScientistHead2,HazmatSquad,Zombiemen5
+10=CleanupCrew
+11=ScientistHead1,HazmatSquad
 1001=FOEBarons
+1002=ImpParty
