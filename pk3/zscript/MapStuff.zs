@@ -58,6 +58,7 @@ class MonsterStart : MapSpot
 {
     default {
         //$Sprite TROOA1
+        radius 32;
     }
 }
 

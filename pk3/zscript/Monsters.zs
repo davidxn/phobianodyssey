@@ -3,6 +3,7 @@ class POMonster : Actor
     
     int dropRoll;
     bool hasRolled;
+    int deathDamage;
 
 	Default
 	{
@@ -47,6 +48,18 @@ class POMonster : Actor
             spawnedActor.vel.Y = frandom(-3, 3);
             spawnedActor.vel.Z = frandom(5, 12);
         }    
+    }
+      
+    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+        if (damage > self.health) {
+            self.deathDamage = damage;
+        }
+        return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+    }
+    
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        console.printf("%s %d", MeansOfDeath, self.deathDamage);
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
     
 }
@@ -120,6 +133,84 @@ class POZombieMan : POMonster replaces ZombieMan
 
 }
 
+class POSergeant : POMonster replaces ShotgunGuy
+{
+    Default {
+		Health 30;
+		Radius 20;
+		Height 56;
+		Mass 100;
+		Speed 8;
+		PainChance 170;
+		Monster;
+		+FLOORCLIP
+		SeeSound "shotguy/sight";
+		AttackSound "shotguy/attack";
+		PainSound "shotguy/pain";
+		DeathSound "shotguy/death";
+		ActiveSound "shotguy/active";
+		Obituary "$OB_SHOTGUY";
+		Tag "$FN_SHOTGUN";
+        
+        DamageFunction 5;
+    }
+    
+	States
+	{
+        Spawn:
+            SPOS AB 10 A_Look;
+            Loop;
+        See:
+            SPOS AABBCCDD 3 A_Chase;
+            Loop;
+        Missile:
+            SPOS E 10 A_FaceTarget;
+            SPOS F 0 bright A_PlaySound("shotguy/attack", CHAN_WEAPON);
+            SPOS F 10 bright A_CustomBulletAttack(22.5, 0, 3, 5 + random(0, 2), "BulletPuff", 0, CBAF_NORANDOM);
+            SPOS E 10;
+            Goto See;
+        Pain:
+            SPOS G 3;
+            SPOS G 3 A_Pain;
+            Goto See;
+        Death:
+            SPOS H 5;
+            SPOS I 5 A_Scream;
+            SPOS J 5 A_NoBlocking;
+            SPOS K 5;
+            SPOS L -1;
+            Stop;
+        XDeath:
+            SPOS M 5;
+            SPOS N 5 A_XScream;
+            SPOS O 5 A_NoBlocking;
+            SPOS PQRST 5;
+            SPOS U -1;
+            Stop;
+        Raise:
+            SPOS L 5;
+            SPOS KJIH 5;
+            Goto See;
+	}
+    
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        poDropItemWithProbability("PoShell2", 100);
+        poDropItemWithProbability("PoShell2", 50);
+
+        poDropItemWithProbability("PoCoin5", 90);
+        poDropItemWithProbability("PoCoin1", 80);
+        poDropItemWithProbability("PoCoin1", 80);
+        poDropItemWithProbability("PoCoin1", 60);
+        poDropItemWithProbability("PoCoin1", 50);
+        
+        poDropItemWithProbability("PoHeal5", 25);
+        
+        super.doBurst();       
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+
+}
+
 Class HazmatZombie : POMonster
 {
   Default
@@ -186,11 +277,11 @@ Class HazmatZombie : POMonster
         poDropItemWithProbability("PoCoin1", 80);
         poDropItemWithProbability("PoCoin1", 70);
 
-        poDropItemWithProbability("PoHeal1", 90);
+        poDropItemWithProbability("PoHeal1", 80);
         poDropItemWithProbability("PoHeal1", 70);
         poDropItemWithProbability("PoHeal1", 60);
         poDropItemWithProbability("PoHeal1", 50);
-        poDropItemWithProbability("PoHeal5", 50);
+        poDropItemWithProbability("PoHeal5", 30);
         
         super.doBurst();       
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
@@ -264,7 +355,7 @@ class PoImp : POMonster REPLACES DoomImp
         poDropItemWithProbability("PoCoin1", 50);
         poDropItemWithProbability("PoCoin5", 90);
         
-        poDropItemWithProbability("PoHeal5", 40);
+        poDropItemWithProbability("PoHeal5", 33);
         
         super.doBurst();       
         super.Die(source, inflictor, dmgflags, MeansOfDeath);

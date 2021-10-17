@@ -29,7 +29,7 @@ StatusBar normal, forcescaled
 	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Cell), alignment(center), 312, 193;
     
     //Coins
-    drawnumber 6, INDEXFONT_DOOM, untranslated, POCoin, alignment(right), interpolate(4), 288, 170;
+    drawnumber 6, INDEXFONT_DOOM, untranslated, POCoin, alignment(right), interpolate(8), 288, 170;
 
 	//Danger level
     DrawBar "DNfull", "DNempty", PoDanger, vertical, interpolate(8), 340, 168;

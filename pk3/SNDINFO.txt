@@ -1,5 +1,6 @@
-po/tread POTREAD
-po/treadwater POTREAD2
+po/tread/general POTREAD
+po/tread/water   POTREAD2
+po/tread/natural POTREAD3
 po/foe/death POFOEDTH
 po/foe/attack POFOE
 po/chest POCHEST
@@ -12,13 +13,17 @@ po/deny PODENY
 po/inventory/up POINVUP
 po/inventory/down POINVDN
 po/inventory/bin POBIN
-po/victory POVICTOR
 po/inventory/open POPACK
+po/victory POVICTOR
 
 po/ammo1 POAMMO1
 po/ammo2 POAMMO2
 
 po/pickup/cash POCASH
 po/pickup/hp POHPUP
+po/reload PORELOAD
+po/sell POSELL
+
+po/warp POWARP
 
 hazmat/tazer	DSTAZER

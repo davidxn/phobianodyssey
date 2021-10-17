@@ -60,3 +60,25 @@ monster/SZHDSNRL SZHDSNRL
 monster/SZHDWAKE SZHDWAKE
 
 //<< PK3T ZombieScientistHeadless END >>//
+//<< PK3T ZombieFodder START >>//
+$random ZombieFodder/Sight { FODDERSEE1 FODDERSEE2 }
+FODDERSEE1	FODDSEE1
+FODDERSEE2	FODDSEE2
+
+$random ZombieFodder/Active { FODDERACT1 FODDERACT2 }
+FODDERACT1	FODDACT1
+FODDERACT2	FODDACT2
+
+ZombieFodder/Pain	FODDPAIN
+
+$random ZombieFodder/Death { FODDERDIE1 FODDERDIE2 }
+FODDERDIE1	FODDDIE1
+FODDERDIE2	FODDDIE2
+
+ZombieFodder/Melee DSCLAW
+ZombieFodder/Soul	FODDSOUL
+
+ZFlesh/Throw	FODDATK
+ZFlesh/Miss		FODDMISS
+ZFlesh/Hit		FODDHIT
+//<< PK3T ZombieFodder END >>//

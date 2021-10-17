@@ -64,13 +64,43 @@ class LevelHelper : Thinker
         return "";
     }
     
-    static int IsOnWetFloor(Actor actor) {
-        String textureName = GetActorFloorTexture(actor);
-        String wetFloors = "F_WATER1, NUKAGE1";
-        if (wetFloors.indexOf(textureName) > -1) {
-            return 1;
+    static bool PlayerCanMoveTo(Actor activator, double stepX, double stepY) {
+        int initialX = activator.pos.x;
+        int initialY = activator.pos.y;
+        int currentZ = activator.pos.z;
+        
+        int testX;
+        int testY;
+        //Check in 16th-bigtile steps for any barriers (therefore, all walls must be 16mu+ thick)
+        for (double i = (1.0/16); i <= 1.0; i += (1.0/16)) {
+            testX = initialX + (128*i*stepX);
+            testY = initialY + (128*i*stepY);
+            int testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
+            int testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
+            //Check with checkMove
+            if (!activator.CheckMove((testX, testY))) { console.printf("DEBUG: CheckMove returned false, rejecting"); return false; }
+            //Is this point inside the level?
+            if(!level.IsPointInLevel((testX, testY, testZFloor))) { console.printf("DEBUG: Point not in level, rejecting"); return false; }
+            //Is this point in a place the player could fit?
+            if(testZCeiling - testZFloor < 56) { console.printf("DEBUG: Point too small for player, rejecting"); return false; }
+            //Is this point greater than a 16-unit jump from the last point we checked?
+            if(testZFloor-currentZ > 16 || testZFloor-currentZ < -16) { console.printf("DEBUG: Journey has more than 16-unit jump"); return false; }
+            currentZ = testZFloor;
         }
-        return 0;
+        return true;
+    }
+    
+    static String GetFloorSound(Actor actor) {
+        String textureName = GetActorFloorTexture(actor);
+        String wetFloors = "FWATER1 NUKAGE1 SLIME01";
+        String grassyFloors = "GRASS2";
+        if (wetFloors.indexOf(textureName) > -1) {
+            return "po/tread/water";
+        }
+        if (grassyFloors.indexOf(textureName) > -1) {
+            return "po/tread/natural";
+        }
+        return "po/tread/general";
     }
     
     static int IsOnDamagingFloor(Actor actor) {
@@ -117,7 +147,7 @@ class LevelHelper : Thinker
             if (s.getClassName() != "POWeaponSlotEmpty") {
                 POWeapon weapon = POWeapon(activator.GiveInventoryType("POWeapon" .. i+1));
                 if (weapon) {
-                    weapon.changeWeaponType(s.myType(), "");
+                    weapon.changeWeaponType(s.myType(), s.myElement());
                 } else {
                     console.printf("Failed to add weapon %s", "POWeapon" .. i+1);
                 }

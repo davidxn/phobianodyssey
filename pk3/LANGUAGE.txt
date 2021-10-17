@@ -1,7 +1,7 @@
 [enu default]
 
 CONV_START_UNEASE_1 = "An uneasy sensation crawls along your spine as you wander the tunnels. You don't think you're alone in here.";
-CONV_START_UNEASE_2 = "\ckBe prepared and watch the danger meter on the right - the higher it is, the greater the chance of an encounter!";
+CONV_START_UNEASE_2 = "\ckBe prepared and watch the danger meter on the right - when it reaches the top you'll encounter monsters!";
 CONV_START_UNEASE_3 = "STOP";
 
 CONV_START_PISTOL_1 = "Beginning to get used to your new method of ambulation as you walk between the pits, you discover another marine with his vital organs conspicuously absent.";
@@ -38,15 +38,30 @@ CONV_START_INVENTORY_3 = "STOP";
 
 CONV_OPEN_MAINDOOR_1 = "As you step on the button, the familiar grinding of machinery starts up from the entrance.";
 CONV_OPEN_MAINDOOR_2 = "With relief, you see the bars blocking the door lowering, offering you an escape from this strange cave.";
-CONV_OPEN_MAINDOOR_3 = "Who knows what lies outside? You hope that nothing aborts the ZScript VM by trying to read from address zero or anything before you find out...";
+CONV_OPEN_MAINDOOR_3 = "But who knows what lies outside? Steeling yourself, you venture forward to find what new and hideous corner of hell you've landed yourself in now...";
 CONV_OPEN_MAINDOOR_4 = "STOP";
 
 CONV_NO_SKULL_KEY_1 = "A strange carving is set into the wall here. It looks like it could be switched, toggled or messed with somehow.";
 CONV_NO_SKULL_KEY_2 = "Try as you might, you can't seem to get it to react. Reluctantly, you move on.";
 CONV_NO_SKULL_KEY_3 = "STOP";
 
+CONV_MAP3_BAG_1 = "In the glow of the candlelight ahead, you see a coin purse discarded conspicuously on the ground.";
+CONV_MAP3_BAG_2 = "It's up to you whether you want to approach it...";
+CONV_MAP3_BAG_3 = "STOP";
+
+CONV_MAP3_BAG_PICKUP_1 = "You stay as far back as you can and stretch your fingers, reaching slowly for the bag...";
+CONV_MAP3_BAG_PICKUP_2 = "As soon as your fingers brush it, you recoil as it jumps away!";
+CONV_MAP3_BAG_PICKUP_3 = "An annoyed-looking mouse wriggles out of it and scurries off, leaving the otherwise empty bag on the floor.";
+CONV_MAP3_BAG_PICKUP_4 = "Letting out your breath, you straighten up again and leave it behind.";
+CONV_MAP3_BAG_PICKUP_5 = "STOP";
+
+CONV_MAP3_BAG_3 = "STOP";
+
 INV_MFIMedikit = "Restores 50hp when used, up to a maximum of 100hp";
 INV_MFIStimpack = "Restores 20hp when used, up to a maximum of 100hp";
 INV_MFIRadsuit = "Allows you to walk on damaging floors without injury for 30 moves";
 INV_MFIMegasphere = "Completely fills your life to 200hp, no questions asked";
+INV_MFIAmmoBox = "Adds 25 bullets to your supply when used";
+INV_MFISoulsphere = "Grants 100hp when used. Can heal beyond your normal capacity up to a maximum of 200hp";
+INV_MFIHomingDevice = "Use this to return to Tharotia whenever you're in a tight spot. Essential for dungeon crawling!";
 INV_MFIEmpty = "";

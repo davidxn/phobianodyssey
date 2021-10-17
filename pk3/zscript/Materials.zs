@@ -7,7 +7,7 @@ class PoDanger : Inventory
 
 class PoCoin : Inventory {
   default {
-    Inventory.MaxAmount 999;
+    Inventory.MaxAmount 999999999;
   }
 }
 
@@ -94,7 +94,7 @@ class POClip5 : POClip1
 class POShell2 : POAmmo
 {
     default {
-        Inventory.Amount 1;
+        Inventory.Amount 2;
         Inventory.PickupSound "po/ammo1";
         Inventory.PickupMessage "Shells";
         POAmmo.SpriteName "A003";
@@ -105,10 +105,10 @@ class POShell2 : POAmmo
     }
 }
 
-class POShell6 : POShell2
+class POShell4 : POShell2
 {
   default {
-      Inventory.Amount 5;
+      Inventory.Amount 4;
       Inventory.PickupSound "po/ammo2";
       POAmmo.SpriteName "A004";
   }

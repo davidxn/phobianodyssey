@@ -14,3 +14,7 @@
 #include "zscript/pk3t/ZombieScientistHeadless/ZombieScientistHeadless.txt"
 
 //<< PK3T ZombieScientistHeadless END >>//
+//<< PK3T ZombieFodder START >>//
+#include "zscript/pk3t/ZombieFodder/ZombieFodder.txt"
+
+//<< PK3T ZombieFodder END >>//

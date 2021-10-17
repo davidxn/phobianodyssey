@@ -1,0 +1,114 @@
+type = "Doom Builder Map Settings Configuration";
+gameconfig = "GZDoom_Phobian.cfg";
+strictpatches = 0;
+
+maps
+{
+	
+	MAP01
+	{
+		defaultwalltexture = "STARBR2";
+		overridemiddletexture = false;
+		defaultceiltexture = "0ROCKR01";
+		overrideceiltexture = false;
+		custombrightness = 196;
+		scriptcompiler = "zdoom_acs.cfg";
+		
+		resources
+		{
+		}
+		viewpositiony = 1261.737f;
+		viewpositionx = 1369.517f;
+		
+		testprecommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		customceilheight = 128;
+		customfloorheight = 0;
+		
+		grid
+		{
+			backoffsetx = -320;
+			backsource = 2;
+			gridoriginy = 0;
+			backscaley = 200;
+			gridrotate = 0;
+			backscalex = 200;
+			gridoriginx = 0;
+			gridsize = 32;
+			background = "E:\\DoomWork\\phobianodyssey\\rpggrid.png";
+			backoffsety = -320;
+		}
+		viewscale = 0.5550231f;
+		
+		reloadresourceprecommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		defaulttoptexture = "STARBR2";
+		overridebottomtexture = false;
+		defaultbottomtexture = "STARBR2";
+		defaultfloortexture = "0SANDB02";
+		overrideceilheight = false;
+		overridebrightness = false;
+		
+		testpostcommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		overridefloorheight = false;
+		overridetoptexture = false;
+		uselongtexturenames = false;
+		overridefloortexture = false;
+		
+		reloadresourcepostcommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		fieldtypes
+		{
+			
+			linedef
+			{
+				arg0str = 2;
+			}
+			
+			sidedef
+			{
+				offsetx_mid = 1;
+				offsety_mid = 1;
+				offsetx_top = 1;
+				offsety_top = 1;
+				offsetx_bottom = 1;
+				offsety_bottom = 1;
+				light = 0;
+			}
+			
+			sector
+			{
+				xpanningceiling = 1;
+				ypanningceiling = 1;
+				rotationceiling = 1;
+				xscaleceiling = 1;
+				yscaleceiling = 1;
+				xpanningfloor = 1;
+				ypanningfloor = 1;
+				rotationfloor = 1;
+				xscalefloor = 1;
+				yscalefloor = 1;
+				fadecolor = 0;
+				lightceiling = 0;
+			}
+		}
+	}
+}

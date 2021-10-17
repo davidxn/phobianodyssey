@@ -3,11 +3,13 @@
 3=ImpParty,ImpSquad,DevilTrio
 4=DevilTrio,SciImps1,SciImps2,ScientistHeadless
 5=ScientistHead1,ZombieWeak2,Zombiemen4,ScientistHeadless,IntroMixture,ScientistHead2
-6=
-7=ZombieWeak,ZombieWeak2
-8=
+6=Fodder3,Zombiemen4,Fodder2,HazmatSquadEasy,Zombiemen3,Fodder3
+7=ZombieWeak,ZombieWeak2,ZombieWeak3
+8=Fodder1,Fodder2,Fodder1,Fodder2,Fodder3
 9=IntroMixture,ScientistHead2,HazmatSquad,Zombiemen5
 10=CleanupCrew
 11=ScientistHead1,HazmatSquad
+12=ScientistHead2,ScientistHead2,ScientistHead1,ScientistHead1,Zombiemen3
+13=
 1001=FOEBarons
 1002=ImpParty

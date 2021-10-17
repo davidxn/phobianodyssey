@@ -96,9 +96,11 @@ class POWeapon : Weapon {
 		PISG A 1 A_Raise(12);
 		Loop;
 	FirePistol:
+        PISG A 0 A_JumpIfNoAmmo("ReadyPistol");
 		PISG A 4;
         PISG B 0 A_PlaySound("weapons/pistol", CHAN_WEAPON);
-		PISG B 0 A_FireBullets (3.5, 0.5, 1, 8 + random(0,5), "BulletPuff", FBF_NORANDOM);
+		PISG B 0 firePistolBullets();
+        PISG B 0 A_TakeInventory("Clip", 1);
         PISG B 6 A_GunFlash;
 		PISG C 4;
 		PISG B 5 A_ReFire;
@@ -184,6 +186,12 @@ class POWeapon : Weapon {
 
 	}
     
+    action void firePistolBullets() {
+        String x = ("BulletPuff" .. invoker.myElement);
+        console.printf("Will spawn: " .. x);
+        A_FireBullets(3.5, 0.5, 1, 8 + random(0,5), x, FBF_NORANDOM);
+    }
+    
     void changeWeaponType(String type, String element) {
         self.myWeaponType = type;
         if (type == "Pistol" || type == "Chaingun") {
@@ -198,6 +206,11 @@ class POWeapon : Weapon {
         if (type == "PlasmaRifle") {
             self.AmmoType1 = "Cell";
         }
+        
+        element = element ? element : "None";
+        self.myElement = element;
+        console.printf("Element is %s", self.myElement);
+        self.DamageType = element;
     }
 }
 
@@ -222,3 +235,38 @@ class POWeapon5 : POWeapon {
         Weapon.SlotNumber 5;
     }
 }
+
+class PlasmaBallNone : PlasmaBall replaces PlasmaBall { Default { DamageType "None"; } }
+class PlasmaBallBlue : PlasmaBall {
+    Default {
+        Translation "192:207=192:199";
+        DamageType "Blue";
+    }
+}
+
+class PlasmaBallRed : PlasmaBall {
+    Default {
+        Translation "192:207=168:191";
+        DamageType "Red";
+    }
+}
+
+class PlasmaBallGreen : PlasmaBall {
+    Default {
+        Translation "192:207=112:127";
+        DamageType "Green";
+    }
+}
+
+class PlasmaBallYellow : PlasmaBall {
+    Default {
+        Translation "192:207=224:231";
+        DamageType "Yellow";
+    }
+}
+
+class BulletPuffNone : BulletPuff replaces BulletPuff { Default { DamageType "None"; } }
+class BulletPuffBlue : BulletPuff { Default { DamageType "Blue"; } }
+class BulletPuffRed : BulletPuff { Default { DamageType "Red"; } }
+class BulletPuffGreen : BulletPuff { Default { DamageType "Green"; } }
+class BulletPuffYellow : BulletPuff { Default { DamageType "Yellow"; } }

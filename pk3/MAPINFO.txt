@@ -10,6 +10,7 @@ clearepisodes
 DoomEdNums {
     2200 = POChest
     2300 = FOE
+    2400 = CoinBag
     9002 = BattleStart
     9003 = MonsterStart
     9004 = MonsterTurner
@@ -18,10 +19,27 @@ DoomEdNums {
     9007 = MapDescriber
     9008 = EventSpot
     2301 = FireballTrap
+    
+    15420 = SmallBush
+    15421 = SemiLargeTree
+    15422 = LargeTree
 }
 
-episode MAP01 {
-    noskillmenu
+episode MAPCAVE1 {
+}
+
+clearskills
+
+skill STANDARD {
+    Name = "Standard"
+    SpawnFilter = 4
+    ACSReturn = 3
+}
+
+skill ALLOWMAP {
+    Name = "Allow automap"
+    SpawnFilter = 4
+    ACSReturn = 1
 }
 
 cluster 1 {
@@ -38,36 +56,47 @@ defaultmap
     NoIntermission
 }
 
-map MAP01 "Surface Cave" {
+map MAPCAVE1 "Surface Cave" {
 	levelnum = 1
     NoJump
     NoCrouch
 }
 
-map MAP02 "Mysterious Base" {
+map MAPBASE1 "Mysterious Base" {
 	levelnum = 2
     NoJump
     NoCrouch
 }
 
-map MAP03 "Undercaves" {
+map MAPCAVE2 "Undercaves" {
 	levelnum = 3
     NoJump
     NoCrouch
 }
 
-map MAP04 "Maintenance Tunnels" {
+map MAPTUNN "Maintenance Tunnels" {
 	levelnum = 4
     NoJump
     NoCrouch
 }
 
-map ARENA1 "Cave Arenas" {
+map MAPTOWN "Tharotia" {
+	levelnum = 5
+    NoJump
+    NoCrouch
+}
+
+map ARNCAVES "Combat: Caves" {
     levelnum = 101
     music = POFIGHT
 }
 
-map ARENA2 "Blue Base Arenas" {
+map ARNBASE1 "Combat: Blue Base" {
     levelnum = 102
+    music = POFIGHT
+}
+
+map ARNTUNN "Combat: Tunnels" {
+    levelnum = 103
     music = POFIGHT
 }

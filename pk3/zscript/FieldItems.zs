@@ -64,10 +64,20 @@ class POChest : FloatingSkull
             case 2: containedItem = new("MFIRadsuit"); break;
             case 3: containedItem = new("MFIMedikit"); break;
             case 4: containedItem = new("MFIStimpack"); break;
+            case 5: containedItem = new("MFIAmmoBox"); break;
+            case 6: containedItem = new("MFISoulsphere"); break;
         }
         containedCoins = self.args[1];
         containedAmmo = self.args[2];
         containedAmmoType = self.args[3];
+    }
+}
+
+class CoinBag : FloatingSkull
+{
+    states {
+        Spawn:
+            M002 A -1;
     }
 }
 
@@ -105,4 +115,43 @@ class FireballTrap : FloatingSkull
         }
         super.Tick();
     }
+}
+
+class SmallBush : Actor
+{
+    Default {
+        //$category "Obstacles"
+        Radius 15;
+        Height 160;
+        +SOLID;
+    }
+	States
+	{
+		Spawn:
+			LMAO A -1;
+	}
+}
+
+class SemiLargeTree : Actor
+{
+    Default {
+        //$category "Obstacles"
+        Radius 15;
+        Height 180;
+        +Solid;
+    }
+	States
+	{
+		Spawn:
+		 HOHO A -1;
+	}
+}
+
+class LargeTree : Actor
+{
+	States
+	{
+		Spawn:
+		 TIHI A -1;
+	}
 }

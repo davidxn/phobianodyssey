@@ -9,4 +9,6 @@ DoomEdNums {
     3213 = ZombieScientistPlasma
     3101 = BloodDemon
     3214 = ZombieScientistHeadless
+    3250 = ZombieFodder
+    3251 = QuakeFodder
 }

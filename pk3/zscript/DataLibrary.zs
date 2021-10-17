@@ -8,6 +8,7 @@ class DataLibrary : Thinker
     Array<POWeaponSlot> weaponSlots;
     int inventorySize;
     POChest chestToOpen;
+    Array<MFInventoryItem> itemShopInventory;
     
     //Quick, make this a static thinker when we initialize
     DataLibrary Init(void)
@@ -18,11 +19,17 @@ class DataLibrary : Thinker
         monsterPops = Dictionary.Create();
         inventorySize = 4;
         
+
         //Set up inventory slots
         for (int i = 0; i < inventorySize; i++) {
             MFInventoryItem newItem = MFInventoryItem(new("MFIEmpty")).Init();
             MFinventory.Push(newItem);
         }
+        
+        itemShopInventory.push(new("MFIStimpack").Init());
+        itemShopInventory.push(new("MFIMedikit").Init()); 
+        itemShopInventory.push(new("MFIAmmoBox").Init()); 
+        itemShopInventory.push(new("MFIHomingDevice").Init());
         
         //Set up weapon slots
         weaponSlots.push(new("POWeaponSlotFist").Init());
@@ -99,9 +106,11 @@ class DataLibrary : Thinker
     //Static methods for calling from ACS - these will create an instance of the thinker if it doesn't already exist
     static void WriteData(Actor activator, String position, String value) { DataLibrary.inst().dic.Insert(position, value); }
     
-    static String ReadData(String position) { return DataLibrary.inst().dic.At(position); }
-    static int ReadInt(String position) { return DataLibrary.inst().dic.At(position).ToInt(); }
-    static double ReadDouble(String position) { return DataLibrary.inst().dic.At(position).ToDouble(); }
+    static clearscope void WriteDataFromUI(String position, String value) { DataLibrary.GetInstance().dic.Insert(position, value); }
+    
+    static clearscope String ReadData(String position) { return DataLibrary.GetInstance().dic.At(position); }
+    static clearscope int ReadInt(String position) { return DataLibrary.GetInstance().dic.At(position).ToInt(); }
+    static clearscope double ReadDouble(String position) { return DataLibrary.GetInstance().dic.At(position).ToDouble(); }
     
     static bool InventoryAdd(String classname, int slot) {
         let thing = MFInventoryItem(new(classname)).Init();
@@ -199,7 +208,7 @@ class DataLibrary : Thinker
     
         //To choose a monster party, get the population ID of this square
         String key = "MP-" .. mapnum .. "-" .. square;
-        String popId = DataLibrary.inst().dic.At(key);
+        String popId = DataLibrary.GetInstance().ReadData(key);
 
         //Ask the monsterpop dictionary which parties correspond to this population ID
         //console.printf("DEBUG: Key %s has monster population ID %s", key, popId);
@@ -231,7 +240,7 @@ class DataLibrary : Thinker
     static int ReadDangerValue(int mapnum, int square)
     {
         String key = "DN-" .. mapnum .. "-" .. square;
-        int value = DataLibrary.inst().dic.At(key).ToInt();
+        int value = DataLibrary.ReadInt(key);
         return value;
     }
     

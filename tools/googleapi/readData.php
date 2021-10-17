@@ -7,8 +7,8 @@ $rgbMap = [
     '255 255 255' => '0',
     '217 234 211' => '0',
     '147 196 125' => '9',
-    '255 229 153' => '14',
-    '191 144 255' => '19', //255 is a miscalculation here but who cares!
+    '255 229 153' => '11',
+    '191 144 255' => '20', //255 is a miscalculation here but who cares!
 ];
 
 if (php_sapi_name() != 'cli') {

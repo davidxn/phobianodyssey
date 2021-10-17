@@ -1,11 +1,17 @@
 CleanupCrew,Cleanup_Crew,NONE,NONE,NONE,NONE,HazmatZombie,HazmatZombie,HazmatZombie,NONE,NONE,NONE
 ZombieWeak,Wandering_Zombies,NONE,NONE,ZombieMan,NONE,NONE,HazmatZombie,NONE,HazmatZombie,NONE,NONE
 ZombieWeak2,Lost_Zombies,NONE,HazmatZombie,NONE,NONE,HazmatZombie,NONE,ZombieMan,NONE,ZombieMan,NONE
+ZombieWeak3,Rotten_Zombies,HazmatZombie,NONE,NONE,NONE,ZombieMan,ZombieMan,HazmatZombie,HazmatZombie,NONE,NONE
 ScientistHead1,Confused_Zombies,NONE,NONE,NONE,ZombieMan,NONE,HazmatZombie,NONE,ZombieMan,NONE,ZombieScientistHeadless
 ScientistHead2,Aggressive_Zombies,HazmatZombie,ZombieMan,HazmatZombie,NONE,NONE,NONE,ZombieScientistHeadless,NONE,NONE,NONE
 IntroMixture,Demonic_Variety_Pack,NONE,HazmatZombie,NONE,HazmatZombie,NONE,ZombieMan,NONE,NONE,ZombieScientistHeadless,DoomImp
+Zombiemen3,Zombie_Trio,NONE,NONE,NONE,NONE,NONE,ZombieMan,NONE,ZombieMan,NONE,ZombieMan
 Zombiemen4,Four_Zombiemen,NONE,NONE,ZombieMan,NONE,ZombieMan,NONE,ZombieMan,NONE,ZombieMan,NONE
 Zombiemen5,Five_Zombiemen,NONE,NONE,NONE,NONE,ZombieMan,ZombieMan,ZombieMan,ZombieMan,NONE,ZombieMan
+HazmatSquadEasy,Security_Patrol,NONE,HazmatZombie,NONE,HazmatZombie,NONE,ZombieMan,ZombieMan,NONE,ZombieScientistHeadless,NONE
+Fodder1,Underlings,ZombieFodder,ZombieFodder,ZombieFodder,ZombieFodder,ZombieFodder,ZombieFodder,NONE,NONE,NONE,NONE
+Fodder2,Mediumlings,NONE,ZombieFodder,NONE,ZombieFodder,ZombieFodder,QuakeFodder,NONE,QuakeFodder,NONE,QuakeFodder
+Fodder3,Overlings,QuakeFodder,NONE,ZombieFodder,NONE,NONE,QuakeFodder,QuakeFodder,QuakeFodder,DoomImp,NONE
 HazmatSquad,Hazmat_Squad,NONE,NONE,ZombieMan,HazmatZombie,HazmatZombie,HazmatZombie,ZombieMan,NONE,ZombieScientistHeadless,ZombieScientistHeadless
 ZombieSquad,Zombie_Squad,ZombieMan,NONE,NONE,ShotgunGuy,NONE,ZombieMan,ZombieMan,ZombieMan,NONE,ZombieMan
 ZombieDet,Zombie_Detachment,NONE,ZombieMan,ZombieMan,ShotgunGuy,NONE,ZombieMan,ZombieMan,NONE,NONE,NONE

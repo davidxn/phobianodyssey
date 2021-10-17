@@ -23,18 +23,24 @@ int squareNum;
 
 //Cheats/debug
 script "poarsenal" (int type, int element) {
-    str weapons[5] = {"Pistol", "Shotgun", "Chaingun", "RocketLauncher", "PlasmaRifle"};
+    str weapons[5] = {"Pistol", "Shotgun", "Chaingun", "Launcher", "Plasma"};
     str typestring = weapons[type];
-    str elements[5] = {"None", "Fire", "Ice", "Lightning", "Poison"};
+    str elements[5] = {"None", "Blue", "Red", "Green", "Yellow"};
     str elementstring = elements[element];
     ScriptCall("DataLibrary", "AddWeapon", typestring, elementstring);
 }
 
 script "powish" (int type) {
-    str items[4] = {"MFIMegasphere", "MFIRadsuit", "MFIMedikit", "MFIStimpack"};
+    str items[8] = {"MFIEmpty", "MFIMegasphere", "MFIRadsuit", "MFIMedikit", "MFIStimpack", "MFIAmmoBox", "MFISoulsphere", "MFIHomingDevice"};
     str typestring = items[type];
     ScriptCall("DataLibrary", "InventoryAdd", typestring, -1);
 }
+
+script "powonga" (int amount) {
+    GiveInventory("POCoin", amount);
+}
+
+//////////////////////////////////////////////////
 
 script "return" RETURN {
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
@@ -75,29 +81,27 @@ script "enter" ENTER {
     }
 }
 
-script "openChest" (int chestNumber) {
-	SetActorState(0, "Opened");
-}
-
-script "listenInventory" ENTER {
-    while (true) {
-		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
-		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
-        if (buttons & BT_USER2 || !oldButtons & BT_USER2) {
-            showingInventory = ScriptCall("DataLibrary", "ReadInt", "showInvScreen");
-            showingInventory = !showingInventory;
-            PlaySound(0, "po/inventory/open", CHAN_AUTO);
-            ScriptCall("DataLibrary", "WriteData", "showInvScreen", StrParam(d:showingInventory));
-            delay(2);
-        }
-        delay(2);
-    }
+script "useHomingDevice" (void) {
+    //TODO Something special in here - count down if in battle
+    ScriptCall("DataLibrary", "WriteData", "FieldSquare", "11215");
+    ScriptCall("DataLibrary", "WriteData", "FieldAngle", "0");
+	FadeTo(1.0, 1.0, 1.0, 1.0, 1.0);
+    delay(35);
+    FadeTo(0.0, 0.0, 0.0, 1.0, 2.0);
+    delay(70);
+    Teleport_NewMap(5, 0, 0);
+    
 }
 
 script "rpgMovement" (void) {
 
     delay(15);
-    SetMusic("POEXPLR");
+    
+    if (GetLevelInfo(LEVELINFO_LEVELNUM) == 5) {
+        SetMusic("POTOWN");
+    } else {
+        SetMusic("POEXPLR");
+    }
 
 	int i;
 	while (true) {
@@ -105,6 +109,7 @@ script "rpgMovement" (void) {
 		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
 		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
 		if (buttons & BT_LEFT) {
+            SetPlayerProperty(1, 1, PROP_TOTALLYFROZEN);
 			SetActorAngle(0, quantizeAngle(GetActorAngle(0)));
 			int targetAngle = GetActorAngle(0) + 0.25;
 			for (i = 0; i < ANGLE_QUARTER_TURN/TURN_RATE; i++) {
@@ -113,8 +118,10 @@ script "rpgMovement" (void) {
 			}
 			ChangeActorAngle(0, targetAngle);
 			delay(2);
+            SetPlayerProperty(1, 0, PROP_TOTALLYFROZEN);
 		}
 		if (buttons & BT_RIGHT) {
+            SetPlayerProperty(1, 1, PROP_TOTALLYFROZEN);
 			SetActorAngle(0, quantizeAngle(GetActorAngle(0)));
 			targetAngle = GetActorAngle(0) - 0.25;
 			for (i = 0; i < ANGLE_QUARTER_TURN/TURN_RATE; i++) {
@@ -123,6 +130,7 @@ script "rpgMovement" (void) {
 			}
 			ChangeActorAngle(0, targetAngle);
 			delay(2);
+            SetPlayerProperty(1, 0, PROP_TOTALLYFROZEN);
 		}
 		if (buttons & BT_FORWARD || buttons & BT_BACK || buttons & BT_MOVELEFT || buttons & BT_MOVERIGHT) {
 
@@ -150,26 +158,13 @@ script "rpgMovement" (void) {
 			int playerX = GetActorX(0);
 			int playerY = GetActorY(0);
 			int playerZ = GetActorZ(0);
-
-            bool canMove = true;
-			//Check if next tile and points towards it are free
-			for (i = 0.125; i <= 1.0; i += 0.125) {
-                canMove &= ScriptCall("LevelHelper", "IsPointInLevel", playerX + step_x * FixedMul(TILE_SIZE, i), playerY + step_y * FixedMul(TILE_SIZE, i), GetActorZ(0) + (24<<16));
-            }
             
-            if (!canMove) { continue; }
+            bool canMove = ScriptCall("LevelHelper", "PlayerCanMoveTo", step_x, step_y);
+            str me = canMove ? "" : "\cgNOT ";
             
-			for (i = 0.125; i <= 1.0; i+= 0.125) {
-				bool wasSpawned = SpawnForced("MapSpot", playerX + step_x * FixedMul(TILE_SIZE, i), playerY + step_y * FixedMul(TILE_SIZE, i), GetActorZ(0) + (16<<16), 999);
-				int nextSquareZDiff = (GetActorFloorZ(999)>>16) - (GetActorZ(0)>>16);
-				canMove &= !(nextSquareZDiff >= 32 || nextSquareZDiff <= -32);
-				Thing_Remove(999);
-			}
-
 			if (!canMove) { continue; }
             
-            if (ScriptCall("LevelHelper", "IsOnWetFloor")) { PlaySound(0, "po/treadwater", CHAN_AUTO); }
-            else {                                           PlaySound(0, "po/tread", CHAN_AUTO);      }
+            PlaySound(0, ScriptCall("LevelHelper", "GetFloorSound"), CHAN_AUTO);
 
             //Move the player forward, incrementing Z as needed
 			for (i = 0; i < TILE_SIZE/STEP_RATE; i++) {

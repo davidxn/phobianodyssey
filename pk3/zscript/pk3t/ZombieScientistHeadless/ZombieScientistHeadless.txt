@@ -71,7 +71,7 @@ Class ZombieScientistHeadless : POMonster
     {
       shots=random(3, 5);
       A_FaceTarget();
-	  baseangle=angle;
+	  baseangle=int(angle);
       A_SetAngle(baseangle+random(-25, 25));
     }
   MissileLoop:
@@ -112,14 +112,15 @@ Class ZombieScientistHeadless : POMonster
   
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
         poDropItemWithProbability("PoClip5", 80);
-        poDropItemWithProbability("PoClip1", 90);
-        poDropItemWithProbability("PoClip5", 60);
+        poDropItemWithProbability("PoClip1", 60);
+        poDropItemWithProbability("PoClip1", 50);
+        poDropItemWithProbability("PoClip1", 40);
 
         poDropItemWithProbability("PoCoin5", 100);
         poDropItemWithProbability("PoCoin5", 30);
         poDropItemWithProbability("PoCoin1", 90);
         
-        poDropItemWithProbability("PoHeal5", 60);
+        poDropItemWithProbability("PoHeal5", 30);
 
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
