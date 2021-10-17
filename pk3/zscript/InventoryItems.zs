@@ -96,7 +96,7 @@ class MFIAmmoBox : MFInventoryItem {
     override int getSellPrice() { return 25; }
     override bool use() {
         PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
-        p.GiveInventory("Clip", 25);
+        p.GiveInventory("POClip", 25);
         p.A_PlaySound("po/reload");
         return true;
     }

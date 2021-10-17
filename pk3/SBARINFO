@@ -18,15 +18,15 @@ StatusBar normal, forcescaled
 	DrawNumber 3, HUDFONT_DOOM, Untranslated, Ammo1, alignment(center), 271, 180;
 	    
     //Ammo
-    DrawBar "STAMB", "STAME", ammo(Clip), horizontal, interpolate(8), 296, 168;
-    DrawBar "STAMS", "STAME", ammo(Shell), horizontal, interpolate(8), 296, 176;
-    DrawBar "STAMR", "STAME", ammo(RocketAmmo), horizontal, interpolate(8), 296, 184;
-    DrawBar "STAMC", "STAME", ammo(Cell), horizontal, interpolate(8), 296, 192;
+    DrawBar "STAMB", "STAME", ammo(POClip), horizontal, interpolate(8), 296, 168;
+    DrawBar "STAMS", "STAME", ammo(POShell), horizontal, interpolate(8), 296, 176;
+    DrawBar "STAMR", "STAME", ammo(PORocket), horizontal, interpolate(8), 296, 184;
+    DrawBar "STAMC", "STAME", ammo(POCell), horizontal, interpolate(8), 296, 192;
     
-	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Clip), alignment(center), 312, 169;
-	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Shell), alignment(center), 312, 177;
-	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(RocketAmmo), alignment(center), 312, 185;
-	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(Cell), alignment(center), 312, 193;
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(POClip), alignment(center), 312, 169;
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(POShell), alignment(center), 312, 177;
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(PORocket), alignment(center), 312, 185;
+	drawnumber 3, INDEXFONT_DOOM, untranslated, ammo(POCell), alignment(center), 312, 193;
     
     //Coins
     drawnumber 6, INDEXFONT_DOOM, untranslated, POCoin, alignment(right), interpolate(8), 288, 170;

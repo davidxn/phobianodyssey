@@ -40,10 +40,10 @@ class POChest : FloatingSkull
             }
             if (self.containedAmmo) {
                 switch (self.containedAmmoType) {
-                    case 2: user.GiveInventory("Shell", containedAmmo); break;
-                    case 3: user.GiveInventory("RocketAmmo", containedAmmo); break;
-                    case 4: user.GiveInventory("Cell", containedAmmo); break;
-                    default: user.GiveInventory("Clip", containedAmmo); break;
+                    case 2: user.GiveInventory("POShell", containedAmmo); break;
+                    case 3: user.GiveInventory("PORocket", containedAmmo); break;
+                    case 4: user.GiveInventory("POCell", containedAmmo); break;
+                    default: user.GiveInventory("POClip", containedAmmo); break;
                 }
                 
             }

@@ -44,8 +44,6 @@ class POWeapon : Weapon {
         Weapon.SlotNumber 2;
         
         Weapon.SelectionOrder 1900;
-		Weapon.AmmoUse 1;
-		Weapon.AmmoType "Clip";
 		Obituary "$OB_MPPISTOL";
 		+WEAPON.WIMPY_WEAPON;
 		Inventory.Pickupmessage "$PICKUP_PISTOL_DROPPED";
@@ -100,7 +98,7 @@ class POWeapon : Weapon {
 		PISG A 4;
         PISG B 0 A_PlaySound("weapons/pistol", CHAN_WEAPON);
 		PISG B 0 firePistolBullets();
-        PISG B 0 A_TakeInventory("Clip", 1);
+        PISG B 0 A_TakeInventory("POClip", 1);
         PISG B 6 A_GunFlash;
 		PISG C 4;
 		PISG B 5 A_ReFire;
@@ -120,6 +118,7 @@ class POWeapon : Weapon {
         SHTG A 1;
         SHTG A 0 A_FireBullets (5.6, 0, 7, 15 + random(0,5), "BulletPuff", FBF_NORANDOM);
         SHTG A 0 A_PlaySound ("weapons/shotgf", CHAN_WEAPON);
+        SHTG A 0 A_TakeInventory("POShell", 1);
         SHTG A 7 A_GunFlash;
         SHTG BC 5;
         SHTG D 4;
@@ -235,38 +234,3 @@ class POWeapon5 : POWeapon {
         Weapon.SlotNumber 5;
     }
 }
-
-class PlasmaBallNone : PlasmaBall replaces PlasmaBall { Default { DamageType "None"; } }
-class PlasmaBallBlue : PlasmaBall {
-    Default {
-        Translation "192:207=192:199";
-        DamageType "Blue";
-    }
-}
-
-class PlasmaBallRed : PlasmaBall {
-    Default {
-        Translation "192:207=168:191";
-        DamageType "Red";
-    }
-}
-
-class PlasmaBallGreen : PlasmaBall {
-    Default {
-        Translation "192:207=112:127";
-        DamageType "Green";
-    }
-}
-
-class PlasmaBallYellow : PlasmaBall {
-    Default {
-        Translation "192:207=224:231";
-        DamageType "Yellow";
-    }
-}
-
-class BulletPuffNone : BulletPuff replaces BulletPuff { Default { DamageType "None"; } }
-class BulletPuffBlue : BulletPuff { Default { DamageType "Blue"; } }
-class BulletPuffRed : BulletPuff { Default { DamageType "Red"; } }
-class BulletPuffGreen : BulletPuff { Default { DamageType "Green"; } }
-class BulletPuffYellow : BulletPuff { Default { DamageType "Yellow"; } }

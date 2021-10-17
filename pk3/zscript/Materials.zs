@@ -66,6 +66,30 @@ class POAmmo : Ammo {
 
 }
 
+class POClip : Ammo {
+    default {
+        Inventory.MaxAmount 60;
+    }
+}
+
+class POShell : Ammo {
+    default {
+        Inventory.MaxAmount 25;
+    }
+}
+
+class PORocket : Ammo {
+    default {
+        Inventory.MaxAmount 10;
+    }
+}
+
+class POCell : Ammo {
+    default {
+        Inventory.MaxAmount 50;
+    }
+}
+
 class POClip1 : POAmmo
 {
     default {
@@ -76,7 +100,7 @@ class POClip1 : POAmmo
     }
     
     override Class<Ammo> GetParentAmmo () {
-        return (class<Ammo>) ("Clip");
+        return (class<Ammo>) ("POClip");
     }
 }
 
@@ -101,7 +125,7 @@ class POShell2 : POAmmo
     }
     
     override Class<Ammo> GetParentAmmo () {
-        return (class<Ammo>) ("Shell");
+        return (class<Ammo>) ("POShell");
     }
 }
 

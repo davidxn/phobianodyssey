@@ -106,6 +106,7 @@ script "rpgMovement" (void) {
 	int i;
 	while (true) {
 		delay(1);
+        ScriptCall("DataLibrary", "WriteData", "BlockUseKey", "0");
 		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
 		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
 		if (buttons & BT_LEFT) {
@@ -164,6 +165,8 @@ script "rpgMovement" (void) {
             
 			if (!canMove) { continue; }
             
+            //We can move! Let's start
+            ScriptCall("DataLibrary", "WriteData", "BlockUseKey", "1");
             PlaySound(0, ScriptCall("LevelHelper", "GetFloorSound"), CHAN_AUTO);
 
             //Move the player forward, incrementing Z as needed
@@ -242,7 +245,9 @@ script "rpgMovement" (void) {
 			}
 
 			//We're safe!
+            ScriptCall("DataLibrary", "WriteData", "BlockUseKey", "0");
 			delay(2);
+            
 		}
 	}
 }

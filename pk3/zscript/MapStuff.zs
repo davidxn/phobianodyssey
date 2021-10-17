@@ -62,3 +62,19 @@ class MonsterStart : MapSpot
     }
 }
 
+class HealthRegenerator : MapSpot
+{
+    default {
+        //$Sprite MEDIA0
+    }
+    
+    override void Tick() {
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        console.printf("%d", p.health);
+        if (p.health < 100) {
+            p.GiveInventory("Health", 1);
+        }
+        super.Tick();
+    }
+}
+

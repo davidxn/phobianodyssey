@@ -24,6 +24,8 @@ class FriendlyUIHandler : EventHandler
 	ui TextureID mouseMiniCursorTex;
     ui TextureID dialogBackFrame;
     ui TextureID blockMapFrame;
+    ui TextureID blockMapSquares;
+    ui TextureID mapCounter;
     ui TextureID weaponCursorTex;
     ui TextureID itemShopBG;
 
@@ -68,28 +70,93 @@ class FriendlyUIHandler : EventHandler
     const WEAPON_START_X = 0.49;
     const WEAPON_START_Y = 0.886;
     const WEAPON_WIDTH = 0.053;
+    
+    const MAP_SQUARE_START_X = 0.24;
+    const MAP_SQUARE_START_Y = 0.155;
+    const MAP_SQUARE_DISTANCE_X = 0.0275;
+    const MAP_SQUARE_DISTANCE_Y = 0.0366;
 
     ui bool showInvScreen;
+    
+    ui String parsedDialogString;
+    ui String parsedDialogTexture;
+    ui String parsedDialogType;
+
+	ui void InitFonts()
+	{
+		tinyFont = Font.GetFont("fonts/jimmy_tinyfont.lmp");
+		journalFont = Font.GetFont("fonts/jimmy_APOS_BOK.lmp");
+	}
+
+	ui void Init()
+	{
+		initialized = true;
+		InitFonts();
+
+		invBGFrame = TexMan.CheckForTexture("invbg", 0);
+        invBGClosedFrame = TexMan.CheckForTexture("invbgcl", 0);
+		invItemBG = TexMan.CheckForTexture("invitmbg", 0);
+        itemShopBG = TexMan.CheckForTexture("shopbg", 0);
+		invHilight = TexMan.CheckForTexture("invsel", 0);
+
+        dialogBackFrame = TexMan.CheckForTexture("DIALBACK", 0);
+        blockMapFrame = TexMan.CheckForTexture("MAPBLOCK", 0);
+        blockMapSquares = TexMan.CheckForTexture("MAPSQUAR", 0);
+        mapCounter = TexMan.CheckForTexture("MAPCOUNT", 0);
+
+		mouseMiniCursorTex = TexMan.CheckForTexture("invcurs", 0);
+		mouseCursorPos = (UI_WIDTH/2, UI_HEIGHT/2);
+        weaponCursorTex = TexMan.CheckForTexture("guncurs", 0);
+
+		hoveredInvStack = -1;
+	}
+
 
     ui void DrawDialog()
     {
         if (DataLibrary.ReadInt("shouldHideDialog") == 1) { dialogOpacity = 0; DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "0"); }
-        if (DataLibrary.ReadInt("shouldEraseText") == 1) { textPercentDisplayed = 0; DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0"); }
+        if (DataLibrary.ReadInt("shouldEraseText") == 1) { textPercentDisplayed = 0; parsedDialogString = ""; DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0"); }
 
+        //We display the dialogue texture here because it has to appear behind the dialogue window
+        if (parsedDialogTexture && dialogOpacity >= 1.0) {
+           ScreenDrawTexture(TexMan.checkForTexture(parsedDialogTexture, 0), 0.2, 0.54, lowerUnpegged: true); 
+        }
+        
         if (dialogOpacity < 1.0) dialogOpacity += 0.01;
         ScreenDrawTexture(dialogBackFrame, 0.5, 0.75, alpha: dialogOpacity, centerX: true, centerY: true);
 
         String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
         int eventDialogPage = DataLibrary.ReadInt("eventDialogPage");
-        String s = StringTable.Localize("$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage);
-
+        if (!parsedDialogString) {
+            parsedDialogTexture = "";
+            parsedDialogType = "";
+            String s = StringTable.Localize("$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage);
+            Array<String> tokens; s.Split(tokens, " ");
+            int nextTokenStartChar = 0;
+            for (int i = 0; i < tokens.Size(); i++) {
+                if (tokens[i].Left(1) != "[") {
+                    parsedDialogString = s.Mid(nextTokenStartChar);
+                    break; //All special tokens have been handled
+                }
+                
+                //This is a special token, let's parse it!
+                String tokenType = tokens[i].Mid(1, 1);
+                String tokenValue = tokens[i].Mid(3, tokens[i].Length()-4);
+                console.printf("%s %s", tokenType, tokenValue);
+                if (tokenType == "F") {
+                    parsedDialogTexture = tokenValue;
+                }
+                
+                nextTokenStartChar += tokens[i].Length() + 1;
+            }
+        }
         //If there's a chest item mentioned, get information about the chest
-        if (s.IndexOf("$chestitem$") > 0) {
+        if (parsedDialogString.IndexOf("$chestitem$") > 0) {
             POChest chest = DataLibrary.GetInstance().chestToOpen;
             if (!chest.containedItem) {
                 //No item - check for coins or ammo instead
                 if (chest.containedCoins) {
-                    s.Substitute("$chestitem$", (chest.containedCoins .. " coins"));
+                    parsedDialogString.Substitute("$chestitem$", (chest.containedCoins .. " coins"));
                 }
                 if (chest.containedAmmo) {
                     String ammoType = "bullets";
@@ -98,11 +165,11 @@ class FriendlyUIHandler : EventHandler
                         case 3: ammoType = "rockets"; break;
                         case 4: ammoType = "plasma cells"; break;
                     }
-                    s.Substitute("$chestitem$", (chest.containedAmmo .. " " .. ammoType));
+                    parsedDialogString.Substitute("$chestitem$", (chest.containedAmmo .. " " .. ammoType));
                 }
             } else {
                 ScreenDrawTextureWithinArea(chest.containedItem.getTexture(), 0.5, 0.2, 0.3, 0.3, alpha:dialogOpacity, centerX:true);
-                s.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
+                parsedDialogString.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
             }
         }
 
@@ -111,8 +178,10 @@ class FriendlyUIHandler : EventHandler
             return;
         }
 
-        ScreenDrawString(s, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7, displayPercent: textPercentDisplayed);
+        ScreenDrawString(parsedDialogString, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7, displayPercent: textPercentDisplayed);
         if (textPercentDisplayed < 1.0) textPercentDisplayed += 0.005;
+
+        
         DrawMouseCursor();
         return;
     }
@@ -203,33 +272,6 @@ class FriendlyUIHandler : EventHandler
         return;
 	}
 
-	ui void InitFonts()
-	{
-		tinyFont = Font.GetFont("fonts/jimmy_tinyfont.lmp");
-		journalFont = Font.GetFont("fonts/jimmy_APOS_BOK.lmp");
-	}
-
-	ui void Init()
-	{
-		initialized = true;
-		InitFonts();
-
-		invBGFrame = TexMan.CheckForTexture("invbg", 0);
-        invBGClosedFrame = TexMan.CheckForTexture("invbgcl", 0);
-		invItemBG = TexMan.CheckForTexture("invitmbg", 0);
-        itemShopBG = TexMan.CheckForTexture("shopbg", 0);
-		invHilight = TexMan.CheckForTexture("invsel", 0);
-
-        dialogBackFrame = TexMan.CheckForTexture("DIALBACK", 0);
-        blockMapFrame = TexMan.CheckForTexture("MAPBLOCK", 0);
-
-		mouseMiniCursorTex = TexMan.CheckForTexture("invcurs", 0);
-		mouseCursorPos = (UI_WIDTH/2, UI_HEIGHT/2);
-        weaponCursorTex = TexMan.CheckForTexture("guncurs", 0);
-
-		hoveredInvStack = -1;
-	}
-
 	override void NetworkProcess(ConsoleEvent e)
 	{
         PlayerPawn p = PlayerPawn(players[e.Player].mo);
@@ -316,7 +358,7 @@ class FriendlyUIHandler : EventHandler
             }
         }
         else if ( e.Name == "ClickedPastDialog" ) {
-            //Advance the conversation
+            
             int eventDialogPage = DataLibrary.ReadInt("eventDialogPage") + 1;
             String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
             String dialogKey = "CONV_" .. eventDialogConversation .. "_" .. eventDialogPage;
@@ -355,7 +397,7 @@ class FriendlyUIHandler : EventHandler
         }
         bool showEventDialog = (DataLibrary.ReadData("showEventDialog") == "1");
 		if ( !initialized ) return false;
-		if ( automapactive ) return false;
+
 
 		// OK, let's get some binds!
 		int leftBind, rightBind, i;
@@ -364,7 +406,17 @@ class FriendlyUIHandler : EventHandler
 
         int useBind1, useBind2; [useBind1, useBind2] = Bindings.GetKeysForCommand("+use");
         int invBind1, invBind2; [invBind1, invBind2] = Bindings.GetKeysForCommand("invscreen");
+        
+        //Check to see whether we should swallow the use key (used when player is moving)
+        if (e.Type == InputEvent.Type_KeyDown && (e.KeyScan == useBind1 || e.KeyScan == useBind2)) {
+            if (DataLibrary.ReadInt("BlockUseKey")) {
+                console.printf("DEBUG: Blocked use key");
+                return true;
+            }
+        }
 
+		if ( automapactive ) return false;
+        
         if ( e.Type == InputEvent.Type_KeyDown && (e.KeyScan == invBind1 || e.KeyScan == invBind2)) {
             showInvScreen = !showInvScreen;
             
@@ -471,6 +523,8 @@ class FriendlyUIHandler : EventHandler
 
 	override void RenderOverlay(RenderEvent e)
 	{
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        
 		// fonts must be transient; if we're loading a savegame they'll be null so reinit
 		if ( !initialized ) Init();
 		if ( !(tinyFont) ) InitFonts();
@@ -498,7 +552,17 @@ class FriendlyUIHandler : EventHandler
 		if ( automapactive ) {
             //Block out the automap if we're not playing on a skill that allows it!
             if ( G_SkillPropertyInt(SKILLP_ACSReturn) != 1) {
-                ScreenDrawTexture(blockMapFrame, 0.5, 0.5, alpha: 1.0, centerX: true, centerY: true);
+                ScreenDrawTexture(blockMapSquares, 0.5, 0.5, alpha: 1.0, centerX: true, centerY: true);
+                double x = MAP_SQUARE_START_X;
+                double y = MAP_SQUARE_START_Y + (MAP_SQUARE_DISTANCE_Y * 19);
+                double playerX = p.pos.x / LevelHelper.TILE_SIZE;
+                double playerY = p.pos.y / LevelHelper.TILE_SIZE;
+                x += playerX * MAP_SQUARE_DISTANCE_X;
+                y -= playerY * MAP_SQUARE_DISTANCE_Y;
+                
+                ScreenDrawTexture(mapCounter, x, y, centerX:true, centerY:true);
+                //p.pos.x, p.pos.y;
+                //console.printf("%d", squarenum);
             }
             return;
         }
@@ -681,7 +745,7 @@ class FriendlyUIHandler : EventHandler
 						   DTA_Alpha, alpha);
 	}
 
-	ui void ScreenDrawTexture(TextureID tex, double pct_x, double pct_y, double scale = 1.0, double alpha = 1.0, bool centerX = false, bool centerY = false)
+	ui void ScreenDrawTexture(TextureID tex, double pct_x, double pct_y, double scale = 1.0, double alpha = 1.0, bool centerX = false, bool centerY = false, bool lowerUnpegged = false)
 	{
 		int x = int(pct_x * UI_WIDTH);
 		int y = int(pct_y * UI_HEIGHT);
@@ -692,6 +756,7 @@ class FriendlyUIHandler : EventHandler
 		int h = int(th * scale);
 		if ( centerX ) x -= w / 2;
 		if ( centerY ) y -= h / 2;
+        if ( lowerUnpegged ) y -= h;
 
 		Screen.DrawTexture(tex, true, x, y, DTA_Alpha, alpha,
 						   DTA_DestWidth, w, DTA_DestHeight, h,

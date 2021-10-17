@@ -16,14 +16,14 @@ class LevelHelper : Thinker
         return(isPoint);
     }
     
-    static int getSquareFromPosition(float x, float y) {
+    static clearscope int getSquareFromPosition(float x, float y) {
         int squareNum = 10000;
         squareNum += (int) (x / TILE_SIZE);
         squareNum += (int) (y*100 / TILE_SIZE);
         return squareNum;
     }
 
-    static int, int getPositionFromSquare(int squareNum) {
+    static clearscope int, int getPositionFromSquare(int squareNum) {
         squareNum -= 10000;
         int x = ((squareNum % 100) * TILE_SIZE);
         squareNum /= 100;
@@ -65,18 +65,18 @@ class LevelHelper : Thinker
     }
     
     static bool PlayerCanMoveTo(Actor activator, double stepX, double stepY) {
-        int initialX = activator.pos.x;
-        int initialY = activator.pos.y;
-        int currentZ = activator.pos.z;
+        double initialX = activator.pos.x;
+        double initialY = activator.pos.y;
+        double currentZ = activator.pos.z;
         
-        int testX;
-        int testY;
+        double testX;
+        double testY;
         //Check in 16th-bigtile steps for any barriers (therefore, all walls must be 16mu+ thick)
         for (double i = (1.0/16); i <= 1.0; i += (1.0/16)) {
             testX = initialX + (128*i*stepX);
             testY = initialY + (128*i*stepY);
-            int testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
-            int testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
+            double testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
+            double testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
             //Check with checkMove
             if (!activator.CheckMove((testX, testY))) { console.printf("DEBUG: CheckMove returned false, rejecting"); return false; }
             //Is this point inside the level?

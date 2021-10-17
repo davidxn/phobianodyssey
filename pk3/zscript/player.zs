@@ -2,7 +2,7 @@ class PoPlayer : PlayerPawn Replaces DoomPlayer
 {
     default {
         Player.DisplayName "Player";
-        Player.StartItem "Clip", 15;
+        Player.StartItem "POClip", 15;
         Player.UseRange 96;
     }
 	States

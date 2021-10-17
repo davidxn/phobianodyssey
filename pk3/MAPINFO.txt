@@ -18,6 +18,7 @@ DoomEdNums {
     9006 = ExitSpot
     9007 = MapDescriber
     9008 = EventSpot
+    9009 = HealthRegenerator
     2301 = FireballTrap
     
     15420 = SmallBush
