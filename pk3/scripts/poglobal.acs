@@ -40,6 +40,11 @@ script "powonga" (int amount) {
     GiveInventory("POCoin", amount);
 }
 
+script "povisit" (int sqnum) {
+    GetPositionFromSquare(sqnum);
+    SetActorPosition(0, registerX, registerY, registerZ, false);
+}
+
 //////////////////////////////////////////////////
 
 script "return" RETURN {

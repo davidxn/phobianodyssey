@@ -52,7 +52,7 @@ class LevelHelper : Thinker
         EventSpot spot; ThinkerIterator it = ThinkerIterator.Create("EventSpot");
         while (spot = EventSpot(it.Next() ) ) {
             if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
-                //console.printf("DEBUG: Hit event number " .. spot.args[0]);
+                console.printf("DEBUG: Hit event number " .. spot.args[0]);
                 int blocked = DataLibrary.inst().ReadInt("blockEvent" .. spot.args[0]);
                 //console.printf("DEBUG: Blocked? %d", blocked);
                 if (!blocked) {
@@ -78,7 +78,7 @@ class LevelHelper : Thinker
             double testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
             double testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
             //Check with checkMove
-            if (!activator.CheckMove((testX, testY))) { console.printf("DEBUG: CheckMove returned false, rejecting"); return false; }
+            if (!activator.CheckMove((testX, testY))) { console.printf("DEBUG: CheckMove returned false on step %d, rejecting", i*16); return false; }
             //Is this point inside the level?
             if(!level.IsPointInLevel((testX, testY, testZFloor))) { console.printf("DEBUG: Point not in level, rejecting"); return false; }
             //Is this point in a place the player could fit?

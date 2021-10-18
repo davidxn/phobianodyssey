@@ -7,6 +7,7 @@ class DataLibrary : Thinker
     Array<MFInventoryItem> MFinventory;
     Array<POWeaponSlot> weaponSlots;
     int inventorySize;
+    int weaponInventorySize;
     POChest chestToOpen;
     Array<MFInventoryItem> itemShopInventory;
     
@@ -18,6 +19,7 @@ class DataLibrary : Thinker
         monsterParties = Dictionary.Create();
         monsterPops = Dictionary.Create();
         inventorySize = 4;
+        weaponInventorySize = 3;
         
 
         //Set up inventory slots
@@ -112,6 +114,10 @@ class DataLibrary : Thinker
     static clearscope int ReadInt(String position) { return DataLibrary.GetInstance().dic.At(position).ToInt(); }
     static clearscope double ReadDouble(String position) { return DataLibrary.GetInstance().dic.At(position).ToDouble(); }
     
+    //////////////////////////////////////////////
+    // Item Inventory
+    //////////////////////////////////////////////
+    
     static bool InventoryAdd(String classname, int slot) {
         let thing = MFInventoryItem(new(classname)).Init();
         if (slot >= 0 && slot < DataLibrary.inst().inventorySize) {
@@ -155,12 +161,26 @@ class DataLibrary : Thinker
         return inventoryItem;
     }
     
+    static void InventoryExpand(int slots) {
+        if (slots < DataLibrary.GetInstance().MFinventory.Size()) {
+            return;
+        }
+        while (DataLibrary.GetInstance().MFinventory.Size() < slots) {
+            MFInventoryItem newItem = MFInventoryItem(new("MFIEmpty")).Init();
+            DataLibrary.GetInstance().MFinventory.Push(newItem);
+        }
+    }
+    
+    //////////////////////////////////////////
+    // Weapon Inventory
+    //////////////////////////////////////////
+    
     static clearscope POWeaponSlot getWeaponSlot(int i) {
         return DataLibrary.GetInstance().weaponSlots[i];
     }
     
     static clearscope int getNextFreeWeaponSlot() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < DataLibrary.GetInstance().weaponInventorySize; i++) {
             POWeaponSlot s = DataLibrary.GetInstance().WeaponSlots[i];
             if (s.getClassName() == "POWeaponSlotEmpty") {
                 return i;
@@ -174,7 +194,7 @@ class DataLibrary : Thinker
     }
     
     static void AddWeapon(String type, String element) {
-        int i = DataLibrary.inst().getNextFreeWeaponSlot();
+        int i = DataLibrary.getNextFreeWeaponSlot();
         if (i == -1) {
             //No free slots!
             return;
@@ -188,15 +208,16 @@ class DataLibrary : Thinker
         DataLibrary.inst().setWeaponSlot(i, s);
     }
     
-    static void InventoryExpand(int slots) {
-        if (slots < DataLibrary.GetInstance().MFinventory.Size()) {
-            return;
+    static bool HasWeaponType(String type) {
+        for (int i = 0; i < DataLibrary.GetInstance().weaponInventorySize; i++) {
+            if (DataLibrary.getWeaponSlot(i).getType() == type) { return true; }
         }
-        while (DataLibrary.GetInstance().MFinventory.Size() < slots) {
-            MFInventoryItem newItem = MFInventoryItem(new("MFIEmpty")).Init();
-            DataLibrary.GetInstance().MFinventory.Push(newItem);
-        }
+        return false;
     }
+    
+    //////////////////////////////////////////
+    // Square Data
+    //////////////////////////////////////////
     
     static String ReadMonsterParty(String party, String slot)
     {

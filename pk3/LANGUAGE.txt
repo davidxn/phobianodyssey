@@ -65,13 +65,17 @@ INV_MFIHomingDevice = "Use this to return to Tharotia whenever you're in a tight
 INV_MFIEmpty = "";
 
 CONV_FIRST_SHOP_VISIT_1 = "[F:FCSHOP1] Welcome back! Hope you had fun!";
-CONV_FIRST_SHOP_VISIT_2 = "[F:FCSHOP1] Just leave any equipment you hired in the tub outside for de-viscerating...";
+CONV_FIRST_SHOP_VISIT_2 = "[F:FCSHOP5] Just leave any equipment you hired in the tub outside for de-viscerating...";
 CONV_FIRST_SHOP_VISIT_3 = "[F:FCSHOP2] [R:What_the_hell's_going_on_here?] Wait, I don't remember your face...";
 CONV_FIRST_SHOP_VISIT_4 = "[F:FCSHOP3] Here? This is only the best day out in Tharotia, the Doom Dungeon! For just 99pt per person (299pt for families 4+) (not including supplies) I can pick out your size of chainmail and a pointy helmet, and let you loose on the monsters in the cave network over there.";
 CONV_FIRST_SHOP_VISIT_5 = "[F:FCSHOP1] We have discount rates for office pod outings, children's parties... it's a fun activity for any occasion, and it's great stress relief, too!";
 CONV_FIRST_SHOP_VISIT_6 = "[F:FCSHOP4] Of course, there's a certain quantity of waivers we get customers to sign first... the activity does come with a non-zero chance of them being ripped and/or torn apart by monstrosities...";
 CONV_FIRST_SHOP_VISIT_7 = "[F:FCSHOP3] But as long as I've already upsold them on the equipment insurance, I've done my job, right?";
 CONV_FIRST_SHOP_VISIT_8 = "[F:FCSHOP1] Not sure how you got in there, but hey, you look like you made it out okay. Just give me a shout if you need to buy a medikit or more ammunition or anything.";
+
+CONV_SHOP_LOST_KEYS_1 = "Ah... I know they're in here somewhere...";
+CONV_SHOP_LOST_KEYS_2 = "Um, good morning - sorry, I know it's time to open but I can't remember which pocket I put my keys in...";
+CONV_SHOP_LOST_KEYS_3 = "Could you come back a bit later? Sorry... bye...";
 
 
 // You woke up in the cave they use as a tourist attraction, letting them wallop the zombies.

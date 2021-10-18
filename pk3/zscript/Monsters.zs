@@ -4,6 +4,7 @@ class POMonster : Actor
     int dropRoll;
     bool hasRolled;
     int deathDamage;
+    bool dropSpecial;
 
 	Default
 	{

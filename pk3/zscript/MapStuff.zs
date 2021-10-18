@@ -17,8 +17,8 @@ class EventSpot : MapSpot
         //$Arg0Tooltip Event number to run
         //$Arg1 Repeatable
         //$Arg1Tooltip 1 if this event should be repeatable
-        //$Arg2 Do next event
-        //$Arg2Tooltip 1 if this event should also trigger next event numerically
+        //$Arg2 Use angle
+        //$Arg2Tooltip 1 if this event should swing the player's view
     }
 }
 
@@ -70,7 +70,6 @@ class HealthRegenerator : MapSpot
     
     override void Tick() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
-        console.printf("%d", p.health);
         if (p.health < 100) {
             p.GiveInventory("Health", 1);
         }

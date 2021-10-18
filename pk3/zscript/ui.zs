@@ -117,39 +117,14 @@ class FriendlyUIHandler : EventHandler
         if (DataLibrary.ReadInt("shouldHideDialog") == 1) { dialogOpacity = 0; DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "0"); }
         if (DataLibrary.ReadInt("shouldEraseText") == 1) { textPercentDisplayed = 0; parsedDialogString = ""; DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0"); }
 
-        //We display the dialogue texture here because it has to appear behind the dialogue window
+        //We display the dialogue texture first because it has to appear behind the dialogue window
         if (parsedDialogTexture && dialogOpacity >= 1.0) {
-           ScreenDrawTexture(TexMan.checkForTexture(parsedDialogTexture, 0), 0.2, 0.54, lowerUnpegged: true); 
+           ScreenDrawTexture(TexMan.checkForTexture(parsedDialogTexture, 0), 0.5, 0.54, centerX: true, lowerUnpegged: true); 
         }
         
         if (dialogOpacity < 1.0) dialogOpacity += 0.01;
         ScreenDrawTexture(dialogBackFrame, 0.5, 0.75, alpha: dialogOpacity, centerX: true, centerY: true);
 
-        String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
-        int eventDialogPage = DataLibrary.ReadInt("eventDialogPage");
-        if (!parsedDialogString) {
-            parsedDialogTexture = "";
-            parsedDialogType = "";
-            String s = StringTable.Localize("$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage);
-            Array<String> tokens; s.Split(tokens, " ");
-            int nextTokenStartChar = 0;
-            for (int i = 0; i < tokens.Size(); i++) {
-                if (tokens[i].Left(1) != "[") {
-                    parsedDialogString = s.Mid(nextTokenStartChar);
-                    break; //All special tokens have been handled
-                }
-                
-                //This is a special token, let's parse it!
-                String tokenType = tokens[i].Mid(1, 1);
-                String tokenValue = tokens[i].Mid(3, tokens[i].Length()-4);
-                console.printf("%s %s", tokenType, tokenValue);
-                if (tokenType == "F") {
-                    parsedDialogTexture = tokenValue;
-                }
-                
-                nextTokenStartChar += tokens[i].Length() + 1;
-            }
-        }
         //If there's a chest item mentioned, get information about the chest
         if (parsedDialogString.IndexOf("$chestitem$") > 0) {
             POChest chest = DataLibrary.GetInstance().chestToOpen;
@@ -180,7 +155,6 @@ class FriendlyUIHandler : EventHandler
 
         ScreenDrawString(parsedDialogString, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7, displayPercent: textPercentDisplayed);
         if (textPercentDisplayed < 1.0) textPercentDisplayed += 0.005;
-
         
         DrawMouseCursor();
         return;
@@ -407,14 +381,6 @@ class FriendlyUIHandler : EventHandler
         int useBind1, useBind2; [useBind1, useBind2] = Bindings.GetKeysForCommand("+use");
         int invBind1, invBind2; [invBind1, invBind2] = Bindings.GetKeysForCommand("invscreen");
         
-        //Check to see whether we should swallow the use key (used when player is moving)
-        if (e.Type == InputEvent.Type_KeyDown && (e.KeyScan == useBind1 || e.KeyScan == useBind2)) {
-            if (DataLibrary.ReadInt("BlockUseKey")) {
-                console.printf("DEBUG: Blocked use key");
-                return true;
-            }
-        }
-
 		if ( automapactive ) return false;
         
         if ( e.Type == InputEvent.Type_KeyDown && (e.KeyScan == invBind1 || e.KeyScan == invBind2)) {
@@ -485,11 +451,11 @@ class FriendlyUIHandler : EventHandler
                 return (DataLibrary.ReadData("OpenShopScreen") == "1"); 
             }
 
-            // process keyup events else inputs active when screen invoked bleed & stay on
+            // process keyup events else inputs active when screen invoked bleed & stay on - otherwise, block other keypresses
             else if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
             return true;
         }
-
+        
         if (showEventDialog) {
             // grab mouse move & clicks for inventory cursor
             if ( e.Type == InputEvent.Type_Mouse )
@@ -511,10 +477,17 @@ class FriendlyUIHandler : EventHandler
                 }
                 return true;
             }
-            // process keyup events else inputs active when screen invoked bleed & stay on
-
+            // process keyup events else inputs active when screen invoked bleed & stay on - otherwise, block other keypresses
             if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
             return true;
+        }
+        
+        //Check to see whether we should swallow the use key for any other reason (used when player is moving)
+        if (e.Type == InputEvent.Type_KeyDown && (e.KeyScan == useBind1 || e.KeyScan == useBind2)) {
+            if (DataLibrary.ReadInt("BlockUseKey")) {
+                console.printf("DEBUG: Blocked use key");
+                return true;
+            }
         }
 
         return false;
@@ -536,7 +509,7 @@ class FriendlyUIHandler : EventHandler
         double weaponX = WEAPON_START_X;
         double weaponY = WEAPON_START_Y;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < DataLibrary.getInstance().weaponInventorySize; i++) {
             POWeaponSlot w = DataLibrary.getWeaponSlot(i);
             if (w) {
                 ScreenDrawTexture(w.getTexture(), weaponX, weaponY);
@@ -579,6 +552,33 @@ class FriendlyUIHandler : EventHandler
         }
         if ( DataLibrary.ReadData("showEventDialog") == "1" ) {
             showInvScreen = 0;
+            
+            String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
+            int eventDialogPage = DataLibrary.ReadInt("eventDialogPage");
+            if (!parsedDialogString) {
+                parsedDialogTexture = "";
+                parsedDialogType = "";
+                String s = StringTable.Localize("$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage);
+                Array<String> tokens; s.Split(tokens, " ");
+                int nextTokenStartChar = 0;
+                for (int i = 0; i < tokens.Size(); i++) {
+                    if (tokens[i].Left(1) != "[") {
+                        parsedDialogString = s.Mid(nextTokenStartChar);
+                        break; //All special tokens have been handled
+                    }
+                    
+                    //This is a special token, let's parse it!
+                    String tokenType = tokens[i].Mid(1, 1);
+                    String tokenValue = tokens[i].Mid(3, tokens[i].Length()-4);
+                    console.printf("DEBUG: Conversation data %s %s", tokenType, tokenValue);
+                    if (tokenType == "F") {
+                        parsedDialogTexture = tokenValue;
+                    }
+                    
+                    nextTokenStartChar += tokens[i].Length() + 1;
+                }
+            }
+            
             DrawDialog();
         } else {
             dialogOpacity = 0;

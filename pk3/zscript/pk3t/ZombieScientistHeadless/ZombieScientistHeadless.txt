@@ -54,13 +54,14 @@ Class ZombieScientistHeadless : POMonster
     //On melee, fire all you have at where you think the player is!
 	SZHD E 20
     {
+      invoker.dropSpecial = true; //If killed in this state, drop special!
       donefirstfire=true;
 	  shots=random(7, 10);
 	  A_PlaySound("10MM/Cock");
       A_FaceTarget();
     }
   MeleeLoop:
-    SZHD E 1 A_PlaySound ("10MM/FIRE");
+    SZHD E 1 {invoker.dropSpecial = false; A_PlaySound ("10MM/FIRE"); }
     SZHD F 2 BRIGHT A_CustomBulletAttack(0, 0, 1, 5 + random(0, 2), "BulletPuff", 0, CBAF_AIMFACING | CBAF_NORANDOM);
     SZHD E 0 { shots--; }
     SZHD E 0 A_JumpIf(shots > 0, "MeleeLoop");
@@ -86,7 +87,7 @@ Class ZombieScientistHeadless : POMonster
 	SZHD E 6;
     goto See;
   Pain:
-    SZHD G 3;
+    SZHD G 3 { invoker.dropSpecial = false; }
     SZHD G 3 A_Pain();
     goto See;
   Death:
@@ -121,6 +122,11 @@ Class ZombieScientistHeadless : POMonster
         poDropItemWithProbability("PoCoin1", 90);
         
         poDropItemWithProbability("PoHeal5", 30);
+        
+        if (self.dropSpecial) {
+            poDropItemWithProbability("PoCoin5", 100);
+            poDropItemWithProbability("PoClip5", 100);
+        }
 
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
