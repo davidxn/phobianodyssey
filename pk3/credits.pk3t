@@ -58,3 +58,30 @@ Sprite Edit: Finalizer, Horror Movie Guy
 Idea Base: Classic movie zombie, Doom 4's "possessed" enemy, Quake's Zombie
 
 //<< PK3T ZombieFodder END >>//
+//<< PK3T walltubelights START >>//
+Credits:
+Code: Captain Toenail
+GLDefs: Captain Toenail
+Sounds: Freesound.org (TheSoundcatcher), Captain Toenail
+Sprites: Doom
+Sprite Edit: Captain Toenail
+
+Freesound.org Attribution License Details
+https://creativecommons.org/licenses/by/3.0/
+
+The following sound effects were sourced and modified from the files found at 
+the pages listed below.
+Mofications to files include trimming/changes to volume/tempo, file format etc.
+
+Switch_Light_On_Off_Neon_Lamp.wav
+TheSoundcatcher
+https://freesound.org/people/TheSoundcatcher/sounds/144931/
+//<< PK3T walltubelights END >>//
+//<< PK3T Roach START >>//
+Submitted: Ghastly_dragon
+Code: Ghastly_dragon
+GLDefs: Ghastly_dragon, Sandypaper (Brightmaps)
+Sounds: Black Isle Studios, Blizzard Entertainment
+Sprites: Vader
+Sprite Edit: Ghastly_dragon, Mike12
+//<< PK3T Roach END >>//

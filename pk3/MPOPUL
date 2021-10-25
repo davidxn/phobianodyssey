@@ -10,6 +10,8 @@
 10=CleanupCrew
 11=ScientistHead1,HazmatSquad
 12=ScientistHead2,ScientistHead2,ScientistHead1,ScientistHead1,Zombiemen3
-13=
+13=RoachAndImp,RoachAndFodder,ImpSiblings,Fodder2
+14=Fodder3,RoachAndFodder,HazmatSquadEasy,Fodder3,RoachAndFodder,HazmatSquadEasy,TwoRoaches
+15=TwoRoaches,TwoRoaches,RoachAndFodder,RoachAndImp
 1001=FOEBarons
 1002=ImpParty

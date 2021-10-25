@@ -221,6 +221,36 @@ class POCoin5 : POCoin1
     }
 }
 
+class POCoin10 : POCoin1
+{
+    default {
+        Inventory.Amount 10;
+        Inventory.PickupSound "po/pickup/cash";
+        PODroppable.SpriteName "M005";
+        Inventory.PickupMessage "Coins";
+    }
+    
+    override void AttachToOwner(Actor owner) {
+        owner.GiveInventory("POCoin", 10);
+        self.Destroy();
+    }
+}
+
+class POCoin50 : POCoin1
+{
+    default {
+        Inventory.Amount 50;
+        Inventory.PickupSound "po/pickup/cash";
+        PODroppable.SpriteName "M006";
+        Inventory.PickupMessage "Coins";
+    }
+    
+    override void AttachToOwner(Actor owner) {
+        owner.GiveInventory("POCoin", 50);
+        self.Destroy();
+    }
+}
+
 class POHeal1 : PODroppable
 {
     default {
@@ -250,6 +280,8 @@ class POHeal5 : PODroppable
         self.Destroy();
     }
 }
+
+
 
 class POHorn : PODroppable
 {
@@ -281,5 +313,17 @@ class POSpeck : Actor
             self.Destroy();
         }
         super.Tick();
+    }
+}
+
+class DecorativeWeapon : FloatingSkull
+{
+    Default {
+        Radius 8;
+        Height 16;
+    }
+    States {
+        Spawn:
+            RWEP A -1 NoDelay { frame = random(0, 15);}
     }
 }

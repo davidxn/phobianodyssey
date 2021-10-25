@@ -5,7 +5,7 @@ CONV_START_UNEASE_2 = "\ckBe prepared and watch the danger meter on the right - 
 CONV_START_UNEASE_3 = "STOP";
 
 CONV_START_PISTOL_1 = "Beginning to get used to your new method of ambulation as you walk between the pits, you discover another marine with his vital organs conspicuously absent.";
-CONV_START_PISTOL_2 = "His weapon lies beside him, a pistol with a handful of bullets left. It isn't much, but you take it with you.";
+CONV_START_PISTOL_2 = "His pistol lies beside him - unfortunately it seems he already emptied it at whatever got him. It isn't much, but you take it with you.";
 CONV_START_PISTOL_3 = "STOP";
 
 CONV_START_START_1 = "Well, this is a strange place to wake up. Perhaps you overdid it at the UAC Halloween party last night.";
@@ -62,22 +62,95 @@ INV_MFIMegasphere = "Completely fills your life to 200hp, no questions asked";
 INV_MFIAmmoBox = "Adds 25 bullets to your supply when used";
 INV_MFISoulsphere = "Grants 100hp when used. Can heal beyond your normal capacity up to a maximum of 200hp";
 INV_MFIHomingDevice = "Use this to return to Tharotia whenever you're in a tight spot. Essential for dungeon crawling!";
+INV_MFITreasure1 = "A drop of cursed blood in a charm. Sell it for 250pt";
+INV_MFITreasure2 = "A ring with a horned insignia. Sell it for 500pt";
+INV_MFITreasure3 = "A wristband with some enchantment on it. Sell it for 750pt";
+INV_MFITreasure4 = "A silver statue of a divine being. Sell it for 1000pt";
+INV_MFITreasure5 = "A cross-shaped treasure. Sell it for 2500pt";
+INV_MFITreasure6 = "A crown forged in the hellfires. Sell it for 5000pt";
 INV_MFIEmpty = "";
 
 CONV_FIRST_SHOP_VISIT_1 = "[F:FCSHOP1] Welcome back! Hope you had fun!";
-CONV_FIRST_SHOP_VISIT_2 = "[F:FCSHOP5] Just leave any equipment you hired in the tub outside for de-viscerating...";
-CONV_FIRST_SHOP_VISIT_3 = "[F:FCSHOP2] [R:What_the_hell's_going_on_here?] Wait, I don't remember your face...";
-CONV_FIRST_SHOP_VISIT_4 = "[F:FCSHOP3] Here? This is only the best day out in Tharotia, the Doom Dungeon! For just 99pt per person (299pt for families 4+) (not including supplies) I can pick out your size of chainmail and a pointy helmet, and let you loose on the monsters in the cave network over there.";
+CONV_FIRST_SHOP_VISIT_2 = "[F:FCSHOP1] Just leave any equipment you hired in the tub outside for de-viscerating...";
+CONV_FIRST_SHOP_VISIT_3 = "[F:FCSHOP2] [R:You_what?...] [R:Whuh?] [R:Uh...] Wait, when did I let you in...?";
+CONV_FIRST_SHOP_VISIT_4 = "[F:FCSHOP3] Don't know where you are?! This is only the best day out in Tharotia, the Doom Dungeon! For just 99pt per person (299pt for families 4+) (not including supplies) I can pick out your size of chainmail and let you loose on the monsters in the cave network over there.";
 CONV_FIRST_SHOP_VISIT_5 = "[F:FCSHOP1] We have discount rates for office pod outings, children's parties... it's a fun activity for any occasion, and it's great stress relief, too!";
-CONV_FIRST_SHOP_VISIT_6 = "[F:FCSHOP4] Of course, there's a certain quantity of waivers we get customers to sign first... the activity does come with a non-zero chance of them being ripped and/or torn apart by monstrosities...";
+CONV_FIRST_SHOP_VISIT_6 = "[F:FCSHOP4] Of course, we have to get customers to sign a few waivers first... the activity does come with a non-zero chance of them being ripped and/or torn apart by monstrosities...";
 CONV_FIRST_SHOP_VISIT_7 = "[F:FCSHOP3] But as long as I've already upsold them on the equipment insurance, I've done my job, right?";
-CONV_FIRST_SHOP_VISIT_8 = "[F:FCSHOP1] Not sure how you got in there, but hey, you look like you made it out okay. Just give me a shout if you need to buy a medikit or more ammunition or anything.";
+CONV_FIRST_SHOP_VISIT_8 = "[F:FCSHOP1] [R:...] Not sure how you got in there, but hey, you look like you made it out in one piece. Anyway, want to buy something?";
 
 CONV_SHOP_LOST_KEYS_1 = "Ah... I know they're in here somewhere...";
 CONV_SHOP_LOST_KEYS_2 = "Um, good morning - sorry, I know it's time to open but I can't remember which pocket I put my keys in...";
 CONV_SHOP_LOST_KEYS_3 = "Could you come back a bit later? Sorry... bye...";
 
+CONV_MONSTER_HINT_HEADLESS_1 = "I love watching the fountain in the mornings. It's so calming.";
+CONV_MONSTER_HINT_HEADLESS_2 = "[R:(Sigh)_Yeah,_it's_nostalgic] Reminds me of the sight of demon blood squirting out of a freshly severed cartoid artery, you know?";
+CONV_MONSTER_HINT_HEADLESS_3 = "Hey, did you know that if you zap some monsters at just the right time, you can get some neat stuff?";
+CONV_MONSTER_HINT_HEADLESS_4 = "I had to kick one of those weird headless guys out of my vegetable patch this morning...";
+CONV_MONSTER_HINT_HEADLESS_5 = "Usually they can't tell where you are very well on account of having no head and all, but if you get right up close to them they'll hear you and get ready to fire a big attack!";
+CONV_MONSTER_HINT_HEADLESS_6 = "That's when you need to strike - 'chh-CHK!', you'll hear a noise like that. If you knock 'em out right when that happens, they drop a lot more stuff than normal.";
+CONV_MONSTER_HINT_HEADLESS_7 = "'Course, that comes with a chance of having an uzi emptied into your face if you're not quick, but you know. Risk and reward.";
 
-// You woke up in the cave they use as a tourist attraction, letting them wallop the zombies.
-// There are lower levels, but none of them came back - the boss said that they had to install some security, but it doesn't matter to him as long as he'd already upsold them on the equipment insurance
-// 
+CONV_TOWN_FENCE_1 = "You can see the entrance to some sort of cave in the rock face, but a securely locked fence bars your way.";
+
+CONV_TOWN_FENCE_UNLOCK_1 = "You fumble the key into the lock, and the rickety gate swings open. You brace yourself to venture into the tunnels and fight whatever lies in wait inside them...";
+
+CONV_FIRST_ARMORY_VISIT_1 = "[F:FCWEAP4] Hi! Sorry we opened late - all straightened out now.";
+CONV_FIRST_ARMORY_VISIT_2 = "[F:FCWEAP7] [R:I'm_here_to_slay_the_demons!] Now, you don't look like a regular tourist... what kind of space gym did you just walk out of?";
+CONV_FIRST_ARMORY_VISIT_3 = "[F:FCWEAP5] Hah! Oh, you've no idea... there are a LOT of people who say that to me.";
+CONV_FIRST_ARMORY_VISIT_4 = "[F:FCWEAP1] Or at least, there used to be, back when we used to get a lot of people around here.";
+CONV_FIRST_ARMORY_VISIT_5 = "[F:FCWEAP8] I used to do a roaring trade making weapons for people trying to fight their way down into the caves past those things.";
+CONV_FIRST_ARMORY_VISIT_6 = "[F:FCWEAP8] Then the demons started getting crankier and we had to lock up everything past the first level.";
+CONV_FIRST_ARMORY_VISIT_7 = "[F:FCWEAP1] [R:Can_you_unlock_the_caves?] Now we've turned into a corny little tourist attraction and all I can sell are these stupid souvenir T-shirts.";
+CONV_FIRST_ARMORY_VISIT_8 = "[F:FCWEAP6] What? You want to go further in?! Hmm...";
+CONV_FIRST_ARMORY_VISIT_9 = "[F:FCWEAP8] Look, you must be made of tough stuff if you got out of the caves, but there something very weird going on down there...";
+CONV_FIRST_ARMORY_VISIT_10 = "[F:FCWEAP8] Your lot came down and installed some kind of techno-base a few years back, not far from the entrance. That's where most of the monsters come from - and just last month they went crazy.";
+CONV_FIRST_ARMORY_VISIT_11 = "[F:FCWEAP2] [R:Go_on...] I'll tell you what - I'll make you a deal. It'll help us both - my business and your survival.";
+CONV_FIRST_ARMORY_VISIT_12 = "[F:FCWEAP4] Here's the thing - we were helping Elan at the item shop dig into the cliff to make a cold storage area and we hit some sort of maintenance tunnel. He just uses it to keep the health drinks cold, but I think it's got to connect up with that base somehow.";
+CONV_FIRST_ARMORY_VISIT_13 = "[F:FCWEAP4] Ask him to open it up for you, and bring back anything you can find about weapons they were building down there.";
+CONV_FIRST_ARMORY_VISIT_14 = "[F:FCWEAP3] I'm a swords and pikes kind of guy, but you're going to need more than that to get past the meaner demons... if you can find something that would help make guns like that pistol of yours, I might be able to cook something up with some more punch for you.";
+CONV_FIRST_ARMORY_VISIT_15 = "[F:FCWEAP3] [R:All_right!] Sound good? I'll see you back here soon...";
+
+CONV_SECOND_SHOP_VISIT_1 = "[F:FCSHOP2] The key to the tunnels? Hrrf... I'm gonna feel bad if you don't come back, but yeah, all right.";
+CONV_SECOND_SHOP_VISIT_2 = "[F:FCSHOP2] Just keep an eye on your health and come back to restock when you're low, okay?";
+CONV_SECOND_SHOP_VISIT_2 = "[F:FCSHOP4] I don't want you going and getting killed before I've had the chance to drum up some business...";
+CONV_SECOND_SHOP_VISIT_3 = "[F:FCSHOP1] Speaking of, make sure you take a look at the Homing Device before you go. They can really get you out of trouble - they even work during most combat encounters!";
+CONV_SECOND_SHOP_VISIT_4 = "[F:FCSHOP1] Oh, and you can restock your ammo for all the weapons you're holding at the vending machine round the side. Between you and me, it's cheaper than buying the boxes.";
+CONV_SECOND_SHOP_VISIT_5 = "[F:FCSHOP3] [R:Thanks...] Well, have fun and everything!";
+
+CONV_WAKE_UP_1 = "As the fresh morning air finally clears your head, you remember how you got here.";
+CONV_WAKE_UP_2 = "At last night's party on the USS Rogue, you were bragging about having been on over 400 hellspawn-fighting adventures. Then Stella pulled up the ship's demonic energy radar and as chance would have it, there was a signal coming from a moon only a couple of thousand AU away.";
+CONV_WAKE_UP_3 = "Drunk on hubris and IRN-BRU, you insisted on being teleported down. After the fog cleared you found yourself in the warm quiet caves, and immediately chose to have a nap instead.";
+CONV_WAKE_UP_4 = "You're pretty sure they said they'd come back to pick you up once they say the hell energy had dissipated... so you resolve to get dissipating!";
+CONV_WAKE_UP_5 = "First, you'll need to ask around this place to find out how to get further into those caves.";
+
+CONV_TUNNELS_BODY_1 = "A less fortunate - or less skilled? - marine seems to have fallen to the zombies here."
+CONV_TUNNELS_BODY_2 = "[R:Yes] [D:5] [R:No] [D:3] Will you search the body?";
+CONV_TUNNELS_BODY_3 = "Good idea. You don't know where they've been.";
+CONV_TUNNELS_BODY_4 = "STOP";
+CONV_TUNNELS_BODY_5 = "[F:SearchedTunnelBody] You rummage around in their standard issue crop-top armour and find a few coins, which you pocket. What? It's not like they're going to be using them.";
+
+CONV_TUNNELS_TRAPPED_1 = "Well. This seems to be a problem.";
+CONV_TUNNELS_TRAPPED_2 = "This isn't a Sierra game, though, so you try not to panic. You crouch down and look at the underside of the door carefully.";
+CONV_TUNNELS_TRAPPED_3 = "The dust and pebbles on the floor make the rolling door sit just a little off the ground. With some effort, you might be able to fit your fingers underneath.";
+CONV_TUNNELS_TRAPPED_4 = "Alternatively, you could concentrate on the top and try to convince the mechanism with your pistol.";
+CONV_TUNNELS_TRAPPED_5 = "[R:Use_brute_strength] [D:6] [R:Use_firepower] [D:8] What do you think?";
+CONV_TUNNELS_TRAPPED_6 = "[F:OpenedTunnelDoorStrength] You peel back the grating, wriggle your gloved hands under the door, and grimace as you pull...";
+CONV_TUNNELS_TRAPPED_7 = "STOP";
+CONV_TUNNELS_TRAPPED_8 = "[F:OpenedTunnelDoorShoot] Pushing the barrel of the pistol into the narrow gap at the top of the door, you take your best guess at where the most crucial part of the door's mechanism might be...";
+
+CONV_TUNNELS_TRAPPED_STRENGTH_1 = "You smile as you finally wrench the door upwards, and strike a pose with your muscles flexed.";
+CONV_TUNNELS_TRAPPED_STRENGTH_2 = "Then you stop. Honestly, your arms are killing you.";
+
+CONV_TUNNELS_TRAPPED_SHOOT_1 = "It takes more than a few shots, but eventually there is a sharp metallic snapping noise and the door noticeably loosens.";
+CONV_TUNNELS_TRAPPED_SHOOT_2 = "A gentle push is all it needs to retract into the ceiling. You're free!";
+
+CONV_TUNNELS_TRAPPED_NOTAGAIN_1 = "You've broken the mechanism on this one - you've probably messed with it enough.";
+
+
+// Weapons can have a design, an element and an upgrade (attack, speed, luck)
+//Other upgrades:
+//Inventory capacity
+//Weapon capacity
+//Ammo capacity
+CONV_MONSTER_HINT_X_3 = "You know, I don't get adventuring much these days, but I had to kick one of those weird guys without a head out of my vegetable patch this morning.";

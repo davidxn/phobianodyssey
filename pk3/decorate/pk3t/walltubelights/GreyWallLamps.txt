@@ -1,0 +1,118 @@
+ACTOR GreyWallLampBlue : SwitchableDecoration
+{
+	//$Title Grey Wall Lamp Blue
+	//$Category Light Sources/WallLamps
+	//$IsDecoration
+	//$NotAngled
+	//$Sprite WLLGA0
+
+	Radius 3.5
+	Height 44
+	Scale 0.8
+	
+	+NOBLOCKMAP
+	+FIXMAPTHINGPOS
+	+NOGRAVITY
+  
+		States
+		{
+			Spawn:
+			Active:
+				WLLG A 0 Bright A_PlaySound ("Lamp/On")
+				WLLG A -1 Bright
+				Stop
+			Inactive:
+				WLLG H -1 A_PlaySound ("Lamp/Off")
+				Stop
+		}
+}
+
+ACTOR GreyWallLampWhite : GreyWallLampBlue
+{
+	//$Title Grey Wall Lamp White
+	//$Sprite WLLGB0
+
+		States
+		{
+			Spawn:
+			Active:
+				WLLG B 0 Bright A_PlaySound ("Lamp/On")
+				WLLG B -1 Bright
+				Stop
+		}
+}
+
+ACTOR GreyWallLampGreen : GreyWallLampBlue
+{
+	//$Title Grey Wall Lamp Green
+	//$Sprite WLLGC0
+
+		States
+		{
+			Spawn:
+			Active:
+				WLLG C 0 Bright A_PlaySound ("Lamp/On")
+				WLLG C -1 Bright
+				Stop
+		}
+}
+
+ACTOR GreyWallLampRed : GreyWallLampBlue
+{
+	//$Title Grey Wall Lamp Red
+	//$Sprite WLLGD0
+	
+		States
+		{
+			Spawn:
+			Active:
+				WLLG D 0 Bright A_PlaySound ("Lamp/On")
+				WLLG D -1 Bright
+				Stop
+		}
+}
+
+ACTOR GreyWallLampOrange : GreyWallLampBlue
+{
+	//$Title Grey Wall Lamp Orange
+	//$Sprite WLLGE0
+
+		States
+		{
+			Spawn:
+			Active:
+				WLLG E 0 Bright A_PlaySound ("Lamp/On")
+				WLLG E -1 Bright
+				Stop
+		}
+}
+
+ACTOR GreyWallLampYellow : GreyWallLampBlue
+{
+	//$Title Grey Wall Lamp Yellow
+	//$Sprite WLLGF0
+	
+		States
+		{
+			Spawn:
+			Active:
+				WLLG F 0 Bright A_PlaySound ("Lamp/On")
+				WLLG F -1 Bright
+				Stop
+		}
+}
+
+ACTOR GreyWallLampPurple : GreyWallLampBlue
+{
+	//$Title Grey Wall Lamp Purple
+	//$Sprite WLLGG0
+	
+		States
+		{
+			Spawn:
+			Active:
+				WLLG G 0 Bright A_PlaySound ("Lamp/On")
+				WLLG G -1 Bright
+				Stop
+		}
+}

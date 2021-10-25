@@ -1,0 +1,115 @@
+type = "Doom Builder Map Settings Configuration";
+gameconfig = "GZDoom_Phobian.cfg";
+strictpatches = 0;
+
+maps
+{
+	
+	MAP01
+	{
+		
+		resources
+		{
+		}
+		defaultfloortexture = "VSLATE1";
+		defaultceiltexture = "0BRCKX22";
+		defaulttoptexture = "METAL2";
+		defaultwalltexture = "METAL2";
+		defaultbottomtexture = "METAL2";
+		custombrightness = 196;
+		customfloorheight = 0;
+		customceilheight = 128;
+		overridefloortexture = false;
+		overrideceiltexture = false;
+		overridetoptexture = false;
+		overridemiddletexture = false;
+		overridebottomtexture = false;
+		overridefloorheight = false;
+		overrideceilheight = false;
+		overridebrightness = false;
+		uselongtexturenames = false;
+		viewpositionx = 1382.353f;
+		viewpositiony = 698.2812f;
+		viewscale = 0.5787399f;
+		scriptcompiler = "zdoom_acs.cfg";
+		
+		grid
+		{
+			background = "E:\\DoomWork\\phobianodyssey\\rpggrid.png";
+			backsource = 2;
+			backoffsetx = -320;
+			backoffsety = -320;
+			backscalex = 200;
+			backscaley = 200;
+			gridsize = 16;
+			gridrotate = 0;
+			gridoriginx = 0;
+			gridoriginy = 0;
+		}
+		
+		reloadresourceprecommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		reloadresourcepostcommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		testprecommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		testpostcommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		fieldtypes
+		{
+			
+			sidedef
+			{
+				offsetx_bottom = 1;
+				offsety_bottom = 1;
+				offsetx_mid = 1;
+				offsety_mid = 1;
+				offsetx_top = 1;
+			}
+		}
+		
+		scriptdocuments
+		{
+			
+			document0
+			{
+				filename = "DIALOGUE";
+				hash = 3588187714;
+				resource;
+				tabtype = 0;
+				scripttype = 18;
+			}
+			
+			document1
+			{
+				filename = "SCRIPTS";
+				hash = 3469170009;
+				resource;
+				tabtype = 0;
+				scripttype = 1;
+				caretposition = 22;
+				activetab = true;
+			}
+		}
+	}
+}

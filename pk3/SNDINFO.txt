@@ -19,6 +19,11 @@ po/victory POVICTOR
 po/ammo1 POAMMO1
 po/ammo2 POAMMO2
 
+po/water/bubble POBUBBLE
+po/water/stop POWASH
+
+po/items/chain POCHNOPN
+
 po/pickup/cash POCASH
 po/pickup/hp POHPUP
 po/reload PORELOAD

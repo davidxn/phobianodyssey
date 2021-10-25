@@ -52,7 +52,7 @@ class LevelHelper : Thinker
         EventSpot spot; ThinkerIterator it = ThinkerIterator.Create("EventSpot");
         while (spot = EventSpot(it.Next() ) ) {
             if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
-                console.printf("DEBUG: Hit event number " .. spot.args[0]);
+                //console.printf("DEBUG: Hit event number " .. spot.args[0]);
                 int blocked = DataLibrary.inst().ReadInt("blockEvent" .. spot.args[0]);
                 //console.printf("DEBUG: Blocked? %d", blocked);
                 if (!blocked) {
@@ -68,25 +68,46 @@ class LevelHelper : Thinker
         double initialX = activator.pos.x;
         double initialY = activator.pos.y;
         double currentZ = activator.pos.z;
+        double initialZ = activator.pos.z;
+        double testZFloor = 0.0;
+        double testZCeiling = 0.0;
         
         double testX;
         double testY;
+        int dropStepsAllowed = 0;
         //Check in 16th-bigtile steps for any barriers (therefore, all walls must be 16mu+ thick)
         for (double i = (1.0/16); i <= 1.0; i += (1.0/16)) {
             testX = initialX + (128*i*stepX);
             testY = initialY + (128*i*stepY);
-            double testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
-            double testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
-            //Check with checkMove
-            if (!activator.CheckMove((testX, testY))) { console.printf("DEBUG: CheckMove returned false on step %d, rejecting", i*16); return false; }
+            testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
+            testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
             //Is this point inside the level?
             if(!level.IsPointInLevel((testX, testY, testZFloor))) { console.printf("DEBUG: Point not in level, rejecting"); return false; }
             //Is this point in a place the player could fit?
             if(testZCeiling - testZFloor < 56) { console.printf("DEBUG: Point too small for player, rejecting"); return false; }
-            //Is this point greater than a 16-unit jump from the last point we checked?
-            if(testZFloor-currentZ > 16 || testZFloor-currentZ < -16) { console.printf("DEBUG: Journey has more than 16-unit jump"); return false; }
+            
+            //Is this point greater than a 16-unit jump up from the last point we checked AND greater than a 16-unit jump from the initial floor?
+            if(currentZ-testZFloor < -16 && initialZ-testZFloor < -16) {
+                console.printf("DEBUG: Journey has more than 16-unit step up"); return false;
+            }
+            //If it's a drop, allow 3 in a row before we reject - allows little cracks in ground
+            else if (initialZ-testZFloor >= 32) {
+                if (currentZ-testZFloor <= 16 && initialZ-testZFloor <= 16) {
+                    //Doesn't count as a drop
+                } else {
+                    if (dropStepsAllowed > 2) {
+                        console.printf("DEBUG: Journey has more than 16-unit step down 3 steps in row"); return false;
+                    }
+                    dropStepsAllowed++;
+                }
+            }
             currentZ = testZFloor;
         }
+        //Finally, check line of sight to the new position
+        MapSpot x = MapSpot(Actor.Spawn("MapSpot", (testX, testY, testZFloor + 40)));
+        console.printf("%d %d %d", x.pos.x, x.pos.y, x.pos.z);
+        if (!activator.CheckSight(x, SF_IGNOREVISIBILITY)) { console.printf("DEBUG: Mapspot sight check returned false, rejecting"); return false; }
+        x.Destroy();
         return true;
     }
     

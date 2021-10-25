@@ -28,14 +28,14 @@ maps
 		overrideceilheight = false;
 		overridebrightness = false;
 		uselongtexturenames = false;
-		viewpositionx = 1266.805f;
-		viewpositiony = 167.7992f;
-		viewscale = 4.720968f;
+		viewpositionx = 1620.767f;
+		viewpositiony = 2039.175f;
+		viewscale = 1.271492f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid
 		{
-			background = "E:\\DoomWork\\rpggrid.png";
+			background = "E:\\DoomWork\\phobianodyssey\\rpggrid.png";
 			backsource = 2;
 			backoffsetx = -320;
 			backoffsety = -320;
@@ -105,6 +105,7 @@ maps
 				rotationfloor = 17;
 				xscalefloor = 1;
 				yscalefloor = 1;
+				soundsequence = 2;
 			}
 		}
 		

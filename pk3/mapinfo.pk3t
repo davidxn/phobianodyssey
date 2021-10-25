@@ -11,4 +11,19 @@ DoomEdNums {
     3214 = ZombieScientistHeadless
     3250 = ZombieFodder
     3251 = QuakeFodder
+    4600 = BronzeWallLampBlue
+    4601 = BronzeWallLampWhite
+    4602 = BronzeWallLampGreen
+    4603 = BronzeWallLampRed
+    4604 = BronzeWallLampOrange
+    4605 = BronzeWallLampYellow
+    4606 = BronzeWallLampPurple
+    4607 = GreyWallLampBlue
+    4608 = GreyWallLampWhite
+    4609 = GreyWallLampGreen
+    4610 = GreyWallLampRed
+    4611 = GreyWallLampOrange
+    4612 = GreyWallLampYellow
+    4613 = GreyWallLampPurple
+    3160 = Roach
 }

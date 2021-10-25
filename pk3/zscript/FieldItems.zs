@@ -59,13 +59,9 @@ class POChest : FloatingSkull
     
     override void PostBeginPlay() {
         int itemId = self.args[0];
-        switch (itemId) {
-            case 1: containedItem = new("MFIMegasphere"); break;
-            case 2: containedItem = new("MFIRadsuit"); break;
-            case 3: containedItem = new("MFIMedikit"); break;
-            case 4: containedItem = new("MFIStimpack"); break;
-            case 5: containedItem = new("MFIAmmoBox"); break;
-            case 6: containedItem = new("MFISoulsphere"); break;
+        if (itemId > 0) {
+            String classname = DataLibrary.inst().ReadClassnameByID(itemID);
+            containedItem = MFInventoryItem(new(classname)).Init();
         }
         containedCoins = self.args[1];
         containedAmmo = self.args[2];
@@ -155,3 +151,52 @@ class LargeTree : Actor
 		 TIHI A -1;
 	}
 }
+
+class PoWaterFountain : FloatingSkull
+{
+    Default {
+        Radius 2;
+        Height 2;
+        Scale 1;
+        Alpha 0.75;
+        +NOBLOCKMAP;
+        +MOVEWITHSECTOR;
+    }
+  States
+  {
+  Spawn:
+    WFOU ABCD 3;
+    Loop;
+  }
+}
+
+class PoCharacterElan : FloatingSkull
+{
+    Default {
+        Radius 16;
+        Height 2;
+        Scale 1;
+    }
+  States
+  {
+  Spawn:
+    CRSH A -1;
+    Loop;
+  }
+}
+
+class PoCharacterEzo : FloatingSkull
+{
+    Default {
+        Radius 16;
+        Height 2;
+        Scale 1;
+    }
+  States
+  {
+  Spawn:
+    CRWP A -1;
+    Loop;
+  }
+}
+

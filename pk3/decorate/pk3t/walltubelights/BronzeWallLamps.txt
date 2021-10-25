@@ -1,0 +1,118 @@
+ACTOR BronzeWallLampBlue : SwitchableDecoration
+{
+	//$Title Bronze Wall Lamp Blue
+	//$Category Light Sources/WallLamps
+	//$IsDecoration
+	//$NotAngled
+	//$Sprite WLLBA0
+
+	Radius 3.5
+	Height 44
+	Scale 0.8
+	
+	+NOBLOCKMAP
+	+FIXMAPTHINGPOS
+	+NOGRAVITY
+  
+		States
+		{
+			Spawn:
+			Active:
+				WLLB A 0 Bright A_PlaySound ("Lamp/On")
+				WLLB A -1 Bright
+				Stop
+			Inactive:
+				WLLB H -1 A_PlaySound ("Lamp/Off")
+				Stop
+		}
+}
+
+ACTOR BronzeWallLampWhite : BronzeWallLampBlue
+{
+	//$Title Bronze Wall Lamp White
+	//$Sprite WLLBB0
+
+		States
+		{
+			Spawn:
+			Active:
+				WLLB B 0 Bright A_PlaySound ("Lamp/On")
+				WLLB B -1 Bright
+				Stop
+		}
+}
+
+ACTOR BronzeWallLampGreen : BronzeWallLampBlue
+{
+	//$Title Bronze Wall Lamp Green
+	//$Sprite WLLBC0
+
+		States
+		{
+			Spawn:
+			Active:
+				WLLB C 0 Bright A_PlaySound ("Lamp/On")
+				WLLB C -1 Bright
+				Stop
+		}
+}
+
+ACTOR BronzeWallLampRed : BronzeWallLampBlue
+{
+	//$Title Bronze Wall Lamp Red
+	//$Sprite WLLBD0
+	
+		States
+		{
+			Spawn:
+			Active:
+				WLLB D 0 Bright A_PlaySound ("Lamp/On")
+				WLLB D -1 Bright
+				Stop
+		}
+}
+
+ACTOR BronzeWallLampOrange : BronzeWallLampBlue
+{
+	//$Title Bronze Wall Lamp Orange
+	//$Sprite WLLBE0
+
+		States
+		{
+			Spawn:
+			Active:
+				WLLB E 0 Bright A_PlaySound ("Lamp/On")
+				WLLB E -1 Bright
+				Stop
+		}
+}
+
+ACTOR BronzeWallLampYellow : BronzeWallLampBlue
+{
+	//$Title Bronze Wall Lamp Yellow
+	//$Sprite WLLBF0
+	
+		States
+		{
+			Spawn:
+			Active:
+				WLLB F 0 Bright A_PlaySound ("Lamp/On")
+				WLLB F -1 Bright
+				Stop
+		}
+}
+
+ACTOR BronzeWallLampPurple : BronzeWallLampBlue
+{
+	//$Title Bronze Wall Lamp Purple
+	//$Sprite WLLBG0
+	
+		States
+		{
+			Spawn:
+			Active:
+				WLLB G 0 Bright A_PlaySound ("Lamp/On")
+				WLLB G -1 Bright
+				Stop
+		}
+}

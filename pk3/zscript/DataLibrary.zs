@@ -28,8 +28,8 @@ class DataLibrary : Thinker
             MFinventory.Push(newItem);
         }
         
+        //Set up the initial shop inventory
         itemShopInventory.push(new("MFIStimpack").Init());
-        itemShopInventory.push(new("MFIMedikit").Init()); 
         itemShopInventory.push(new("MFIAmmoBox").Init()); 
         itemShopInventory.push(new("MFIHomingDevice").Init());
         
@@ -86,6 +86,19 @@ class DataLibrary : Thinker
             dic.Insert(key, lineData[1]);
         }
         
+        // ---
+        
+        lumpindex = Wads.FindLump('CLASSDAT', 0, 0);
+        lumpdata = Wads.ReadLump(lumpindex);
+        Array<String> itemData; lumpdata.Split(itemData, "\n");
+        for (int i = 0; i < itemData.Size(); i++) {
+            String line = itemData[i];
+            if (line.Length() < 2) { continue; } //In the absence of trim()
+            Array<String> lineData; line.Split(lineData, ",");
+            String key = "ItemID" .. lineData[0];
+            dic.Insert(key, lineData[1]);
+        }
+        
 		return self;
 	}
 
@@ -113,6 +126,7 @@ class DataLibrary : Thinker
     static clearscope String ReadData(String position) { return DataLibrary.GetInstance().dic.At(position); }
     static clearscope int ReadInt(String position) { return DataLibrary.GetInstance().dic.At(position).ToInt(); }
     static clearscope double ReadDouble(String position) { return DataLibrary.GetInstance().dic.At(position).ToDouble(); }
+    static String ReadClassnameByID(int id) { return DataLibrary.inst().dic.At("ItemID" .. id); }
     
     //////////////////////////////////////////////
     // Item Inventory
@@ -262,6 +276,10 @@ class DataLibrary : Thinker
     {
         String key = "DN-" .. mapnum .. "-" .. square;
         int value = DataLibrary.ReadInt(key);
+        int cheatValue = DataLibrary.ReadInt("CheatForceDangerLevel");
+        if (cheatValue != 0) {
+            value = cheatValue;
+        }
         return value;
     }
     
@@ -288,4 +306,5 @@ class DataLibrary : Thinker
         DataLibrary.WriteData(null, "eventDialogConversation", convId);
         DataLibrary.WriteData(null, "showEventDialog", "1");
     }
+    
 }

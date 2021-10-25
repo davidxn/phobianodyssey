@@ -1,0 +1,4 @@
+:WaterMove
+   playrepeat	po/water/bubble
+   stopsound	po/water/stop
+end

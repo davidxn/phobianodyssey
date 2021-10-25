@@ -11,6 +11,10 @@ DoomEdNums {
     2200 = POChest
     2300 = FOE
     2400 = CoinBag
+    2500 = DecorativeWeapon
+    2501 = PoWaterFountain
+    2600 = PoCharacterElan
+    2601 = PoCharacterEzo
     9002 = BattleStart
     9003 = MonsterStart
     9004 = MonsterTurner
@@ -20,6 +24,7 @@ DoomEdNums {
     9008 = EventSpot
     9009 = HealthRegenerator
     2301 = FireballTrap
+    
     
     15420 = SmallBush
     15421 = SemiLargeTree
@@ -83,6 +88,13 @@ map MAPTUNN "Maintenance Tunnels" {
 
 map MAPTOWN "Tharotia" {
 	levelnum = 5
+    NoJump
+    NoCrouch
+    sky1 = NICESKY
+}
+
+map MAPTUNN2 "Tunnel Depths" {
+	levelnum = 6
     NoJump
     NoCrouch
 }

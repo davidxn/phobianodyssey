@@ -12,6 +12,10 @@ HazmatSquadEasy,Security_Patrol,NONE,HazmatZombie,NONE,HazmatZombie,NONE,ZombieM
 Fodder1,Underlings,ZombieFodder,ZombieFodder,ZombieFodder,ZombieFodder,ZombieFodder,ZombieFodder,NONE,NONE,NONE,NONE
 Fodder2,Mediumlings,NONE,ZombieFodder,NONE,ZombieFodder,ZombieFodder,QuakeFodder,NONE,QuakeFodder,NONE,QuakeFodder
 Fodder3,Overlings,QuakeFodder,NONE,ZombieFodder,NONE,NONE,QuakeFodder,QuakeFodder,QuakeFodder,DoomImp,NONE
+RoachAndImp,Roach_King,DoomImp,NONE,NONE,NONE,DoomImp,NONE,NONE,Roach,NONE,NONE
+RoachAndFodder,Roach_Prince,ZombieFodder,ZombieFodder,ZombieFodder,ZombieFodder,NONE,NONE,Roach,NONE,NONE,NONE
+ImpSiblings,Wretched_Siblings,ZombieFodder,DoomImp,ZombieFodder,DoomImp,NONE,NONE,DoomImp,QuakeFodder,NONE,NONE
+TwoRoaches,Double_Roaches,NONE,NONE,Roach,NONE,Roach,NONE,NONE,NONE,QuakeFodder,NONE
 HazmatSquad,Hazmat_Squad,NONE,NONE,ZombieMan,HazmatZombie,HazmatZombie,HazmatZombie,ZombieMan,NONE,ZombieScientistHeadless,ZombieScientistHeadless
 ZombieSquad,Zombie_Squad,ZombieMan,NONE,NONE,ShotgunGuy,NONE,ZombieMan,ZombieMan,ZombieMan,NONE,ZombieMan
 ZombieDet,Zombie_Detachment,NONE,ZombieMan,ZombieMan,ShotgunGuy,NONE,ZombieMan,ZombieMan,NONE,NONE,NONE

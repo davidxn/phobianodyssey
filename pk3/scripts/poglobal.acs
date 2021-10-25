@@ -31,8 +31,7 @@ script "poarsenal" (int type, int element) {
 }
 
 script "powish" (int type) {
-    str items[8] = {"MFIEmpty", "MFIMegasphere", "MFIRadsuit", "MFIMedikit", "MFIStimpack", "MFIAmmoBox", "MFISoulsphere", "MFIHomingDevice"};
-    str typestring = items[type];
+    str typestring = ScriptCall("DataLibrary", "ReadClassnameByID", type);
     ScriptCall("DataLibrary", "InventoryAdd", typestring, -1);
 }
 
@@ -45,6 +44,10 @@ script "povisit" (int sqnum) {
     SetActorPosition(0, registerX, registerY, registerZ, false);
 }
 
+script "poprance" (int rate) {
+    ScriptCall("DataLibrary", "WriteData", "CheatForceDangerLevel", StrParam(d:rate));
+}
+
 //////////////////////////////////////////////////
 
 script "return" RETURN {
@@ -55,6 +58,7 @@ script "return" RETURN {
 }
 
 script "enter" ENTER {
+	Thing_ChangeTID(0, 9999);
     int mapType = ScriptCall("DataLibrary", "LoadMapProperties");
     levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
@@ -111,7 +115,7 @@ script "rpgMovement" (void) {
 	int i;
 	while (true) {
 		delay(1);
-        ScriptCall("DataLibrary", "WriteData", "BlockUseKey", "0");
+        clearFlag("BlockUseKey");
 		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
 		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
 		if (buttons & BT_LEFT) {
@@ -139,6 +143,8 @@ script "rpgMovement" (void) {
             SetPlayerProperty(1, 0, PROP_TOTALLYFROZEN);
 		}
 		if (buttons & BT_FORWARD || buttons & BT_BACK || buttons & BT_MOVELEFT || buttons & BT_MOVERIGHT) {
+            
+            if (ifFlag("PreventMovement")) { continue; }
 
 			//Set the angle to move depending on the player's direction
 			int step_x = 0.0; int step_y = 0.0;
@@ -171,7 +177,7 @@ script "rpgMovement" (void) {
 			if (!canMove) { continue; }
             
             //We can move! Let's start
-            ScriptCall("DataLibrary", "WriteData", "BlockUseKey", "1");
+            setFlag("BlockUseKey");
             PlaySound(0, ScriptCall("LevelHelper", "GetFloorSound"), CHAN_AUTO);
 
             //Move the player forward, incrementing Z as needed
@@ -215,7 +221,9 @@ script "rpgMovement" (void) {
             //As a result of this move, have we hit an event?
             str scriptName = ScriptCall("LevelHelper", "HandleEvent");
             if (StrLen(scriptName) > 0) {
+                setFlag("PreventMovement");
                 ACS_NamedExecuteWait(scriptName, 0);
+                clearFlag("PreventMovement");
             }
 
 			//As a result of this move, have we hit a FOE?
@@ -250,7 +258,7 @@ script "rpgMovement" (void) {
 			}
 
 			//We're safe!
-            ScriptCall("DataLibrary", "WriteData", "BlockUseKey", "0");
+            clearFlag("BlockUseKey");
 			delay(2);
             
 		}
@@ -307,6 +315,10 @@ script "displayEncounterText" (int isSpecialEncounter) {
 script "setupArena" (void) {
 
 	FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
+    ScriptCall("LevelHelper", "CleanupArena");
+    Thing_Remove(999);
+    clearFlag("BlockUseKey");
+    
     SetHudSize(800, 600, false);
     if (ScriptCall("DataLibrary", "ReadInt", "CurrentFOESquare") > 0) {
         SetFont("TXT_ALRT"); HudMessageBold(s:"A"; HUDMSG_FADEOUT, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 0.5, 0.5);
@@ -329,6 +341,7 @@ script "setupArena" (void) {
 
 	Thing_Move(0, battleStartTid, true);
 	SetActorAngle(0, GetActorAngle(battleStartTid));
+	SetPlayerProperty(1, 0, PROP_FROZEN);
 
 	//If this is a FOE fight, do a bit extra...
 	if (ScriptCall("DataLibrary", "ReadInt", "CurrentFOESquare") > 0) {
@@ -336,9 +349,10 @@ script "setupArena" (void) {
 		delay(20);
 		SetActorState(999, "Destroy");
 		delay(5);
-	}
+	} else {
+        delay(20);
+    }
 
-	SetPlayerProperty(1, 0, PROP_FROZEN);
 
 	//Spawn the monsters meant to go into each slot in this arena!
 	for (int i = 0; i < 10; i++) {
@@ -396,7 +410,7 @@ function int getSquareFromPosition(int x, int y) {
 }
 
 function void getPositionFromSquare(int sqNum) {
-	sqNum -= 10000;
+	sqNum = sqNum % 10000;
 	registerX = ((sqNum % 100) * TILE_SIZE) << 16;
 	sqNum /= 100;
 	registerY = ((sqNum % 100) * TILE_SIZE) << 16;
@@ -419,4 +433,16 @@ function int quantizeAngle(int angle) {
 
 function int max (int a, int b) {
 	return (a > b) ? a : b;
+}
+
+function void setFlag(str flag) {
+    ScriptCall("DataLibrary", "WriteData", flag, "1");
+}
+
+function void clearFlag(str flag) {
+    ScriptCall("DataLibrary", "WriteData", flag, "0");
+}
+
+function int ifFlag(str flag) {
+    return ScriptCall("DataLibrary", "ReadInt", flag);
 }

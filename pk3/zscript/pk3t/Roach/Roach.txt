@@ -1,0 +1,194 @@
+Class Roach : POMonster
+{
+  Default
+  {
+    //$Category Monsters
+    Tag "Roach";
+    Health 150;
+    GibHealth 250;
+    Radius 19;
+    Height 48;
+    Speed 8;
+    PainChance 64;
+    Mass 200;
+    BloodColor "DarkGreen";
+    SeeSound "Roach/Sight";
+    PainSound "Roach/Pain";
+    DeathSound "Roach/Death";
+    ActiveSound "Roach/Active";
+    Obituary "%o was scalded by a Roach";
+    Monster;
+    +DontHarmClass
+  }
+
+  States
+  {
+  Spawn:
+    ROAC A 6 RoachLook();
+    Loop;
+  SeeAlert:
+    ROAC A 0 A_AlertMonsters();
+    Goto See;
+  See:
+    ROAC B 0 A_Jump(32, "Stand");
+    ROAC BB 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    ROAC B 2 A_Chase();
+    ROAC CC 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    ROAC C 2 A_Chase();
+    ROAC DD 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    ROAC D 2 A_Chase();
+    ROAC EE 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    ROAC E 2 A_Chase();
+    Loop;
+  Stand:
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    ROAC A 3 A_FaceTarget();
+    ROAC A 0 A_Jump(192, "Stand");
+    Goto See+1;
+  Melee:
+  Missile:
+    ROAC AAAAFF 3 A_FaceTarget();
+    ROAC G 6
+    {
+      A_SpawnProjectile("RoachBall", 32, -4,  1);
+      A_SpawnProjectile("RoachBall", 32,  4, -1);
+    }
+    Goto See;
+  Pain:
+    ROAC H 3;
+    ROAC H 3 A_Pain();
+    Goto See;
+  Death:
+    ROAC I 8 A_ScreamAndUnblock();
+    ROAC JKL 6;
+    ROAC M 0 A_Jump(18, 2);
+    ROAC M -1;
+    Loop;
+    ROAC MMMMM 70;
+    ROAC MMMMM 70;
+    ROAC MMMMM 70;
+    ROAC M -1 Thing_Raise(0);
+    Wait;
+  XDeath:
+    ROAC I 4 A_XScream();
+	ROAC NOP 6;
+	ROAC Q 6 A_NoBlocking();
+	ROAC RS 6;
+	ROAC T -1;
+	Stop;
+  Raise:
+    ROAC MLKJI 5;
+    Goto See;
+  }
+
+  void RoachLook()
+  {
+    if(Args[0] == 1)
+      A_LookEx(LOF_NOSEESOUND, 0, 0, 0, 0, "See");
+    else if(Args[0] > 1)
+      A_LookEx(0, 0, 0, 0, 0, "SeeAlert");
+    else
+      A_Look();
+  }
+
+  override void Tick()
+  {
+    super.tick(); //Call original in case of another override
+
+    //Heal every six tics
+    if( level.time%6 == 0 && health > 0 )
+      HealThing(2);
+
+    //Run away when low on health, get aggressive when healed up again
+    if(health < 40 && !bFrightened)
+      bFrightened = true;
+    if(health > 120 && bFrightened)
+      bFrightened = false;
+  }
+  
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {      
+        poDropItemWithProbability("PoHeal5", 50);
+        poDropItemWithProbability("PoCoin10", 100);
+        poDropItemWithProbability("PoCoin5", 90);
+        poDropItemWithProbability("PoCoin5", 80);
+        poDropItemWithProbability("PoCoin5", 70);
+        poDropItemWithProbability("PoCoin10", 20);
+        
+        super.doBurst();       
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+}
+
+Class RoachBall : DoomImpBall
+{
+  Default
+  {
+    DamageFunction (Random(5, 8));
+    Height 5;
+    Radius 3;
+    Scale 0.6;
+    Speed 30;
+    Decal "PlasmaScorchLower";
+    SeeSound "Roach/Fire";
+    DeathSound "Roach/Hit";
+  }
+
+  States
+  {
+  Spawn:
+    RCHB AAAABBBB 1 Bright A_SpawnItemEx("RoachBallTrail", -(Vel.X/1.2), -(Vel.Y/1.2), (Vel.Z/1.2*-1), (Vel.X/1.2), (Vel.Y/1.2), (Vel.Z/1.2), -Angle, SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY | SXF_CLIENTSIDE);
+    Loop;
+  Death:
+    RCHB C 0 Bright A_Explode(5, 32, 0);
+    RCHB CDEFG 3 Bright;
+    Stop;
+  }
+}
+
+Class RoachBallTrail : Actor
+{
+  Default
+  {
+    Projectile;
+    RenderStyle "Add";
+    Alpha 0.5;
+    Scale 0.6;
+  }
+
+  States
+  {
+  Spawn:
+    RCHB AABB 2 Bright A_FadeOut(0.05);
+    Loop;
+  }
+}
+
+
+//==========Mapper notes
+
+//The Roach is a fairly annoying monster that can regenerates 2 health every
+//6 tics (almost 6 health per second, and can fully heal itself in under 30
+//seconds).
+
+//When it is under 40 health, it will switch on the Frightened flag and run
+//away. When it hits 120 health, it'll turn the flag off and attack again.
+
+//If the first argument is 1, it won't play a see sound.
+//If the first argument is 2, it will alert other monsters in the vicinity
+//when it sees a player.

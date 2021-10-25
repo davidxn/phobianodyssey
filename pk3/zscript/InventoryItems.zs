@@ -127,10 +127,78 @@ class MFIHomingDevice : MFInventoryItem {
     override bool use() {
         PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
         p.A_PlaySound("po/warp");
+        EventHandler.SendNetworkEvent("CloseInventory");
         CallACS("useHomingDevice");
         return true;
     }
 }
+
+class MFITreasure1 : MFInventoryItem {
+    override String myTexture() { return "TRESA0"; }
+    override String myName() { return "\ckBlood Charm"; }
+    override int getBuyPrice() { return 250; }
+    override int getSellPrice() { return 250; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFITreasure2 : MFInventoryItem {
+    override String myTexture() { return "TRESB0"; }
+    override String myName() { return "\ckDevil Ring"; }
+    override int getBuyPrice() { return 500; }
+    override int getSellPrice() { return 500; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFITreasure3 : MFInventoryItem {
+    override String myTexture() { return "TRESC0"; }
+    override String myName() { return "\ckMagic Bangle"; }
+    override int getBuyPrice() { return 750; }
+    override int getSellPrice() { return 750; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFITreasure4 : MFInventoryItem {
+    override String myTexture() { return "TRESD0"; }
+    override String myName() { return "\ckAngel Statue"; }
+    override int getBuyPrice() { return 1000; }
+    override int getSellPrice() { return 1000; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFITreasure5 : MFInventoryItem {
+    override String myTexture() { return "TRESE0"; }
+    override String myName() { return "\ckGold Gross"; }
+    override int getBuyPrice() { return 2500; }
+    override int getSellPrice() { return 2500; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFITreasure6 : MFInventoryItem {
+    override String myTexture() { return "TRESF0"; }
+    override String myName() { return "\ckDemon Crown"; }
+    override int getBuyPrice() { return 5000; }
+    override int getSellPrice() { return 5000; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
 
 ///////////////////////
 

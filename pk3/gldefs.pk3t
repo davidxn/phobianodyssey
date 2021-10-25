@@ -361,3 +361,327 @@ Object ZombieScientistHeadless
 }
 
 //<< PK3T ZombieScientistHeadless END >>//
+//<< PK3T walltubelights START >>//
+pointlight WALLLAMPBLUE
+{
+	color 0.1 0.1 1.0
+	size 48
+	offset 0 24 0
+}
+
+object BronzeWallLampBlue
+{
+	frame WLLBA { light WALLLAMPBLUE }
+}
+
+object greyWallLampBlue
+{
+	frame WLLGA { light WALLLAMPBLUE }
+}
+
+pointlight WALLLAMPWHITE
+{
+	color 1.0 1.0 1.0
+	size 48
+	offset 0 24 0
+}
+
+object BronzeWallLampWhite
+{
+	frame WLLBB { light WALLLAMPWHITE }
+}
+
+object greyWallLampWhite
+{
+	frame WLLGB { light WALLLAMPWHITE }
+}
+
+pointlight WALLLAMPGREEN
+{
+	color 0.5 1.0 0.5
+	size 48
+	offset 0 24 0
+}
+
+object BronzeWallLampGreen
+{
+	frame WLLBC { light WALLLAMPGREEN }
+}
+
+object greyWallLampGreen
+{
+	frame WLLGC { light WALLLAMPGREEN }
+}
+
+pointlight WALLLAMPRED
+{
+	color 1.0 0.2 0.2
+	size 48
+	offset 0 24 0
+}
+
+object BronzeWallLampRed
+{
+	frame WLLBD { light WALLLAMPRED }
+}
+
+object greyWallLampRed
+{
+	frame WLLGD { light WALLLAMPRED }
+}
+
+pointlight WALLLAMPORANGE
+{
+	color 1.0 0.7 0.0
+	size 48
+	offset 0 24 0
+}
+
+object BronzeWallLampOrange
+{
+	frame WLLBE { light WALLLAMPORANGE }
+}
+
+object greyWallLampOrange
+{
+	frame WLLGE { light WALLLAMPORANGE }
+}
+
+pointlight WALLLAMPYELLOW
+{
+	color 1.0 1.0 0.8
+	size 48
+	offset 0 24 0
+}
+
+object BronzeWallLampYellow
+{
+	frame WLLBF { light WALLLAMPYELLOW }
+}
+
+object greyWallLampYellow
+{
+	frame WLLGF { light WALLLAMPYELLOW }
+}
+
+pointlight WALLLAMPPURPLE
+{
+	color 0.8 0.0 1.0
+	size 48
+	offset 0 24 0
+}
+
+object BronzeWallLampPurple
+{
+	frame WLLBG { light WALLLAMPPURPLE }
+}
+
+object greyWallLampPurple
+{
+	frame WLLGG { light WALLLAMPPURPLE }
+}
+//<< PK3T walltubelights END >>//
+//<< PK3T Roach START >>//
+Pointlight RoachBall1
+{
+Color 0.0 0.4 0.0
+Size 24
+}
+
+Pointlight RoachBall2
+{
+Color 0.0 0.6 0.0
+Size 24
+}
+
+Pointlight RoachBall3
+{
+Color 0.0 0.6 0.0
+Size 32
+}
+
+Pointlight RoachBall4
+{
+Color 0.0 0.7 0.0
+Size 32
+}
+
+Pointlight RoachBall5
+{
+Color 0.0 0.5 0.0
+Size 24
+}
+
+Pointlight RoachBall6
+{
+Color 0.0 0.2 0.0
+Size 16
+}
+
+Object RoachBall
+{
+Frame RCHBA { Light RoachBall1 }
+Frame RCHBB { Light RoachBall1 }
+Frame RCHBC { Light RoachBall2 }
+Frame RCHBD { Light RoachBall3 }
+Frame RCHBE { Light RoachBall4 }
+Frame RCHBF { Light RoachBall5 }
+Frame RCHBG { Light RoachBall6 }
+}
+
+BrightMap Sprite ROACA1
+{
+Map BMROACA1
+DisableFullBright
+}
+
+BrightMap Sprite ROACA2A8
+{
+Map BMROACA2
+DisableFullBright
+}
+
+BrightMap Sprite ROACA3A7
+{
+Map BMROACA3
+DisableFullBright
+}
+
+BrightMap Sprite ROACB1
+{
+Map BMROACB1
+DisableFullBright
+}
+
+BrightMap Sprite ROACB2B8
+{
+Map BMROACB2
+DisableFullBright
+}
+
+BrightMap Sprite ROACB3B7
+{
+Map BMROACB3
+DisableFullBright
+}
+
+BrightMap Sprite ROACC1
+{
+Map BMROACC1
+DisableFullBright
+}
+
+BrightMap Sprite ROACC2C8
+{
+Map BMROACC2
+DisableFullBright
+}
+
+BrightMap Sprite ROACC3C7
+{
+Map BMROACC3
+DisableFullBright
+}
+
+BrightMap Sprite ROACC4C6
+{
+Map BMROACC4
+DisableFullBright
+}
+
+BrightMap Sprite ROACD1
+{
+Map BMROACD1
+DisableFullBright
+}
+
+BrightMap Sprite ROACD2D8
+{
+Map BMROACD2
+DisableFullBright
+}
+
+BrightMap Sprite ROACD3D7
+{
+Map BMROACD3
+DisableFullBright
+}
+
+BrightMap Sprite ROACE1
+{
+Map BMROACE1
+DisableFullBright
+}
+
+BrightMap Sprite ROACE2E8
+{
+Map BMROACE2
+DisableFullBright
+}
+
+BrightMap Sprite ROACE3E7
+{
+Map BMROACE3
+DisableFullBright
+}
+
+BrightMap Sprite ROACF1
+{
+Map BMROACF1
+DisableFullBright
+}
+
+BrightMap Sprite ROACF2F8
+{
+Map BMROACF2
+DisableFullBright
+}
+
+BrightMap Sprite ROACF3F7
+{
+Map BMROACF3
+DisableFullBright
+}
+
+BrightMap Sprite ROACG1
+{
+Map BMROACG1
+DisableFullBright
+}
+
+BrightMap Sprite ROACG2G8
+{
+Map BMROACG2
+DisableFullBright
+}
+
+BrightMap Sprite ROACG3G7
+{
+Map BMROACG3
+DisableFullBright
+}
+
+BrightMap Sprite ROACI0
+{
+Map BMROACI0
+DisableFullBright
+}
+
+BrightMap Sprite ROACJ0
+{
+Map BMROACJ0
+DisableFullBright
+}
+
+BrightMap Sprite ROACN0
+{
+Map BMROACN0
+DisableFullBright
+}
+
+BrightMap Sprite ROACO0
+{
+Map BMROACO0
+DisableFullBright
+}
+//<< PK3T Roach END >>//

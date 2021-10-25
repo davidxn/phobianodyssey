@@ -23,6 +23,7 @@ class FriendlyUIHandler : EventHandler
 	ui TextureID invHilight;
 	ui TextureID mouseMiniCursorTex;
     ui TextureID dialogBackFrame;
+    ui TextureID dialogOptionFrame;
     ui TextureID blockMapFrame;
     ui TextureID blockMapSquares;
     ui TextureID mapCounter;
@@ -35,6 +36,7 @@ class FriendlyUIHandler : EventHandler
     // Inventory screen stuff
 	ui int hoveredInvStack;
     ui int hoveredShopNumber;
+    ui int hoveredDialogOption;
 	ui MFInventoryItem uiGrabbedItem;
 	play MFInventoryItem newGrabbedItem;
     play bool grabbedItemIsFromShop;
@@ -76,11 +78,14 @@ class FriendlyUIHandler : EventHandler
     const MAP_SQUARE_DISTANCE_X = 0.0275;
     const MAP_SQUARE_DISTANCE_Y = 0.0366;
 
-    ui bool showInvScreen;
+    play bool showInvScreen;
     
     ui String parsedDialogString;
     ui String parsedDialogTexture;
+    ui MFInventoryItem parsedDialogChestItem;
     ui String parsedDialogType;
+    ui Array<String> parsedDialogOptions;
+    ui Array<int> parsedDialogDestinations;
 
 	ui void InitFonts()
 	{
@@ -100,6 +105,7 @@ class FriendlyUIHandler : EventHandler
 		invHilight = TexMan.CheckForTexture("invsel", 0);
 
         dialogBackFrame = TexMan.CheckForTexture("DIALBACK", 0);
+        dialogOptionFrame = TexMan.CheckForTexture("DIALRESP", 0);
         blockMapFrame = TexMan.CheckForTexture("MAPBLOCK", 0);
         blockMapSquares = TexMan.CheckForTexture("MAPSQUAR", 0);
         mapCounter = TexMan.CheckForTexture("MAPCOUNT", 0);
@@ -109,13 +115,20 @@ class FriendlyUIHandler : EventHandler
         weaponCursorTex = TexMan.CheckForTexture("guncurs", 0);
 
 		hoveredInvStack = -1;
+        hoveredShopNumber = -1;
+        hoveredDialogOption = -1;
 	}
 
 
     ui void DrawDialog()
     {
+        // get mouse coordinates in % based numbers used by drawers
+		Vector2 mv = RealToVirtual(mouseCursorPos);
+		mv.x /= UI_WIDTH;
+		mv.y /= UI_HEIGHT;
+        
         if (DataLibrary.ReadInt("shouldHideDialog") == 1) { dialogOpacity = 0; DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "0"); }
-        if (DataLibrary.ReadInt("shouldEraseText") == 1) { textPercentDisplayed = 0; parsedDialogString = ""; DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0"); }
+        if (DataLibrary.ReadInt("shouldEraseText") == 1) { textPercentDisplayed = 0; parsedDialogString = ""; parsedDialogChestItem = null; parsedDialogOptions.Clear(); DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0"); }
 
         //We display the dialogue texture first because it has to appear behind the dialogue window
         if (parsedDialogTexture && dialogOpacity >= 1.0) {
@@ -143,9 +156,12 @@ class FriendlyUIHandler : EventHandler
                     parsedDialogString.Substitute("$chestitem$", (chest.containedAmmo .. " " .. ammoType));
                 }
             } else {
-                ScreenDrawTextureWithinArea(chest.containedItem.getTexture(), 0.5, 0.2, 0.3, 0.3, alpha:dialogOpacity, centerX:true);
                 parsedDialogString.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
+                parsedDialogChestItem = chest.containedItem;
             }
+        }
+        if (parsedDialogChestItem) {
+            ScreenDrawTextureWithinArea(parsedDialogChestItem.getTexture(), 0.5, 0.2, 0.3, 0.3, alpha:dialogOpacity, centerX:true);
         }
 
         //Don't actually do anything with the string until dialog opacity is 1.0
@@ -155,6 +171,23 @@ class FriendlyUIHandler : EventHandler
 
         ScreenDrawString(parsedDialogString, Font.CR_WHITE, journalFont, 0.145, 0.56, wrapWidth: 0.7, displayPercent: textPercentDisplayed);
         if (textPercentDisplayed < 1.0) textPercentDisplayed += 0.005;
+        
+        //Draw any responses
+        hoveredDialogOption = -1;
+        if (textPercentDisplayed >= 1.0 && parsedDialogOptions.Size() > 0) {
+            double yPos = 1.0;
+            yPos -= 0.1 * parsedDialogOptions.Size();
+            for (int i = 0; i < parsedDialogOptions.Size(); i++) {
+                int optionColor = Font.CR_GOLD;
+                if (mv.y >= yPos - 0.03 && mv.y <= yPos + 0.03) {
+                    hoveredDialogOption = i;
+                    optionColor = Font.CR_WHITE;
+                }
+                ScreenDrawTexture(dialogOptionFrame, 0.5, yPos, alpha: 1.0, centerX: true, centerY: true);
+                ScreenDrawString(parsedDialogOptions[i], optionColor, journalFont, 0.5, yPos - 0.015, wrapWidth: 1.0, centerX: true);
+                yPos += 0.1;
+            }
+        }
         
         DrawMouseCursor();
         return;
@@ -252,7 +285,9 @@ class FriendlyUIHandler : EventHandler
 
 		if ( e.Name == "ClearedUIGrabbedItem" ) { newGrabbedItem = NULL; shouldClearUIGrabbedItem = false; grabbedItemIsFromShop = false; }
         else if ( e.Name == "BinItem" ) { p.A_PlaySound("po/inventory/bin", CHAN_VOICE); }
-        else if ( e.Name == "ToggledPack" ) { p.A_PlaySound("po/inventory/open", CHAN_VOICE); }
+        else if ( e.Name == "CloseInventory" ) { showInvScreen = false; }
+        else if ( e.Name == "OpenInventory" ) { showInvScreen = true; }
+        else if ( e.Name == "ToggleInventory" ) { p.A_PlaySound("po/inventory/open", CHAN_VOICE); showInvScreen = !showInvScreen; }
 		else if ( e.Name == "ClickedInvStack" )
 		{
 			int stackIndex = e.Args[0];
@@ -332,10 +367,13 @@ class FriendlyUIHandler : EventHandler
             }
         }
         else if ( e.Name == "ClickedPastDialog" ) {
+            int destination = e.args[0];
+            if (destination == 0) {
+                destination = DataLibrary.ReadInt("eventDialogPage") + 1;
+            }
             
-            int eventDialogPage = DataLibrary.ReadInt("eventDialogPage") + 1;
             String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
-            String dialogKey = "CONV_" .. eventDialogConversation .. "_" .. eventDialogPage;
+            String dialogKey = "CONV_" .. eventDialogConversation .. "_" .. destination;
             String theString = StringTable.Localize("$" .. dialogKey);
             DataLibrary.GetInstance().dic.Insert("shouldEraseText", "1");
 
@@ -346,10 +384,10 @@ class FriendlyUIHandler : EventHandler
                 DataLibrary.WriteData(NULL, "eventDialogConversation", "");
             }
             else {
-                DataLibrary.WriteData(NULL, "eventDialogPage", eventDialogPage .. "");
+                DataLibrary.WriteData(NULL, "eventDialogPage", destination .. "");
             }
         }
-        else if (e.Name == "ClosedShopScreen" ) {
+        else if (e.Name == "CloseShopScreen" ) {
             newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
             DataLibrary.WriteDataFromUI("OpenShopScreen", "0");
         }
@@ -372,7 +410,6 @@ class FriendlyUIHandler : EventHandler
         bool showEventDialog = (DataLibrary.ReadData("showEventDialog") == "1");
 		if ( !initialized ) return false;
 
-
 		// OK, let's get some binds!
 		int leftBind, rightBind, i;
 		[leftBind, i] = Bindings.GetKeysForCommand("+moveleft");
@@ -384,19 +421,20 @@ class FriendlyUIHandler : EventHandler
 		if ( automapactive ) return false;
         
         if ( e.Type == InputEvent.Type_KeyDown && (e.KeyScan == invBind1 || e.KeyScan == invBind2)) {
-            showInvScreen = !showInvScreen;
-            
-            //If we aren't showing the inventory screen any more, the item shop screen must be closed
-            //and the current grabbed item (if from shop) has to be cleared
-            if (!showInvScreen) {
-                EventHandler.SendNetworkEvent("ClosedShopScreen");
+            //If the dialogue screen is open, ignore the keypress
+            if ( DataLibrary.ReadData("showEventDialog") == "1" ) {
+                return true;
             }
-            EventHandler.SendNetworkEvent("ToggledPack");
+            
+            //If the shop screen is currently open, need to close that as well
+            if (DataLibrary.ReadData("OpenShopScreen") == "1") {
+                EventHandler.SendNetworkEvent("CloseShopScreen");
+            }
+
+            EventHandler.SendNetworkEvent("ToggleInventory");
+           
             return true;
         }
-
-        //If not showing anything, no need to check for keys
-		if ( !showInvScreen && !showEventDialog ) return false;
 
         if (showInvScreen) {
             if ( newGrabbedItem ) {	uiGrabbedItem = newGrabbedItem;	}
@@ -423,7 +461,7 @@ class FriendlyUIHandler : EventHandler
                 {
                     if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("ClickedInvStack", hoveredInvStack); return true; }
 
-                    if ( hoveringDropButton && uiGrabbedItem ) {
+                    if ( hoveringDropButton && uiGrabbedItem && !grabbedItemIsFromShop) {
                         uiGrabbedItem = NULL;
                         EventHandler.SendNetworkEvent("ClearedUIGrabbedItem");
                         EventHandler.SendNetworkEvent("BinItem");
@@ -472,8 +510,18 @@ class FriendlyUIHandler : EventHandler
                 // handle mouse clicks
                 if ( e.KeyScan == InputEvent.Key_Mouse1 || e.KeyScan == useBind1 || e.KeyScan == useBind2 )
                 {
-                    EventHandler.SendNetworkEvent("ClickedPastDialog");
-                    return true;
+                    if (dialogOpacity >= 1.0) {
+                        if (textPercentDisplayed >= 1.0 && parsedDialogOptions.Size() <= 1) {
+                            EventHandler.SendNetworkEvent("ClickedPastDialog", 0);
+                        }
+                        else if (textPercentDisplayed >= 1.0 && hoveredDialogOption != -1) {
+                            EventHandler.SendNetworkEvent("ClickedPastDialog", parsedDialogDestinations[hoveredDialogOption]);
+                        }
+                        else {
+                            //If clicked before text is all displayed, set it to displayed
+                            textPercentDisplayed = 1.0;
+                        }
+                    }
                 }
                 return true;
             }
@@ -541,7 +589,7 @@ class FriendlyUIHandler : EventHandler
         }
         
         if (DataLibrary.ReadData("OpenShopScreen") == "1") {
-            showInvScreen = true;
+            EventHandler.SendNetworkEvent("OpenInventory");
             DrawItemShopScreen();
         }
 		if ( showInvScreen ) {
@@ -551,7 +599,7 @@ class FriendlyUIHandler : EventHandler
             ScreenDrawTexture(invBGClosedFrame, 0, 0, alpha: 0.9);
         }
         if ( DataLibrary.ReadData("showEventDialog") == "1" ) {
-            showInvScreen = 0;
+            EventHandler.SendNetworkEvent("CloseInventory");
             
             String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
             int eventDialogPage = DataLibrary.ReadInt("eventDialogPage");
@@ -570,12 +618,32 @@ class FriendlyUIHandler : EventHandler
                     //This is a special token, let's parse it!
                     String tokenType = tokens[i].Mid(1, 1);
                     String tokenValue = tokens[i].Mid(3, tokens[i].Length()-4);
-                    console.printf("DEBUG: Conversation data %s %s", tokenType, tokenValue);
+
                     if (tokenType == "F") {
                         parsedDialogTexture = tokenValue;
                     }
+                    if (tokenType == "R") { //Response
+                        tokenValue.Substitute("_", " ");
+                        parsedDialogOptions.push(tokenValue);
+                    }
+                    if (tokenType == "D") { //Destination (for responses)
+                        parsedDialogDestinations.push(tokenValue.ToInt());
+                    }
+                    if (tokenType == "F") { //Set flag
+                        DataLibrary.WriteDataFromUI(tokenValue, "1");
+                    }
+                    if (tokenType == "C") { //Clear flag
+                        DataLibrary.WriteDataFromUI(tokenValue, "0");
+                    }
                     
                     nextTokenStartChar += tokens[i].Length() + 1;
+                }
+                
+                //To make it easier, fill the destinations with 0s if there are too few for the responses
+                //This means we don't have to provide a destination if it doesn't matter (e.g. single response)
+                while (parsedDialogOptions.Size() > parsedDialogDestinations.size()) {
+                    parsedDialogDestinations.push(0);
+                    console.printf("Padded dialogue destinations");
                 }
             }
             

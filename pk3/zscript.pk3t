@@ -18,3 +18,7 @@
 #include "zscript/pk3t/ZombieFodder/ZombieFodder.txt"
 
 //<< PK3T ZombieFodder END >>//
+//<< PK3T Roach START >>//
+#include "zscript/pk3t/Roach/Roach.txt"
+
+//<< PK3T Roach END >>//

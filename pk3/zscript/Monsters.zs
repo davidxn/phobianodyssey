@@ -362,3 +362,31 @@ class PoImp : POMonster REPLACES DoomImp
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 }
+
+class PoBlueImp : PoImp
+{
+    Default {
+        Translation "64:79=192:199";
+        DamageFunction 11;
+        Health 70;
+        DamageType "Blue";
+        DamageFactor "Yellow", 2;
+        Scale 1.1;
+    }
+    
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        poDropItemWithProbability("PoHorn", 90);
+        
+        poDropItemWithProbability("PoCoin10", 80);
+        poDropItemWithProbability("PoCoin5", 70);
+        poDropItemWithProbability("PoCoin5", 50);
+        
+        poDropItemWithProbability("PoHeal5", 30);
+        if (MeansOfDeath == "Yellow") {
+            poDropItemWithProbability("PoCoin10", 100);
+        }
+        
+        super.doBurst();       
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+}

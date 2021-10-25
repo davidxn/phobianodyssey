@@ -14,3 +14,7 @@
 #include "decorate/pk3t/ZombieScientistPlasma/ZombieScientistPlasma.txt"
 
 //<< PK3T ZombieScientistPlasma END >>//
+//<< PK3T walltubelights START >>//
+#include "decorate/pk3t/WallTubeLights/BronzeWallLamps.txt"
+#include "decorate/pk3t/WallTubeLights/GreyWallLamps.txt"
+//<< PK3T walltubelights END >>//

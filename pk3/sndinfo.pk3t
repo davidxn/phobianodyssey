@@ -82,3 +82,26 @@ ZFlesh/Throw	FODDATK
 ZFlesh/Miss		FODDMISS
 ZFlesh/Hit		FODDHIT
 //<< PK3T ZombieFodder END >>//
+//<< PK3T walltubelights START >>//
+Lamp/On		DSLAMPON
+Lamp/Off	DSLAMPOF
+//<< PK3T walltubelights END >>//
+//<< PK3T Roach START >>//
+$Random Roach/Sight { ROACSIG1 ROACSIG2 ROACSIG3 }
+ROACSIG1	ROACSIG1
+ROACSIG2	ROACSIG2
+ROACSIG3	ROACSIG3
+$Random Roach/Active { ROACACT1 ROACACT2 }
+ROACACT1	ROACACT1
+ROACACT2	ROACACT2
+Roach/Fire	ROACFIRE
+Roach/Hit	ROACHIT
+$Random Roach/Pain { ROACPAI1 ROACPAI2 }
+ROACPAI1	ROACPAI1
+ROACPAI2	ROACPAI2
+Roach/Death	ROACDEAT
+
+$Limit Roach/Fire 0
+$Limit Roach/Hit 0
+
+//<< PK3T Roach END >>//
