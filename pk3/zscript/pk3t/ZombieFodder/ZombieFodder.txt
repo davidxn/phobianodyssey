@@ -63,6 +63,70 @@ Class ZombieFodder : POMonster
 
 }
 
+Class ZombieFodder2 : POMonster
+{
+  Default
+  {
+    Health 25;
+    GibHealth 20;
+    Radius 20;
+    Height 56;
+    Speed 9;
+    PainChance 256;
+    SeeSound "ZombieFodder/sight";
+    PainSound "ZombieFodder/pain";
+    DeathSound "ZombieFodder/death";
+    ActiveSound "ZombieFodder/active";
+    Obituary "%o joins the zombies.";
+    Monster;
+    +FLOORCLIP
+  }
+
+  States
+  {
+  Spawn:
+    ZFO2 AB 10 A_Look();
+    Loop;
+  See:
+    ZFO2 AABBCCDD 3 A_Chase();
+    Loop;
+  Melee:
+    ZFO2 EF 10 A_FaceTarget();
+    ZFO2 G 8 A_CustomMeleeAttack(5 + random(0, 3), "ZombieFodder/Melee");
+    Goto See;
+  Pain:
+    ZFO2 H 4;
+    ZFO2 H 4 A_Pain();
+    Goto See;
+  Death:
+  XDeath:
+    ZFO2 N 5;
+    ZFO2 O 5 A_XScream();
+    ZFO2 P 5 A_NoBlocking();
+    ZFO2 QR 5;
+    ZFO2 S -1;
+    Stop;
+  Raise:
+    ZFO2 L 5;
+    ZFO2 KJI 5;
+    Goto See;
+  }
+  
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        poDropItemWithProbability("PoClip5", 15);
+        
+        poDropItemWithProbability("PoCoin5", 100);
+        
+        if (MeansOfDeath == "Melee") {
+            poDropItemWithProbability("PoClip5", 60);
+        }
+        
+        super.doBurst();
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+
+}
+
 Class QuakeFodder : ZombieFodder
 {
   Default
@@ -105,6 +169,7 @@ Class QuakeFodder : ZombieFodder
         if (MeansOfDeath == "Melee") {
             poDropItemWithProbability("PoCoin5", 100);
             poDropItemWithProbability("PoCoin5", 100);
+            poDropItemWithProbability("PoClip5", 100);
         }
         
         super.doBurst();       

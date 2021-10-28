@@ -13,9 +13,9 @@ maps
 		}
 		defaultfloortexture = "VSLATE1";
 		defaultceiltexture = "0BRCKX22";
-		defaulttoptexture = "METAL2";
-		defaultwalltexture = "METAL2";
-		defaultbottomtexture = "METAL2";
+		defaulttoptexture = "OBRCKG02";
+		defaultwalltexture = "OBRCKG02";
+		defaultbottomtexture = "OBRCKG02";
 		custombrightness = 196;
 		customfloorheight = 0;
 		customceilheight = 128;
@@ -28,9 +28,9 @@ maps
 		overrideceilheight = false;
 		overridebrightness = false;
 		uselongtexturenames = false;
-		viewpositionx = 1382.353f;
-		viewpositiony = 698.2812f;
-		viewscale = 0.5787399f;
+		viewpositionx = 572.2936f;
+		viewpositiony = 933.3223f;
+		viewscale = 2.793461f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid
@@ -41,7 +41,7 @@ maps
 			backoffsety = -320;
 			backscalex = 200;
 			backscaley = 200;
-			gridsize = 16;
+			gridsize = 8;
 			gridrotate = 0;
 			gridoriginx = 0;
 			gridoriginy = 0;
@@ -85,6 +85,22 @@ maps
 				offsetx_mid = 1;
 				offsety_mid = 1;
 				offsetx_top = 1;
+				offsety_top = 1;
+			}
+			
+			sector
+			{
+				xpanningceiling = 1;
+				ypanningceiling = 1;
+				rotationceiling = 1;
+				xscaleceiling = 1;
+				yscaleceiling = 1;
+				xpanningfloor = 1;
+				ypanningfloor = 1;
+				rotationfloor = 1;
+				xscalefloor = 1;
+				yscalefloor = 1;
+				soundsequence = 2;
 			}
 		}
 		

@@ -76,7 +76,7 @@ class LevelHelper : Thinker
         double testY;
         int dropStepsAllowed = 0;
         //Check in 16th-bigtile steps for any barriers (therefore, all walls must be 16mu+ thick)
-        for (double i = (1.0/16); i <= 1.0; i += (1.0/16)) {
+        for (double i = (1.0/16); i <= 1.0 + (1.0/8); i += (1.0/16)) { //We actually test a bit beyond the next square to prevent literal edge cases where the player can't fit!
             testX = initialX + (128*i*stepX);
             testY = initialY + (128*i*stepY);
             testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
@@ -151,6 +151,10 @@ class LevelHelper : Thinker
         while (a = PoAmmo(it.Next() ) ) {
             a.Destroy();
         }
+        PoSpeck s; it = ThinkerIterator.Create("PoSpeck");
+        while (s = PoSpeck(it.Next() ) ) {
+            s.Destroy();
+        }
     }
     
     static void StopActor(Actor activator)
@@ -168,7 +172,7 @@ class LevelHelper : Thinker
             if (s.getClassName() != "POWeaponSlotEmpty") {
                 POWeapon weapon = POWeapon(activator.GiveInventoryType("POWeapon" .. i+1));
                 if (weapon) {
-                    weapon.changeWeaponType(s.myType(), s.myElement());
+                    weapon.changeWeaponType(s.myType(), s.myElement(), s.myPower());
                 } else {
                     console.printf("Failed to add weapon %s", "POWeapon" .. i+1);
                 }

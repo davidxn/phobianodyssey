@@ -36,7 +36,7 @@ class MFIMegasphere : MFInventoryItem {
     override int getSellPrice() { return 1000; }
     
     override bool use() {
-        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         if (p.Health >= 200) {
             return false;
         }
@@ -59,11 +59,11 @@ class MFIRadsuit : MFInventoryItem {
 class MFIMedikit : MFInventoryItem {
     override String myTexture() { return "MEDIA0"; }
     override String myName() { return "Medikit"; }
-    override int getBuyPrice() { return 200; }
-    override int getSellPrice() { return 100; }
+    override int getBuyPrice() { return 100; }
+    override int getSellPrice() { return 50; }
     
     override bool use() {
-        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         if (p.Health >= 100) {
             return false;
         }
@@ -76,10 +76,10 @@ class MFIMedikit : MFInventoryItem {
 class MFIStimpack : MFInventoryItem {
     override String myTexture() { return "STIMA0"; }
     override String myName() { return "Stimpack"; }
-    override int getBuyPrice() { return 100; }
-    override int getSellPrice() { return 50; }
+    override int getBuyPrice() { return 60; }
+    override int getSellPrice() { return 30; }
     override bool use() {
-        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         if (p.Health >= 100) {
             return false;
         }
@@ -92,10 +92,10 @@ class MFIStimpack : MFInventoryItem {
 class MFIAmmoBox : MFInventoryItem {
     override String myTexture() { return "AMMOA0"; }
     override String myName() { return "Bullet Box"; }
-    override int getBuyPrice() { return 50; }
-    override int getSellPrice() { return 25; }
+    override int getBuyPrice() { return 30; }
+    override int getSellPrice() { return 15; }
     override bool use() {
-        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         p.GiveInventory("POClip", 25);
         p.A_PlaySound("po/reload");
         return true;
@@ -108,7 +108,7 @@ class MFISoulsphere : MFInventoryItem {
     override int getBuyPrice() { return 1000; }
     override int getSellPrice() { return 500; }
     override bool use() {
-        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         if (p.Health >= 200) {
             return false;
         }
@@ -121,11 +121,15 @@ class MFISoulsphere : MFInventoryItem {
 class MFIHomingDevice : MFInventoryItem {
     override String myTexture() { return "HOMDA0"; }
     override String myName() { return "Homing Device"; }
-    override int getBuyPrice() { return 250; }
-    override int getSellPrice() { return 125; }
+    override int getBuyPrice() { return 200; }
+    override int getSellPrice() { return 100; }
     
     override bool use() {
-        PlayerPawn p; ThinkerIterator it = ThinkerIterator.Create("PlayerPawn"); p = PlayerPawn(it.Next());
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        if (DataLibrary.ReadInt("DisableHomingDevice")) {
+            p.A_PlaySound("po/deny");
+            return false;
+        }
         p.A_PlaySound("po/warp");
         EventHandler.SendNetworkEvent("CloseInventory");
         CallACS("useHomingDevice");
@@ -199,16 +203,51 @@ class MFITreasure6 : MFInventoryItem {
     }
 }
 
+class MFIBookPower : MFInventoryItem {
+    override String myTexture() { return "BUCHA0"; }
+    override String myName() { return "\clPower Manual"; }
+    override int getBuyPrice() { return 0; }
+    override int getSellPrice() { return 0; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFIBookSpeed : MFInventoryItem {
+    override String myTexture() { return "BUCHB0"; }
+    override String myName() { return "\clSpeed Manual"; }
+    override int getBuyPrice() { return 0; }
+    override int getSellPrice() { return 0; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFIBookLuck : MFInventoryItem {
+    override String myTexture() { return "BUCHC0"; }
+    override String myName() { return "\clLuck Manual"; }
+    override int getBuyPrice() { return 0; }
+    override int getSellPrice() { return 0; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
 
 ///////////////////////
 
 class POWeaponSlot : Thinker abstract {
     
     String weaponElement;
+    String weaponPower;
     
     virtual clearscope String myTexture() { return "WSLOTNUN"; }
     virtual clearscope String myType() { return "None"; }
     virtual clearscope String myElement() { return weaponElement; }
+    virtual clearscope String myPower() { return weaponPower; }
 
     POWeaponSlot Init(void) {
         ChangeStatNum(STAT_STATIC);
@@ -220,10 +259,18 @@ class POWeaponSlot : Thinker abstract {
     }
     
     clearscope TextureID getElementTexture() {
-        if (self.weaponElement == "Blue")    { return TexMan.CheckForTexture("WSLOTEL1", TexMan.Type_MiscPatch); }
-        if (self.weaponElement == "Red")     { return TexMan.CheckForTexture("WSLOTEL2", TexMan.Type_MiscPatch); }
-        if (self.weaponElement == "Green")   { return TexMan.CheckForTexture("WSLOTEL3", TexMan.Type_MiscPatch); }
-        if (self.weaponElement == "Yellow")  { return TexMan.CheckForTexture("WSLOTEL4", TexMan.Type_MiscPatch); }
+        if (self.weaponElement == "Blue")   { return TexMan.CheckForTexture("WSLOTEL1", TexMan.Type_MiscPatch); }
+        if (self.weaponElement == "Red")    { return TexMan.CheckForTexture("WSLOTEL2", TexMan.Type_MiscPatch); }
+        if (self.weaponElement == "Green")  { return TexMan.CheckForTexture("WSLOTEL3", TexMan.Type_MiscPatch); }
+        if (self.weaponElement == "Yellow") { return TexMan.CheckForTexture("WSLOTEL4", TexMan.Type_MiscPatch); }
+        return TexMan.CheckForTexture("WSLOTEL0", TexMan.Type_MiscPatch);
+    }
+    
+    clearscope TextureID getPowerTexture() {
+        if (self.weaponPower == "Power") { return TexMan.CheckForTexture("WSLOTPW1", TexMan.Type_MiscPatch); }
+        if (self.weaponPower == "Speed") { return TexMan.CheckForTexture("WSLOTPW2", TexMan.Type_MiscPatch); }
+        if (self.weaponPower == "Luck")  { return TexMan.CheckForTexture("WSLOTPW3", TexMan.Type_MiscPatch); }
+        if (self.weaponPower == "Save")  { return TexMan.CheckForTexture("WSLOTPW4", TexMan.Type_MiscPatch); }
         return TexMan.CheckForTexture("WSLOTEL0", TexMan.Type_MiscPatch);
     }
     

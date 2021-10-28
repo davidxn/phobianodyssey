@@ -22,12 +22,14 @@ int currentAngle;
 int squareNum;
 
 //Cheats/debug
-script "poarsenal" (int type, int element) {
+script "poarsenal" (int type, int element, int power) {
     str weapons[5] = {"Pistol", "Shotgun", "Chaingun", "Launcher", "Plasma"};
     str typestring = weapons[type];
     str elements[5] = {"None", "Blue", "Red", "Green", "Yellow"};
     str elementstring = elements[element];
-    ScriptCall("DataLibrary", "AddWeapon", typestring, elementstring);
+    str powers[5] = {"None", "Power", "Speed", "Luck", "Save"};
+    str powerstring = powers[power];
+    ScriptCall("DataLibrary", "AddWeapon", typestring, elementstring, powerstring);
 }
 
 script "powish" (int type) {
@@ -48,6 +50,16 @@ script "poprance" (int rate) {
     ScriptCall("DataLibrary", "WriteData", "CheatForceDangerLevel", StrParam(d:rate));
 }
 
+script "skiptownintro" (void) {
+    setFlag("DoneEventGotFenceKeys");
+    setFlag("blockEvent51");
+    setFlag("blockEvent52");
+    setFlag("firstShopConversation");
+    setFlag("firstArmoryConversation");
+    Floor_MoveToValue(1, 64, -80); //Open armoury door
+	Thing_Remove(2); //Then fall through to the shop
+}
+
 //////////////////////////////////////////////////
 
 script "return" RETURN {
@@ -59,6 +71,7 @@ script "return" RETURN {
 
 script "enter" ENTER {
 	Thing_ChangeTID(0, 9999);
+    ScriptCall("LevelHelper", "StopActor");
     int mapType = ScriptCall("DataLibrary", "LoadMapProperties");
     levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
     FadeTo(0.0, 0.0, 0.0, 1.0, 0.0);
@@ -80,6 +93,7 @@ script "enter" ENTER {
             SetActorAngle(0, angleToSet);
         }
 
+        clearFlag("InFight");
         //OK, now fade in and start listening for movement!
         FadeTo(0.0, 0.0, 0.0, 0.0, 1.0);
         ACS_NamedExecute("rpgMovement", 0);
@@ -91,13 +105,23 @@ script "enter" ENTER {
 }
 
 script "useHomingDevice" (void) {
-    //TODO Something special in here - count down if in battle
+    //These set the teleport destination to the teleporter in town
     ScriptCall("DataLibrary", "WriteData", "FieldSquare", "11215");
     ScriptCall("DataLibrary", "WriteData", "FieldAngle", "0");
 	FadeTo(1.0, 1.0, 1.0, 1.0, 1.0);
     delay(35);
     FadeTo(0.0, 0.0, 0.0, 1.0, 2.0);
     delay(70);
+    //Clean up arena if in a fight
+    if (ifFlag("InFight")) {
+        ACS_NamedTerminate("setupArena", 0);
+        ScriptCall("LevelHelper", "CleanupArena");
+        Thing_Remove(999);
+        SetPlayerProperty(1, 1, PROP_FROZEN);
+        clearFlag("InFight");
+        clearFlag("DisableHomingDevice");
+        delay(1);
+    }
     Teleport_NewMap(5, 0, 0);
     
 }
@@ -318,6 +342,7 @@ script "setupArena" (void) {
     ScriptCall("LevelHelper", "CleanupArena");
     Thing_Remove(999);
     clearFlag("BlockUseKey");
+    setFlag("InFight");
     
     SetHudSize(800, 600, false);
     if (ScriptCall("DataLibrary", "ReadInt", "CurrentFOESquare") > 0) {
@@ -366,9 +391,9 @@ script "setupArena" (void) {
 	NoiseAlert(0, 0);
 
 	while (ThingCount(T_NONE, 999) > 0) {
-		delay(35);
+		delay(10);
 	}
-
+    setFlag("DisableHomingDevice");
 	ACS_NamedExecute("displayClearText", 0);
     TakeInventory("PoDanger", CheckInventory("PoDanger"));
 	delay(35 * 4);
@@ -384,6 +409,8 @@ script "setupArena" (void) {
 	Thing_Remove(999);
     SetPlayerProperty(1, 1, PROP_FROZEN);
     ScriptCall("LevelHelper", "StopActor");
+    clearFlag("InFight");
+    clearFlag("DisableHomingDevice");
     delay(1);
 
 	//Return to previous map

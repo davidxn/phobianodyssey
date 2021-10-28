@@ -10,6 +10,7 @@ class DataLibrary : Thinker
     int weaponInventorySize;
     POChest chestToOpen;
     Array<MFInventoryItem> itemShopInventory;
+    Array<POWeaponSlot> armoryInventory;
     
     //Quick, make this a static thinker when we initialize
     DataLibrary Init(void)
@@ -175,6 +176,15 @@ class DataLibrary : Thinker
         return inventoryItem;
     }
     
+    static clearscope int InventoryHas(String classname) {
+        for (int i = 0; i < DataLibrary.GetInstance().inventorySize; i++) {
+            if (DataLibrary.GetInstance().MFinventory[i].getClassName() == classname) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
     static void InventoryExpand(int slots) {
         if (slots < DataLibrary.GetInstance().MFinventory.Size()) {
             return;
@@ -207,7 +217,7 @@ class DataLibrary : Thinker
         DataLibrary.inst().weaponSlots[i] = s;
     }
     
-    static void AddWeapon(String type, String element) {
+    static void AddWeapon(String type, String element, String power) {
         int i = DataLibrary.getNextFreeWeaponSlot();
         if (i == -1) {
             //No free slots!
@@ -219,7 +229,12 @@ class DataLibrary : Thinker
             console.printf("Bad weapon type: %s", type);
         }
         s.weaponElement = (element != "") ? element : "None";
+        s.weaponPower = (power != "") ? power : "None";
         DataLibrary.inst().setWeaponSlot(i, s);
+    }
+    
+    static void RemoveWeapon(int i) {
+        DataLibrary.GetInstance().WeaponSlots[i] = POWeaponSlot(new("POWeaponSlotEmpty")).Init();
     }
     
     static bool HasWeaponType(String type) {

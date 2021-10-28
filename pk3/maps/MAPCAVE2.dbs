@@ -28,14 +28,14 @@ maps
 		overrideceilheight = false;
 		overridebrightness = false;
 		uselongtexturenames = false;
-		viewpositionx = 1789.445f;
-		viewpositiony = 1794.855f;
-		viewscale = 2.148826f;
+		viewpositionx = 1989.704f;
+		viewpositiony = 252.2727f;
+		viewscale = 1.652942f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid
 		{
-			background = "E:\\DoomWork\\rpggrid.png";
+			background = "E:\\DoomWork\\phobianodyssey\\rpggrid.png";
 			backsource = 2;
 			backoffsetx = -320;
 			backoffsety = -320;

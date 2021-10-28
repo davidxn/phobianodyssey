@@ -55,21 +55,6 @@ CONV_MAP3_BAG_PICKUP_3 = "An annoyed-looking mouse wriggles out of it and scurri
 CONV_MAP3_BAG_PICKUP_4 = "Letting out your breath, you straighten up again and leave it behind.";
 CONV_MAP3_BAG_PICKUP_5 = "STOP";
 
-INV_MFIMedikit = "Restores 50hp when used, up to a maximum of 100hp";
-INV_MFIStimpack = "Restores 20hp when used, up to a maximum of 100hp";
-INV_MFIRadsuit = "Allows you to walk on damaging floors without injury for 30 moves";
-INV_MFIMegasphere = "Completely fills your life to 200hp, no questions asked";
-INV_MFIAmmoBox = "Adds 25 bullets to your supply when used";
-INV_MFISoulsphere = "Grants 100hp when used. Can heal beyond your normal capacity up to a maximum of 200hp";
-INV_MFIHomingDevice = "Use this to return to Tharotia whenever you're in a tight spot. Essential for dungeon crawling!";
-INV_MFITreasure1 = "A drop of cursed blood in a charm. Sell it for 250pt";
-INV_MFITreasure2 = "A ring with a horned insignia. Sell it for 500pt";
-INV_MFITreasure3 = "A wristband with some enchantment on it. Sell it for 750pt";
-INV_MFITreasure4 = "A silver statue of a divine being. Sell it for 1000pt";
-INV_MFITreasure5 = "A cross-shaped treasure. Sell it for 2500pt";
-INV_MFITreasure6 = "A crown forged in the hellfires. Sell it for 5000pt";
-INV_MFIEmpty = "";
-
 CONV_FIRST_SHOP_VISIT_1 = "[F:FCSHOP1] Welcome back! Hope you had fun!";
 CONV_FIRST_SHOP_VISIT_2 = "[F:FCSHOP1] Just leave any equipment you hired in the tub outside for de-viscerating...";
 CONV_FIRST_SHOP_VISIT_3 = "[F:FCSHOP2] [R:You_what?...] [R:Whuh?] [R:Uh...] Wait, when did I let you in...?";
@@ -106,10 +91,13 @@ CONV_FIRST_ARMORY_VISIT_8 = "[F:FCWEAP6] What? You want to go further in?! Hmm..
 CONV_FIRST_ARMORY_VISIT_9 = "[F:FCWEAP8] Look, you must be made of tough stuff if you got out of the caves, but there something very weird going on down there...";
 CONV_FIRST_ARMORY_VISIT_10 = "[F:FCWEAP8] Your lot came down and installed some kind of techno-base a few years back, not far from the entrance. That's where most of the monsters come from - and just last month they went crazy.";
 CONV_FIRST_ARMORY_VISIT_11 = "[F:FCWEAP2] [R:Go_on...] I'll tell you what - I'll make you a deal. It'll help us both - my business and your survival.";
-CONV_FIRST_ARMORY_VISIT_12 = "[F:FCWEAP4] Here's the thing - we were helping Elan at the item shop dig into the cliff to make a cold storage area and we hit some sort of maintenance tunnel. He just uses it to keep the health drinks cold, but I think it's got to connect up with that base somehow.";
+CONV_FIRST_ARMORY_VISIT_12 = "[F:FCWEAP4] Here's the thing - we were helping Elan at the item shop dig into the cliff to make a storage space and we hit some sort of maintenance tunnel. He just uses it to keep the health drinks cold, but I think it's got to connect up with that base somehow.";
 CONV_FIRST_ARMORY_VISIT_13 = "[F:FCWEAP4] Ask him to open it up for you, and bring back anything you can find about weapons they were building down there.";
 CONV_FIRST_ARMORY_VISIT_14 = "[F:FCWEAP3] I'm a swords and pikes kind of guy, but you're going to need more than that to get past the meaner demons... if you can find something that would help make guns like that pistol of yours, I might be able to cook something up with some more punch for you.";
 CONV_FIRST_ARMORY_VISIT_15 = "[F:FCWEAP3] [R:All_right!] Sound good? I'll see you back here soon...";
+
+CONV_ARMORY_NOTHING_CARRIED_1 = "[F:FCWEAP3] The moment you find anything down there, bring it up and I'll see what I can do with it.";
+CONV_ARMORY_NOTHING_CARRIED_2 = "[F:FCWEAP3] Blueprints, plans, books... they've got to have left a ton of stuff behind.";
 
 CONV_SECOND_SHOP_VISIT_1 = "[F:FCSHOP2] The key to the tunnels? Hrrf... I'm gonna feel bad if you don't come back, but yeah, all right.";
 CONV_SECOND_SHOP_VISIT_2 = "[F:FCSHOP2] Just keep an eye on your health and come back to restock when you're low, okay?";
@@ -121,23 +109,24 @@ CONV_SECOND_SHOP_VISIT_5 = "[F:FCSHOP3] [R:Thanks...] Well, have fun and everyth
 CONV_WAKE_UP_1 = "As the fresh morning air finally clears your head, you remember how you got here.";
 CONV_WAKE_UP_2 = "At last night's party on the USS Rogue, you were bragging about having been on over 400 hellspawn-fighting adventures. Then Stella pulled up the ship's demonic energy radar and as chance would have it, there was a signal coming from a moon only a couple of thousand AU away.";
 CONV_WAKE_UP_3 = "Drunk on hubris and IRN-BRU, you insisted on being teleported down. After the fog cleared you found yourself in the warm quiet caves, and immediately chose to have a nap instead.";
-CONV_WAKE_UP_4 = "You're pretty sure they said they'd come back to pick you up once they say the hell energy had dissipated... so you resolve to get dissipating!";
+CONV_WAKE_UP_4 = "You're pretty sure they said they'd come back to pick you up once they saw the hell energy had dissipated... so you resolve to get dissipating!";
 CONV_WAKE_UP_5 = "First, you'll need to ask around this place to find out how to get further into those caves.";
 
-CONV_TUNNELS_BODY_1 = "A less fortunate - or less skilled? - marine seems to have fallen to the zombies here."
+CONV_TUNNELS_BODY_1 = "A less fortunate - or less skilled? - marine seems to have fallen to the zombies here.";
 CONV_TUNNELS_BODY_2 = "[R:Yes] [D:5] [R:No] [D:3] Will you search the body?";
 CONV_TUNNELS_BODY_3 = "Good idea. You don't know where they've been.";
 CONV_TUNNELS_BODY_4 = "STOP";
-CONV_TUNNELS_BODY_5 = "[F:SearchedTunnelBody] You rummage around in their standard issue crop-top armour and find a few coins, which you pocket. What? It's not like they're going to be using them.";
+CONV_TUNNELS_BODY_5 = "[S:SearchedTunnelBody] You rummage around in their standard issue crop-top armour and find a few coins, which you pocket.";
+CONV_TUNNELS_BODY_6 = "What? It's not like they're going to be needing them.";
 
 CONV_TUNNELS_TRAPPED_1 = "Well. This seems to be a problem.";
 CONV_TUNNELS_TRAPPED_2 = "This isn't a Sierra game, though, so you try not to panic. You crouch down and look at the underside of the door carefully.";
 CONV_TUNNELS_TRAPPED_3 = "The dust and pebbles on the floor make the rolling door sit just a little off the ground. With some effort, you might be able to fit your fingers underneath.";
 CONV_TUNNELS_TRAPPED_4 = "Alternatively, you could concentrate on the top and try to convince the mechanism with your pistol.";
 CONV_TUNNELS_TRAPPED_5 = "[R:Use_brute_strength] [D:6] [R:Use_firepower] [D:8] What do you think?";
-CONV_TUNNELS_TRAPPED_6 = "[F:OpenedTunnelDoorStrength] You peel back the grating, wriggle your gloved hands under the door, and grimace as you pull...";
+CONV_TUNNELS_TRAPPED_6 = "[S:OpenedTunnelDoorStrength] You peel back the grating, wriggle your gloved hands under the door, and grimace as you pull...";
 CONV_TUNNELS_TRAPPED_7 = "STOP";
-CONV_TUNNELS_TRAPPED_8 = "[F:OpenedTunnelDoorShoot] Pushing the barrel of the pistol into the narrow gap at the top of the door, you take your best guess at where the most crucial part of the door's mechanism might be...";
+CONV_TUNNELS_TRAPPED_8 = "[S:OpenedTunnelDoorShoot] Pushing the barrel of the pistol into the narrow gap at the top of the door, you take your best guess at where the most crucial part of the door's mechanism might be...";
 
 CONV_TUNNELS_TRAPPED_STRENGTH_1 = "You smile as you finally wrench the door upwards, and strike a pose with your muscles flexed.";
 CONV_TUNNELS_TRAPPED_STRENGTH_2 = "Then you stop. Honestly, your arms are killing you.";
@@ -147,10 +136,32 @@ CONV_TUNNELS_TRAPPED_SHOOT_2 = "A gentle push is all it needs to retract into th
 
 CONV_TUNNELS_TRAPPED_NOTAGAIN_1 = "You've broken the mechanism on this one - you've probably messed with it enough.";
 
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_1 = "[F:FCWEAP2] Oh, whoa! What's this?";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_2 = "[F:FCWEAP4] I wasn't expecting you back so soon... but that looks like exactly what I was after!";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_3 = "[F:FCWEAP6] Let's see, the slide retracts on the recoil spring assembly which pulls the hammer before pushing forward again into the chamber and collecting a cartridge from the clip...";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_4 = "[F:FCWEAP6] No, that's wrong, that's the magazine...";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_5 = "[F:FCWEAP4] Can I borrow that pistol for a minute?";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_6 = "[F:FCWEAP6] So the barrel lock catch ratchets along the flintcollar and the bassoon pin comes into contact with the sprout-flap here, which means...";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_7 = "[F:FCWEAP3] There! Try that out.";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_8 = "[F:FCWEAP3] It should fire a bit faster now... that should help you with the demons, but make sure to watch your ammo.";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_9 = "[F:FCWEAP3] And let me know if you find anything that could help make new weapons down there!";
 
-// Weapons can have a design, an element and an upgrade (attack, speed, luck)
-//Other upgrades:
-//Inventory capacity
-//Weapon capacity
-//Ammo capacity
-CONV_MONSTER_HINT_X_3 = "You know, I don't get adventuring much these days, but I had to kick one of those weird guys without a head out of my vegetable patch this morning.";
+///////////////////////////
+
+INV_MFIMedikit = "Restores 50hp when used, up to a maximum of 100hp";
+INV_MFIStimpack = "Restores 20hp when used, up to a maximum of 100hp";
+INV_MFIRadsuit = "Allows you to walk on damaging floors without injury for 30 moves";
+INV_MFIMegasphere = "Completely fills your life to 200hp, no questions asked";
+INV_MFIAmmoBox = "Adds 25 bullets to your supply when used";
+INV_MFISoulsphere = "Grants 100hp when used. Can heal beyond your normal capacity up to a maximum of 200hp";
+INV_MFIHomingDevice = "Use this to return to Tharotia whenever you're in a tight spot. Essential for dungeon crawling!";
+INV_MFITreasure1 = "A drop of cursed blood in a charm. Sell it for 250pt";
+INV_MFITreasure2 = "A ring with a horned insignia. Sell it for 500pt";
+INV_MFITreasure3 = "A wristband with some enchantment on it. Sell it for 750pt";
+INV_MFITreasure4 = "A silver statue of a divine being. Sell it for 1000pt";
+INV_MFITreasure5 = "A cross-shaped treasure. Sell it for 2500pt";
+INV_MFITreasure6 = "A crown forged in the hellfires. Sell it for 5000pt";
+INV_MFIBookPower = "This looks like it would be useful for Exo at the weapons shop.";
+INV_MFIBookSpeed = "This looks like it would be useful for Exo at the weapons shop.";
+INV_MFIBookLuck = "This looks like it would be useful for Exo at the weapons shop.";
+INV_MFIEmpty = "";

@@ -29,6 +29,7 @@ class FriendlyUIHandler : EventHandler
     ui TextureID mapCounter;
     ui TextureID weaponCursorTex;
     ui TextureID itemShopBG;
+    ui TextureID armoryBG;
 
     // Mouse position
 	ui Vector2 mouseCursorPos;
@@ -43,6 +44,13 @@ class FriendlyUIHandler : EventHandler
 	play bool shouldClearUIGrabbedItem;
 	ui bool hoveringDropButton;
     ui bool hoveringOverShop;
+    
+    ui POWeaponSlot uiGrabbedArm;
+    play POWeaponSlot grabbedArm;
+    play bool shouldClearUIGrabbedArm;
+    
+    ui int hoveredArmStack;
+    ui int hoveringForgeButton;
 
     // Dialogue screen
     ui double dialogOpacity;
@@ -102,6 +110,7 @@ class FriendlyUIHandler : EventHandler
         invBGClosedFrame = TexMan.CheckForTexture("invbgcl", 0);
 		invItemBG = TexMan.CheckForTexture("invitmbg", 0);
         itemShopBG = TexMan.CheckForTexture("shopbg", 0);
+        armoryBG = TexMan.CheckForTexture("armorybg", 0);
 		invHilight = TexMan.CheckForTexture("invsel", 0);
 
         dialogBackFrame = TexMan.CheckForTexture("DIALBACK", 0);
@@ -128,7 +137,14 @@ class FriendlyUIHandler : EventHandler
 		mv.y /= UI_HEIGHT;
         
         if (DataLibrary.ReadInt("shouldHideDialog") == 1) { dialogOpacity = 0; DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "0"); }
-        if (DataLibrary.ReadInt("shouldEraseText") == 1) { textPercentDisplayed = 0; parsedDialogString = ""; parsedDialogChestItem = null; parsedDialogOptions.Clear(); DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0"); }
+        if (DataLibrary.ReadInt("shouldEraseText") == 1) {
+            textPercentDisplayed = 0;
+            parsedDialogString = "";
+            parsedDialogChestItem = null;
+            parsedDialogOptions.Clear();
+            parsedDialogDestinations.Clear();
+            DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0");
+        }
 
         //We display the dialogue texture first because it has to appear behind the dialogue window
         if (parsedDialogTexture && dialogOpacity >= 1.0) {
@@ -146,7 +162,7 @@ class FriendlyUIHandler : EventHandler
                 if (chest.containedCoins) {
                     parsedDialogString.Substitute("$chestitem$", (chest.containedCoins .. " coins"));
                 }
-                if (chest.containedAmmo) {
+                else if (chest.containedAmmo) {
                     String ammoType = "bullets";
                     switch (chest.containedAmmoType) {
                         case 2: ammoType = "shells"; break;
@@ -155,6 +171,7 @@ class FriendlyUIHandler : EventHandler
                     }
                     parsedDialogString.Substitute("$chestitem$", (chest.containedAmmo .. " " .. ammoType));
                 }
+                else { parsedDialogString = "There is nothing in the chest. That's probably a bug."; }
             } else {
                 parsedDialogString.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
                 parsedDialogChestItem = chest.containedItem;
@@ -278,17 +295,52 @@ class FriendlyUIHandler : EventHandler
         DrawMouseCursor();
         return;
 	}
+    
+    ui void DrawArmoryScreen()
+    {
+        ScreenDrawTexture(armoryBG, 0, 0, alpha: 1.0);
+        double x = ITEM_SHOP_START_X;
+		double y = ITEM_SHOP_START_Y;
+		Vector2 mv = RealToVirtual(mouseCursorPos);
+		mv.x /= UI_WIDTH;
+		mv.y /= UI_HEIGHT;
+        
+        hoveringOverShop = (mv.x >= ITEM_SHOP_START_X);
+        hoveredArmStack = -1;
+
+        for (int i = 0; i < DataLibrary.GetInstance().armoryInventory.Size(); i++) {
+
+            ScreenDrawTexture(invItemBG, x, y, alpha: 0.5);
+            //Can't hover over a weapon if we already have something
+            bool hovering = !uiGrabbedArm && (mv.x >= x && mv.x <= x + INV_STACK_BUTTON_WIDTH && mv.y >= y && mv.y <= y + INV_STACK_BUTTON_HEIGHT);
+            if (hovering) {
+                // hilight box
+                ScreenDrawTexture(invHilight, x, y);
+                hoveredShopNumber = i;
+            }
+			// draw item sprite
+            MFInventoryItem item = DataLibrary.GetInstance().itemShopInventory[i];
+            ScreenDrawTextureWithinArea(item.getTexture(), x, y, INV_STACK_BUTTON_WIDTH, INV_STACK_BUTTON_HEIGHT, INV_STACK_BUTTON_MARGIN_INNERPCT);
+
+            ScreenDrawString(item.getName(), Font.CR_WHITE, journalFont, x + 0.09, y + 0.03);
+            ScreenDrawString(item.getBuyPrice() .."", Font.CR_GREEN, journalFont, x + 0.4, y + 0.03);
+
+            y += INV_STACK_BUTTON_HEIGHT + INV_STACK_BUTTON_MARGIN;
+        }
+    }
 
 	override void NetworkProcess(ConsoleEvent e)
 	{
         PlayerPawn p = PlayerPawn(players[e.Player].mo);
 
 		if ( e.Name == "ClearedUIGrabbedItem" ) { newGrabbedItem = NULL; shouldClearUIGrabbedItem = false; grabbedItemIsFromShop = false; }
+        else if ( e.Name == "ClearedUIGrabbedArm" ) { grabbedArm = NULL; shouldClearUIGrabbedArm = false; }
         else if ( e.Name == "BinItem" ) { p.A_PlaySound("po/inventory/bin", CHAN_VOICE); }
         else if ( e.Name == "CloseInventory" ) { showInvScreen = false; }
         else if ( e.Name == "OpenInventory" ) { showInvScreen = true; }
         else if ( e.Name == "ToggleInventory" ) { p.A_PlaySound("po/inventory/open", CHAN_VOICE); showInvScreen = !showInvScreen; }
-		else if ( e.Name == "ClickedInvStack" )
+
+        else if ( e.Name == "ClickedInvStack" )
 		{
 			int stackIndex = e.Args[0];
 			MFInventoryItem invItem = DataLibrary.GetInstance().MFinventory[stackIndex];
@@ -356,10 +408,15 @@ class FriendlyUIHandler : EventHandler
             if (!newGrabbedItem) {
                 console.printf("ERROR: Requested to drop an item to shop, but no item found!");
             }
-            if (grabbedItemIsFromShop) {
-                //Can't sell an item we just picked up!
+            else if (grabbedItemIsFromShop) {
+                //Put it back
                 newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
-            } else {
+            }
+            else if (newGrabbedItem.getSellPrice() == 0) {
+                //No sale price means this is a key item
+                p.A_PlaySound("po/deny");
+            }
+            else {
                 int sellPrice = newGrabbedItem.getSellPrice();
                 p.GiveInventory("POCoin", sellPrice);
                 newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
@@ -390,6 +447,10 @@ class FriendlyUIHandler : EventHandler
         else if (e.Name == "CloseShopScreen" ) {
             newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
             DataLibrary.WriteDataFromUI("OpenShopScreen", "0");
+        }
+        else if (e.Name == "CloseArmoryScreen" ) {
+            grabbedArm = NULL; shouldClearUIGrabbedArm = true;
+            DataLibrary.WriteDataFromUI("OpenArmoryScreen", "0");
         }
 		else if ( e.Name == "UIStartHover" )
 		{
@@ -430,6 +491,11 @@ class FriendlyUIHandler : EventHandler
             if (DataLibrary.ReadData("OpenShopScreen") == "1") {
                 EventHandler.SendNetworkEvent("CloseShopScreen");
             }
+            
+            //If the armory screen is currently open, close that
+            if (DataLibrary.ReadData("OpenArmoryScreen") == "1") {
+                EventHandler.SendNetworkEvent("CloseArmoryScreen");
+            }
 
             EventHandler.SendNetworkEvent("ToggleInventory");
            
@@ -461,7 +527,7 @@ class FriendlyUIHandler : EventHandler
                 {
                     if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("ClickedInvStack", hoveredInvStack); return true; }
 
-                    if ( hoveringDropButton && uiGrabbedItem && !grabbedItemIsFromShop) {
+                    if ( hoveringDropButton && uiGrabbedItem && !grabbedItemIsFromShop && uiGrabbedItem.getSellPrice() > 0) {
                         uiGrabbedItem = NULL;
                         EventHandler.SendNetworkEvent("ClearedUIGrabbedItem");
                         EventHandler.SendNetworkEvent("BinItem");
@@ -485,13 +551,25 @@ class FriendlyUIHandler : EventHandler
                     return true;
                 }
                 
-                //If just the inventory screen is open, return false to allow other inputs. But return true to block other inputs if the shop screen is open
-                return (DataLibrary.ReadData("OpenShopScreen") == "1"); 
+                //If just the inventory screen is open, return false to allow other inputs. But return true to block other inputs if the shop/armory screen is open
+                return (DataLibrary.ReadData("OpenShopScreen") == "1" || DataLibrary.ReadData("OpenArmoryScreen") == "1"); 
             }
 
             // process keyup events else inputs active when screen invoked bleed & stay on - otherwise, block other keypresses
             else if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
             return true;
+        }
+        
+        //Same for armory screen
+        if (DataLibrary.ReadData("OpenArmoryScreen") == "1") {
+            if (shouldClearUIGrabbedArm) {
+                uiGrabbedArm = NULL;
+                EventHandler.SendNetworkEvent("ClearedUIGrabbedArm");
+            }
+            if ( e.KeyScan == InputEvent.Key_Mouse1 ) {
+                //if (uiGrabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("DroppedItemToShop"); return true; }
+                //if (hoveredShopNumber != -1) { EventHandler.SendNetworkEvent("ClickedShopStack", hoveredShopNumber); return true; }
+            }
         }
         
         if (showEventDialog) {
@@ -565,6 +643,10 @@ class FriendlyUIHandler : EventHandler
                 if (t) {
                     ScreenDrawTexture(t, weaponX, weaponY);
                 }
+                let t2 = w.getPowerTexture();
+                if (t2) {
+                    ScreenDrawTexture(t2, weaponX, weaponY);
+                }
             }
             weaponX += WEAPON_WIDTH;
         }
@@ -592,7 +674,11 @@ class FriendlyUIHandler : EventHandler
             EventHandler.SendNetworkEvent("OpenInventory");
             DrawItemShopScreen();
         }
-		if ( showInvScreen ) {
+        if (DataLibrary.ReadData("OpenArmoryScreen") == "1") {
+            EventHandler.SendNetworkEvent("CloseInventory");
+            DrawArmoryScreen();
+        }
+		if (showInvScreen) {
 			DrawInvScreen();
 		} else {
             //Draw closed inventory on status bar
@@ -629,7 +715,7 @@ class FriendlyUIHandler : EventHandler
                     if (tokenType == "D") { //Destination (for responses)
                         parsedDialogDestinations.push(tokenValue.ToInt());
                     }
-                    if (tokenType == "F") { //Set flag
+                    if (tokenType == "S") { //Set flag
                         DataLibrary.WriteDataFromUI(tokenValue, "1");
                     }
                     if (tokenType == "C") { //Clear flag
@@ -853,6 +939,10 @@ class FriendlyUIHandler : EventHandler
 
         if (uiGrabbedItem) {
             ScreenDrawTextureWithinArea(uiGrabbedItem.getTexture(), v.x + iconPadX, v.y + iconPadY, iconArea, iconArea);
+        }
+        
+        if (uiGrabbedArm) {
+            
         }
 
 		// tooltip-style text for grabbed / hovered item

@@ -118,13 +118,13 @@ Class ZombieScientistHeadless : POMonster
         poDropItemWithProbability("PoClip1", 40);
 
         poDropItemWithProbability("PoCoin5", 100);
-        poDropItemWithProbability("PoCoin5", 30);
+        poDropItemWithProbability("PoCoin10", 30);
         poDropItemWithProbability("PoCoin1", 90);
         
         poDropItemWithProbability("PoHeal5", 30);
         
         if (self.dropSpecial) {
-            poDropItemWithProbability("PoCoin5", 100);
+            poDropItemWithProbability("PoCoin10", 100);
             poDropItemWithProbability("PoClip5", 100);
         }
 

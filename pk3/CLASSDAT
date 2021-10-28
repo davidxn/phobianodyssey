@@ -4,7 +4,6 @@
 3,MFIMedikit
 4,MFISoulSphere
 
-2,MFIRadsuit
 10,MFIAmmoBox
 11,MFIShellBox
 12,MFIRocketBox
@@ -16,5 +15,21 @@
 23,MFITreasure4
 24,MFITreasure5
 25,MFITreasure6
+
+30,MFIRadsuit
+
+50,MFIBookPower
+51,MFIBookSpeed
+52,MFIBookLuck
+
+60,MFIBookBlue
+61,MFIBookRed
+62,MFIBookGreen
+63,MFIBookYellow
+
+70,MFIBookShotgun
+71,MFIBookChaingun
+72,MFIBookLauncher
+73,MFIBookPlasma
 
 100,MFIHomingDevice

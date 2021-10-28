@@ -6,8 +6,8 @@ $spreadsheetId = '1ldZ0EXH_GIozUMwVQcZHxcjAIx-r8NCNp4m_1ixl9tg';
 $rgbMap = [
     '255 255 255' => '0',
     '217 234 211' => '0',
-    '147 196 125' => '9',
-    '255 229 153' => '11',
+    '147 196 125' => '7',
+    '255 229 153' => '10',
     '191 144 255' => '20', //255 is a miscalculation here but who cares!
 ];
 

@@ -61,7 +61,7 @@ class POChest : FloatingSkull
         int itemId = self.args[0];
         if (itemId > 0) {
             String classname = DataLibrary.inst().ReadClassnameByID(itemID);
-            containedItem = MFInventoryItem(new(classname)).Init();
+            containedItem = MFInventoryItem(new(classname));
         }
         containedCoins = self.args[1];
         containedAmmo = self.args[2];

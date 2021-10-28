@@ -33,14 +33,19 @@ class POAmmo : Ammo {
         A002 A 0;
         A003 A 0;
         A004 A 0;
+        A005 A 0;
+        A006 A 0;
+        A007 A 0;
+        A008 A 0;
+        A009 A 0;
       Spawn:
-        A001 A 4 { applySprite(); }
-        A001 B 4 { applySprite(); }
+        TNT1 A 4 { applySprite(); }
+        TNT1 B 4 { applySprite(); }
         Loop;
       Decaying:
-        A001 A 4 { applySprite(); }
-        A001 B 4 { applySprite(); }
-        A001 C 4;
+        TNT1 A 4 { applySprite(); }
+        TNT1 B 4 { applySprite(); }
+        TNT1 C 4;
         Loop;
     }
   
@@ -162,6 +167,15 @@ class PODroppable : Inventory {
         M002 A 0;
         M003 A 0;
         M004 A 0;
+        M005 A 0;
+        M006 A 0;
+        M007 A 0;
+        M008 A 0;
+        M009 A 0;
+        M010 A 0;
+        M011 A 0;
+        M012 A 0;
+        M013 A 0;
       Spawn:
         M001 A 4 { applySprite(); }
         M001 B 4 { applySprite(); }

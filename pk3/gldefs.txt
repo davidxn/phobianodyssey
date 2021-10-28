@@ -18,3 +18,159 @@ Object HazmatZombie
 {
     Frame HMZPF { Light HazmatZombieAttack }
 }
+
+BrightMap Sprite DRKLA1
+{
+Map BMROACA1
+DisableFullBright
+}
+
+BrightMap Sprite DRKLA2A8
+{
+Map BMROACA2
+DisableFullBright
+}
+
+BrightMap Sprite DRKLA3A7
+{
+Map BMROACA3
+DisableFullBright
+}
+
+BrightMap Sprite DRKLB1
+{
+Map BMROACB1
+DisableFullBright
+}
+
+BrightMap Sprite DRKLB2B8
+{
+Map BMROACB2
+DisableFullBright
+}
+
+BrightMap Sprite DRKLB3B7
+{
+Map BMROACB3
+DisableFullBright
+}
+
+BrightMap Sprite DRKLC1
+{
+Map BMROACC1
+DisableFullBright
+}
+
+BrightMap Sprite DRKLC2C8
+{
+Map BMROACC2
+DisableFullBright
+}
+
+BrightMap Sprite DRKLC3C7
+{
+Map BMROACC3
+DisableFullBright
+}
+
+BrightMap Sprite DRKLC4C6
+{
+Map BMROACC4
+DisableFullBright
+}
+
+BrightMap Sprite DRKLD1
+{
+Map BMROACD1
+DisableFullBright
+}
+
+BrightMap Sprite DRKLD2D8
+{
+Map BMROACD2
+DisableFullBright
+}
+
+BrightMap Sprite DRKLD3D7
+{
+Map BMROACD3
+DisableFullBright
+}
+
+BrightMap Sprite DRKLE1
+{
+Map BMROACE1
+DisableFullBright
+}
+
+BrightMap Sprite DRKLE2E8
+{
+Map BMROACE2
+DisableFullBright
+}
+
+BrightMap Sprite DRKLE3E7
+{
+Map BMROACE3
+DisableFullBright
+}
+
+BrightMap Sprite DRKLF1
+{
+Map BMROACF1
+DisableFullBright
+}
+
+BrightMap Sprite DRKLF2F8
+{
+Map BMROACF2
+DisableFullBright
+}
+
+BrightMap Sprite DRKLF3F7
+{
+Map BMROACF3
+DisableFullBright
+}
+
+BrightMap Sprite DRKLG1
+{
+Map BMROACG1
+DisableFullBright
+}
+
+BrightMap Sprite DRKLG2G8
+{
+Map BMROACG2
+DisableFullBright
+}
+
+BrightMap Sprite DRKLG3G7
+{
+Map BMROACG3
+DisableFullBright
+}
+
+BrightMap Sprite DRKLI0
+{
+Map BMROACI0
+DisableFullBright
+}
+
+BrightMap Sprite DRKLJ0
+{
+Map BMROACJ0
+DisableFullBright
+}
+
+BrightMap Sprite DRKLN0
+{
+Map BMROACN0
+DisableFullBright
+}
+
+BrightMap Sprite DRKLO0
+{
+Map BMROACO0
+DisableFullBright
+}

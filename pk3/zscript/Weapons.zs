@@ -35,12 +35,15 @@ class POWeapon : Weapon {
     
     String myWeaponType;
     String myElement;
+    String myPower;
     property WeaponType : myWeaponType;
     property Element : myElement;
+    property Power : myPower;
     Default {
         Weapon.AmmoGive 0;
         POWeapon.WeaponType "Pistol";
         POWeapon.Element "None";
+        POWeapon.Power "None";
         Weapon.SlotNumber 2;
         
         Weapon.SelectionOrder 1900;
@@ -53,7 +56,7 @@ class POWeapon : Weapon {
     States
 	{
 	Ready:
-        PISG A 0 { invoker.changeWeaponType(invoker.myWeaponType, invoker.myElement); }
+        PISG A 0 { invoker.changeWeaponType(invoker.myWeaponType, invoker.myElement, invoker.myPower); }
 		PISG A 0 A_JumpIf(invoker.myWeaponType == "Pistol", "ReadyPistol");
         PISG A 0 A_JumpIf(invoker.myWeaponType == "Shotgun", "ReadyShotgun");
         PISG A 0 A_JumpIf(invoker.myWeaponType == "Chaingun", "ReadyChaingun");
@@ -94,15 +97,27 @@ class POWeapon : Weapon {
 		PISG A 1 A_Raise(12);
 		Loop;
 	FirePistol:
-        PISG A 0 A_JumpIfNoAmmo("ReadyPistol");
+        PISG A 0 A_JumpIfInventory("POClip", 1, "FirePistolOK");
+        PISG A 4;
+        PISG B 4 A_PlaySound("po/empty", CHAN_WEAPON);
+        PISG C 3;
+        PISG B 3;
+        PISG A 0 A_Jump(255, "ReadyPistol");
+    FirePistolOK:
 		PISG A 4;
         PISG B 0 A_PlaySound("weapons/pistol", CHAN_WEAPON);
 		PISG B 0 firePistolBullets();
         PISG B 0 A_TakeInventory("POClip", 1);
+        PISG B 0 A_JumpIf(invoker.myPower == "Speed", "SpeedyPistolOK");
         PISG B 6 A_GunFlash;
 		PISG C 4;
 		PISG B 5 A_ReFire;
 		Goto ReadyPistol;
+    SpeedyPistolOK:
+        PISG B 6 A_GunFlash;
+        PISG B 1;
+        PISG B 1 A_ReFire;
+        Goto ReadyPistol;
 	FlashPistol:
 		PISF A 7 Bright A_Light1;
 		Goto LightDone;
@@ -186,12 +201,13 @@ class POWeapon : Weapon {
 	}
     
     action void firePistolBullets() {
-        String x = ("BulletPuff" .. invoker.myElement);
-        console.printf("Will spawn: " .. x);
-        A_FireBullets(3.5, 0.5, 1, 8 + random(0,5), x, FBF_NORANDOM);
+        String puffClass = ("BulletPuff" .. invoker.myElement);
+        int baseDamage = 8;
+        if (invoker.myPower == "Power") { baseDamage += 10; }
+        A_FireBullets(3.5, 0.5, 1, baseDamage + random(0,5), puffClass, FBF_NORANDOM);
     }
     
-    void changeWeaponType(String type, String element) {
+    void changeWeaponType(String type, String element, String power) {
         self.myWeaponType = type;
         if (type == "Pistol" || type == "Chaingun") {
             self.AmmoType1 = "Clip";
@@ -207,8 +223,9 @@ class POWeapon : Weapon {
         }
         
         element = element ? element : "None";
+        power = power ? power : "None";
         self.myElement = element;
-        console.printf("Element is %s", self.myElement);
+        self.myPower = power;
         self.DamageType = element;
     }
 }

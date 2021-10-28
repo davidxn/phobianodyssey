@@ -284,6 +284,10 @@ Class HazmatZombie : POMonster
         poDropItemWithProbability("PoHeal1", 50);
         poDropItemWithProbability("PoHeal5", 30);
         
+        if (MeansOfDeath == "Melee") {
+            poDropItemWithProbability("PoClip5", 100);
+        }
+        
         super.doBurst();       
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
@@ -351,10 +355,10 @@ class PoImp : POMonster REPLACES DoomImp
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
         poDropItemWithProbability("PoHorn", 66);
         
+        poDropItemWithProbability("PoCoin5", 50);
+        poDropItemWithProbability("PoCoin5", 50);
         poDropItemWithProbability("PoCoin1", 50);
-        poDropItemWithProbability("PoCoin1", 50);
-        poDropItemWithProbability("PoCoin1", 50);
-        poDropItemWithProbability("PoCoin5", 90);
+        poDropItemWithProbability("PoCoin10", 90);
         
         poDropItemWithProbability("PoHeal5", 33);
         
@@ -378,7 +382,7 @@ class PoBlueImp : PoImp
         poDropItemWithProbability("PoHorn", 90);
         
         poDropItemWithProbability("PoCoin10", 80);
-        poDropItemWithProbability("PoCoin5", 70);
+        poDropItemWithProbability("PoCoin10", 70);
         poDropItemWithProbability("PoCoin5", 50);
         
         poDropItemWithProbability("PoHeal5", 30);
@@ -390,3 +394,205 @@ class PoBlueImp : PoImp
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 }
+
+Class Darkling : POMonster
+{
+  Default
+  {
+    //$Category Monsters
+    Tag "Darkling";
+    Health 50;
+    GibHealth 50;
+    Radius 19;
+    Height 48;
+    Speed 10;
+    PainChance 128;
+    Mass 200;
+    Scale 0.8;
+    BloodColor "Purple";
+    SeeSound "Roach/Sight";
+    PainSound "Roach/Pain";
+    DeathSound "Roach/Death";
+    ActiveSound "Roach/Active";
+    Obituary "%o was scalded by a Darkling";
+    Monster;
+    +DontHarmClass
+  }
+
+  States
+  {
+  Spawn:
+    DRKL A 6 RoachLook();
+    Loop;
+  SeeAlert:
+    DRKL A 0 A_AlertMonsters();
+    Goto See;
+  See:
+    DRKL B 0 A_Jump(32, "Stand");
+    DRKL BB 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    DRKL B 2 A_Chase();
+    DRKL CC 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    DRKL C 2 A_Chase();
+    DRKL DD 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    DRKL D 2 A_Chase();
+    DRKL EE 2 A_Chase("Melee", null, CHF_NOPLAYACTIVE);
+    DRKL E 2 A_Chase();
+    Loop;
+  Stand:
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Chase("Melee", "Missile", CHF_NOPLAYACTIVE | CHF_DONTMOVE);
+    DRKL A 3 A_FaceTarget();
+    DRKL A 0 A_Jump(192, "Stand");
+    Goto See+1;
+  Melee:
+  Missile:
+    DRKL AAAAFF 3 A_FaceTarget();
+    DRKL G 6
+    {
+      A_SpawnProjectile("RoachBall", 32, 0,  1);
+    }
+    Goto See;
+  Pain:
+    DRKL H 3;
+    DRKL H 3 A_Pain();
+    Goto See;
+  Death:
+    DRKL I 8 A_ScreamAndUnblock();
+    DRKL JKL 6;
+    DRKL M -1;
+  XDeath:
+    DRKL I 4 A_XScream();
+	DRKL NOP 6;
+	DRKL Q 6 A_NoBlocking();
+	DRKL RS 6;
+	DRKL T -1;
+  Raise:
+    DRKL MLKJI 5;
+    Goto See;
+  }
+
+  void RoachLook()
+  {
+    if(Args[0] == 1)
+      A_LookEx(LOF_NOSEESOUND, 0, 0, 0, 0, "See");
+    else if(Args[0] > 1)
+      A_LookEx(0, 0, 0, 0, 0, "SeeAlert");
+    else
+      A_Look();
+  }
+  
+  override void Tick()
+  {
+    super.tick();
+    //Run away when low on health
+    if(health < 40 && !bFrightened)
+      bFrightened = true;
+  }
+  
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {      
+        poDropItemWithProbability("PoHeal5", 50);
+        poDropItemWithProbability("PoCoin10", 100);
+        poDropItemWithProbability("PoCoin5", 90);
+        poDropItemWithProbability("PoCoin5", 80);
+        poDropItemWithProbability("PoCoin5", 70);
+        poDropItemWithProbability("PoCoin10", 20);
+        
+        if (MeansOfDeath == "Melee") {
+            poDropItemWithProbability("PoShell2", 100);
+            poDropItemWithProbability("PoClip5", 100);
+        }
+        
+        super.doBurst();       
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+}
+
+class PoShotgunGuy : PoMonster
+{
+	Default
+	{
+		Health 30;
+		Radius 20;
+		Height 56;
+		Mass 100;
+		Speed 8;
+		PainChance 170;
+		Monster;
+		+FLOORCLIP
+		SeeSound "shotguy/sight";
+		AttackSound "shotguy/attack";
+		PainSound "shotguy/pain";
+		DeathSound "shotguy/death";
+		ActiveSound "shotguy/active";
+		Obituary "$OB_SHOTGUY";
+		Tag "$FN_SHOTGUN";
+		DropItem "Shotgun";
+	}
+	States
+	{
+	Spawn:
+		SPOS AB 10 A_Look;
+		Loop;
+	See:
+		SPOS AABBCCDD 3 A_Chase;
+		Loop;
+	Missile:
+		SPOS E 10 A_FaceTarget;
+		SPOS F 10 BRIGHT A_CustomBulletAttack (22.5, 0, 3, 5 + random(0, 2), "BulletPuff", 0, CBAF_NORANDOM);
+		SPOS E 10;
+		Goto See;
+	Pain:
+		SPOS G 3;
+		SPOS G 3 A_Pain;
+		Goto See;
+	Death:
+		SPOS H 5;
+		SPOS I 5 A_Scream;
+		SPOS J 5 A_NoBlocking;
+		SPOS K 5;
+		SPOS L -1;
+		Stop;
+	XDeath:
+		SPOS M 5;
+		SPOS N 5 A_XScream;
+		SPOS O 5 A_NoBlocking;
+		SPOS PQRST 5;
+		SPOS U -1;
+		Stop;
+	Raise:
+		SPOS L 5;
+		SPOS KJIH 5;
+		Goto See;
+	}
+    
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {      
+        poDropItemWithProbability("PoShell2", 80);
+        poDropItemWithProbability("PoCoin10", 90);
+        poDropItemWithProbability("PoCoin5", 80);
+        poDropItemWithProbability("PoCoin5", 70);
+        
+        if (MeansOfDeath == "Melee") {
+            poDropItemWithProbability("PoShell2", 100);
+            poDropItemWithProbability("PoHealth5", 80);
+        }
+        
+        super.doBurst();       
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+}
+
