@@ -138,8 +138,8 @@ CONV_BASE_BOSS_WARNING_1 = "As you approach the door, you sense the presence of 
 CONV_BASE_BOSS_WARNING_2 = "You check your provisions before putting your hand on the switch.";
 CONV_BASE_BOSS_WARNING_3 = "\ckYes, it's a warning about a boss battle coming up. Make sure you're stocked up before proceeding!";
 
-CONV_BASE_BOSS_INTRO_1 = "As you expected, nauseating chittering sounds echo around the ceiling as you pull your prize from the chest.";
-CONV_BASE_BOSS_INTRO_2 = "Within moments, you see a dozen pairs of evil shining eyes staring down at you from the rafters.";
+CONV_BASE_BOSS_INTRO_1 = "As you expected, you sense a dangerous presence as you pull your prize from the chest.";
+CONV_BASE_BOSS_INTRO_2 = "Nauseating chittering sounds echo around the ceiling, and within moments, you see a dozen pairs of evil shining eyes staring down at you from the rafters.";
 CONV_BASE_BOSS_INTRO_3 = "You pull your weapon out and prepare to defend yourself!";
 
 CONV_BASE_BOSS_OUTRO_1 = "You smile with renewed confidence as the last of the skinny hellspawn collapses to the floor.";
@@ -169,6 +169,8 @@ INV_MFIMegasphere = "Completely fills your life to 200hp, no questions asked";
 INV_MFIAmmoBox = "Adds 25 bullets to your supply when used";
 INV_MFISoulsphere = "Grants 100hp when used. Can heal beyond your normal capacity up to a maximum of 200hp";
 INV_MFIHomingDevice = "Use this to return to Tharotia whenever you're in a tight spot. Essential for dungeon crawling!";
+INV_MFISneakyBoots = "Resets the danger meter to zero, avoiding monster encounters.";
+INV_MFIRiskyBoots = "Makes you encounter a monster on the next square that has one!";
 INV_MFITreasure1 = "A drop of cursed blood in a charm. Sell it for 250pt";
 INV_MFITreasure2 = "A ring with a horned insignia. Sell it for 500pt";
 INV_MFITreasure3 = "A wristband with some enchantment on it. Sell it for 750pt";

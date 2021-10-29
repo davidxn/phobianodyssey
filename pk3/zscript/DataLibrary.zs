@@ -4,6 +4,7 @@ class DataLibrary : Thinker
     Dictionary dic;
     Dictionary monsterParties;
     Dictionary monsterPops;
+    Dictionary squareData;
     Array<MFInventoryItem> MFinventory;
     Array<POWeaponSlot> weaponSlots;
     int inventorySize;
@@ -19,6 +20,7 @@ class DataLibrary : Thinker
         dic = Dictionary.Create();
         monsterParties = Dictionary.Create();
         monsterPops = Dictionary.Create();
+        squareData = Dictionary.Create();
         inventorySize = 4;
         weaponInventorySize = 3;
         
@@ -30,9 +32,11 @@ class DataLibrary : Thinker
         }
         
         //Set up the initial shop inventory
+        itemShopInventory.push(new("MFIHomingDevice").Init());
         itemShopInventory.push(new("MFIStimpack").Init());
         itemShopInventory.push(new("MFIAmmoBox").Init()); 
-        itemShopInventory.push(new("MFIHomingDevice").Init());
+        itemShopInventory.push(new("MFISneakyBoots").Init()); 
+        itemShopInventory.push(new("MFIRiskyBoots").Init()); 
         
         //Set up weapon slots
         weaponSlots.push(new("POWeaponSlotFist").Init());
@@ -77,14 +81,14 @@ class DataLibrary : Thinker
         
         lumpindex = Wads.FindLump('SQUAREDT', 0, 0);
         lumpdata = Wads.ReadLump(lumpindex);
-        Array<String> squareData; lumpdata.Split(squareData, "\n");
-        for (int i = 0; i < squareData.Size(); i++)
+        Array<String> sqData; lumpdata.Split(sqData, "\n");
+        for (int i = 0; i < sqData.Size(); i++)
         {
-            String line = squareData[i];
+            String line = sqData[i];
             if (line.Length() < 2) { continue; } //In the absence of trim()
             Array<String> lineData; line.Split(lineData, "=");
             String key = lineData[0];
-            dic.Insert(key, lineData[1]);
+            squareData.Insert(key, lineData[1]);
         }
         
         // ---
@@ -125,6 +129,8 @@ class DataLibrary : Thinker
     static clearscope void WriteDataFromUI(String position, String value) { DataLibrary.GetInstance().dic.Insert(position, value); }
     
     static clearscope String ReadData(String position) { return DataLibrary.GetInstance().dic.At(position); }
+    static clearscope String ReadSquareData(String position) { return DataLibrary.GetInstance().squareData.At(position); }
+
     static clearscope int ReadInt(String position) { return DataLibrary.GetInstance().dic.At(position).ToInt(); }
     static clearscope double ReadDouble(String position) { return DataLibrary.GetInstance().dic.At(position).ToDouble(); }
     static String ReadClassnameByID(int id) { return DataLibrary.inst().dic.At("ItemID" .. id); }
@@ -258,7 +264,7 @@ class DataLibrary : Thinker
     
         //To choose a monster party, get the population ID of this square
         String key = "MP-" .. mapnum .. "-" .. square;
-        String popId = DataLibrary.GetInstance().ReadData(key);
+        String popId = DataLibrary.ReadSquareData(key);
 
         //Ask the monsterpop dictionary which parties correspond to this population ID
         //console.printf("DEBUG: Key %s has monster population ID %s", key, popId);
@@ -290,7 +296,7 @@ class DataLibrary : Thinker
     static int ReadDangerValue(int mapnum, int square)
     {
         String key = "DN-" .. mapnum .. "-" .. square;
-        int value = DataLibrary.ReadInt(key);
+        int value = DataLibrary.ReadSquareData(key).ToInt();
         int cheatValue = DataLibrary.ReadInt("CheatForceDangerLevel");
         if (cheatValue != 0) {
             value = cheatValue;

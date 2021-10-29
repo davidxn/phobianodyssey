@@ -20,6 +20,7 @@ po/ammo1 POAMMO1
 po/ammo2 POAMMO2
 po/empty POCLICK
 po/vend POVEND
+po/magic POMAGIC
 
 po/water/bubble POBUBBLE
 po/water/stop POWASH

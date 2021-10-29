@@ -417,6 +417,7 @@ Class Darkling : POMonster
     Obituary "%o was scalded by a Darkling";
     Monster;
     +DontHarmClass
+    Species "Roach";
   }
 
   States

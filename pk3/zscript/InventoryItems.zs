@@ -118,6 +118,33 @@ class MFISoulsphere : MFInventoryItem {
     }
 }
 
+class MFIRiskyBoots : MFInventoryItem {
+    override String myTexture() { return "BOT2A0"; }
+    override String myName() { return "Risky Boots"; }
+    override int getBuyPrice() { return 100; }
+    override int getSellPrice() { return 100; }
+    override bool use() {
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        p.TakeInventory("PoDanger", 100);
+        p.GiveInventory("PoDanger", 99);
+        p.A_PlaySound("po/magic");
+        return true;
+    }
+}
+
+class MFISneakyBoots : MFInventoryItem {
+    override String myTexture() { return "BOT1A0"; }
+    override String myName() { return "Sneaky Boots"; }
+    override int getBuyPrice() { return 200; }
+    override int getSellPrice() { return 100; }
+    override bool use() {
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        p.TakeInventory("PoDanger", 100);
+        p.A_PlaySound("po/magic");
+        return true;
+    }
+}
+
 class MFIHomingDevice : MFInventoryItem {
     override String myTexture() { return "HOMDA0"; }
     override String myName() { return "Homing Device"; }

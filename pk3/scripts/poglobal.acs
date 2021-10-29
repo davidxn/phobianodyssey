@@ -133,10 +133,11 @@ script "rpgMovement" (void) {
 
     delay(15);
     
-    if (GetLevelInfo(LEVELINFO_LEVELNUM) == 5) {
-        SetMusic("POTOWN");
-    } else {
-        SetMusic("POEXPLR");
+    switch (GetLevelInfo(LEVELINFO_LEVELNUM)) {
+        case 5: SetMusic("POTOWN"); break;
+        case 4: case 6: SetMusic("PODEEP"); break;
+        case 2: case 7: SetMusic("POLABS"); break;
+        default: SetMusic("POEXPLR"); break;
     }
 
 	int i;
@@ -302,6 +303,7 @@ script "rpgMovement" (void) {
 }
 
 script "beginEncounter" (int forcedPopulation, int encounterType, int useSpecialArena) {
+    ACS_NamedTerminate("rpgMovement", 0);
 	str monsterParty = "";
     
     //Load the next monster party data into data library

@@ -19,6 +19,7 @@ Class Roach : POMonster
     Obituary "%o was scalded by a Roach";
     Monster;
     +DontHarmClass
+    Species "Roach";
   }
 
   States
