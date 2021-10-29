@@ -101,7 +101,7 @@ class DataLibrary : Thinker
             if (line.Length() < 2) { continue; } //In the absence of trim()
             Array<String> lineData; line.Split(lineData, ",");
             String key = "ItemID" .. lineData[0];
-            dic.Insert(key, lineData[1]);
+            squareData.Insert(key, lineData[1]);
         }
         
 		return self;
@@ -133,7 +133,7 @@ class DataLibrary : Thinker
 
     static clearscope int ReadInt(String position) { return DataLibrary.GetInstance().dic.At(position).ToInt(); }
     static clearscope double ReadDouble(String position) { return DataLibrary.GetInstance().dic.At(position).ToDouble(); }
-    static String ReadClassnameByID(int id) { return DataLibrary.inst().dic.At("ItemID" .. id); }
+    static String ReadClassnameByID(int id) { return DataLibrary.inst().squareData.At("ItemID" .. id); }
     
     //////////////////////////////////////////////
     // Item Inventory
@@ -335,6 +335,7 @@ class DataLibrary : Thinker
         if (which == 0) { theDictionary = DataLibrary.getInstance().dic; }
         if (which == 1) { theDictionary = DataLibrary.getInstance().monsterParties; }
         if (which == 2) { theDictionary = DataLibrary.getInstance().monsterPops; }
+        if (which == 3) { theDictionary = DataLibrary.getInstance().squareData; }
         
         DictionaryIterator d = DictionaryIterator.Create(theDictionary);
 
