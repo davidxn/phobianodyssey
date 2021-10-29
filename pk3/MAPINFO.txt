@@ -99,6 +99,12 @@ map MAPTUNN2 "Tunnel Depths" {
     NoCrouch
 }
 
+map MAPBASE2 "Underground Base" {
+	levelnum = 7
+    NoJump
+    NoCrouch
+}
+
 map ARNCAVES "Combat: Caves" {
     levelnum = 101
     music = POFIGHT
@@ -112,4 +118,9 @@ map ARNBASE1 "Combat: Blue Base" {
 map ARNTUNN "Combat: Tunnels" {
     levelnum = 103
     music = POFIGHT
+}
+
+map BOSBASE "Boss: Base" {
+    levelnum = 104
+    music = POBOSS
 }

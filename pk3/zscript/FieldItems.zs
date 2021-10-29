@@ -4,6 +4,7 @@ class POChest : FloatingSkull
     int containedCoins;
     int containedAmmo;
     int containedAmmoType;
+    int causeEvent;
     bool hasBeenOpened;
     
     default {
@@ -14,9 +15,15 @@ class POChest : FloatingSkull
         //$Arg2 Ammo
         //$Arg2Tooltip Ammo in chest
         //$Arg3 Ammo Type
-        //$Arg4Tooltip Type of ammo in chest
+        //$Arg3Tooltip Type of ammo in chest
+        //$Arg4 Cause Event
+        //$Arg4Tooltip Run this event after opening
     }
     States {
+        X:
+            CHST A 0;
+            CHS2 A 0;
+            CHS3 A 0;
         Spawn:
             CHST A -1;
         Opened:
@@ -66,6 +73,12 @@ class POChest : FloatingSkull
         containedCoins = self.args[1];
         containedAmmo = self.args[2];
         containedAmmoType = self.args[3];
+        causeEvent = self.args[4];
+        if (self.angle == 1) {
+            self.sprite = GetSpriteIndex("CHS2");
+        } else if (self.angle == 2) {
+            self.sprite = GetSpriteIndex("CHS3");
+        }
     }
 }
 

@@ -236,6 +236,28 @@ class MFIBookLuck : MFInventoryItem {
     }
 }
 
+class MFIBookSave : MFInventoryItem {
+    override String myTexture() { return "BUCHC0"; }
+    override String myName() { return "\clSave Manual"; }
+    override int getBuyPrice() { return 0; }
+    override int getSellPrice() { return 0; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
+class MFIBookShotgun : MFInventoryItem {
+    override String myTexture() { return "BLUPA0"; }
+    override String myName() { return "\clShotgun Blueprint"; }
+    override int getBuyPrice() { return 0; }
+    override int getSellPrice() { return 0; }
+    
+    override bool use() {
+        return false;
+    }
+}
+
 
 ///////////////////////
 

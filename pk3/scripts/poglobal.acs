@@ -50,6 +50,10 @@ script "poprance" (int rate) {
     ScriptCall("DataLibrary", "WriteData", "CheatForceDangerLevel", StrParam(d:rate));
 }
 
+script "povomit" (int dic) {
+    ScriptCall("DataLibrary", "OutputData", dic);
+}
+
 script "skiptownintro" (void) {
     setFlag("DoneEventGotFenceKeys");
     setFlag("blockEvent51");
@@ -123,7 +127,6 @@ script "useHomingDevice" (void) {
         delay(1);
     }
     Teleport_NewMap(5, 0, 0);
-    
 }
 
 script "rpgMovement" (void) {
@@ -139,6 +142,15 @@ script "rpgMovement" (void) {
 	int i;
 	while (true) {
 		delay(1);
+        
+        str forcedScriptName = ScriptCall("LevelHelper", "CheckForForcedEvent");
+        if (StrLen(forcedScriptName) > 0) {
+            ScriptCall("DataLibrary", "WriteData", "ForceEvent", "");
+            setFlag("PreventMovement");
+            ACS_NamedExecuteWait(forcedScriptName, 0);
+            clearFlag("PreventMovement");
+        }
+        
         clearFlag("BlockUseKey");
 		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
 		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
@@ -289,7 +301,7 @@ script "rpgMovement" (void) {
 	}
 }
 
-script "beginEncounter" (int forcedPopulation, int isFoe) {
+script "beginEncounter" (int forcedPopulation, int encounterType, int useSpecialArena) {
 	str monsterParty = "";
     
     //Load the next monster party data into data library
@@ -301,31 +313,41 @@ script "beginEncounter" (int forcedPopulation, int isFoe) {
 
 	ScriptCall("DataLibrary", "WriteData", "FieldSquare", StrParam(d:squareNum));
 	ScriptCall("DataLibrary", "WriteData", "FieldAngle", StrParam(d:currentAngle));
+    ScriptCall("DataLibrary", "WriteData", "EncounterType", StrParam(d:encounterType));
     
 	FadeTo(1.0, 0.0, 0.0, 1.0, 0.0);
-	SetMusic("POFIGHT");
+    if (encounterType != 2) {
+        SetMusic("POFIGHT");
+    } else {
+        SetMusic("POBOSS");
+    }
 	FadeTo(1.0, 0.0, 0.0, 0.0, 0.25);
-    ACS_NamedExecute("displayEncounterText", 0, isFoe);
+    ACS_NamedExecute("displayEncounterText", 0, encounterType);
 	Delay(5);
 	FadeTo(0.0, 0.0, 0.0, 1.0, 1.0);
 	delay(35);
 
 	int arenaMapNum = ScriptCall("DataLibrary", "ReadInt", "ArenaMap");
+    if (useSpecialArena) {
+        arenaMapNum = ScriptCall("DataLibrary", "ReadInt", "SpecialArenaMap");
+    }
 
 	Teleport_NewMap(arenaMapNum, 0, 0);
 }
 
-script "displayEncounterText" (int isSpecialEncounter) {
+script "displayEncounterText" (int encounterType) {
     str partyName = ScriptCall("DataLibrary", "ReadData", "NextMonsterPartyName");
-    if (isSpecialEncounter) {
+    if (encounterType == 1) {
         partyName = "Pain Elemental approaching!";
     }
 	SetHudSize(800, 600, false);
 	delay(5);
 	PlaySound(0, "po/encounter", CHAN_AUTO);
-	if (isSpecialEncounter) { SetFont("HXT_ALRT"); } else { SetFont("HXT_ENC"); } HudMessageBold(s:"A"; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 10.0);
+	if (encounterType > 0) { SetFont("HXT_ALRT"); } else { SetFont("HXT_ENC"); }
+    HudMessageBold(s:"A"; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 10.0);
 	delay(3);
-	if (isSpecialEncounter) { SetFont("TXT_ALRT"); } else { SetFont("TXT_ENC"); } HudMessageBold(s:"A"; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 10.0);
+	if (encounterType > 0) { SetFont("TXT_ALRT"); } else { SetFont("TXT_ENC"); }
+    HudMessageBold(s:"A"; HUDMSG_PLAIN, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 10.0);
 
 	delay(16);
 	PlaySound(0, "po/punch", CHAN_AUTO);
@@ -344,21 +366,26 @@ script "setupArena" (void) {
     clearFlag("BlockUseKey");
     setFlag("InFight");
     
+    int encounterType = ScriptCall("DataLibrary", "ReadInt", "EncounterType");
+    int arenaNumber = ScriptCall("DataLibrary", "ReadInt", "EncounterArenaNumber");
+    str partyName = ScriptCall("DataLibrary", "ReadData", "NextMonsterPartyName");
+	str chosenMonsterParty = ScriptCall("DataLibrary", "ReadData", "NextMonsterParty");
+    if (encounterType == 1) {
+        partyName = "Pain Elemental approaching!";
+    }
+    
     SetHudSize(800, 600, false);
-    if (ScriptCall("DataLibrary", "ReadInt", "CurrentFOESquare") > 0) {
-        SetFont("TXT_ALRT"); HudMessageBold(s:"A"; HUDMSG_FADEOUT, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 0.5, 0.5);
-        SetFont("BIGFONT"); HudMessageBold(s:"Pain Elemental approaching!"; HUDMSG_FADEOUT, 998, CR_GOLD, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 0.5, 0.5);  
-    }
-    else {
-        SetFont("TXT_ENC"); HudMessageBold(s:"A"; HUDMSG_FADEOUT, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 0.5, 0.5);
-        SetFont("BIGFONT"); HudMessageBold(s:ScriptCall("DataLibrary", "ReadData", "NextMonsterPartyName"); HUDMSG_FADEOUT, 998, CR_GOLD, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 0.5, 0.5);  
-    }
+    if (encounterType > 0) { SetFont("TXT_ALRT"); } else { SetFont("TXT_ENC"); } 
+    HudMessageBold(s:"A"; HUDMSG_FADEOUT, 999, CR_UNTRANSLATED, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y, 0.5, 0.5);
+
+    SetFont("BIGFONT"); HudMessageBold(s:partyName; HUDMSG_FADEOUT, 998, CR_GOLD, ENCOUNTER_TEXT_X, ENCOUNTER_TEXT_Y + ENCOUNTER_NAME_Y_OFFSET, 0.5, 0.5);  
 	FadeTo(0.0, 0.0, 0.0, 0.0, 0.5);
 
-	str chosenMonsterParty = ScriptCall("DataLibrary", "ReadData", "NextMonsterParty");
 
+    //If we don't have an arena number specified, choose a random one
 	int numberOfStarts = ThingCountName("BattleStart", 0);
-	int arenaTid = 100 * (Random(0, numberOfStarts - 1) + 1);
+    if (!arenaNumber) { arenaNumber = Random(0, numberOfStarts - 1) + 1; } 
+	int arenaTid = 100 * arenaNumber;
 
     ScriptCall("LevelHelper", "PrepareWeapons");
 

@@ -30,6 +30,8 @@ class MapDescriber : MapSpot
         //$Arg0Tooltip 0 for no special, 1 to run RPG movement, 2 for arena
         //$Arg1 Arena Mapnum
         //$Arg1Tooltip Mapnum to use for arenas on this level
+        //$Arg2 Special Arena Mapnum
+        //$Arg2Tooltip Mapnum to use for special arenas on this level
     }
 }
 

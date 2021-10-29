@@ -24,7 +24,7 @@ ZombieSquad,Zombie_Squadron,ZombieMan,NONE,NONE,ShotgunGuy,NONE,ZombieMan,Zombie
 Shotgunners,Shotgun_Crew,NONE,NONE,NONE,NONE,NONE,ShotgunGuy,ShotgunGuy,ShotgunGuy,ShotgunGuy,NONE
 DarkMixture,Dark_Smorgasbord,ZombieFodder,Darkling,ZombieFodder2,NONE,ZombieScientistHeadless,NONE,DoomImp,QuakeFodder,Darkling,ShotgunGuy
 ZombieTeams,Zombies_Vs_Zombies,ZombieMan,ZombieScientistHeadless,HazmatZombie,ZombieMan,NONE,ZombieFodder2,ZombieFodder2,ZombieFodder,QuakeFodder,NONE
-Boss1,Roach_Kings,Darkling,Darkling,Darkling,NONE,Roach,Darkling,Darkling,NONE,Roach,NONE
+Boss1,Roach_Kings,Darkling,Darkling,Darkling,NONE,NONE,Darkling,Darkling,NONE,Roach,Roach
 HazmatSquad,Hazmat_Squad,NONE,NONE,ZombieMan,HazmatZombie,HazmatZombie,HazmatZombie,ZombieMan,NONE,ZombieScientistHeadless,ZombieScientistHeadless
 ZombieTroop,Zombie_Troop,ZombieMan,ShotgunGuy,ZombieMan,ShotgunGuy,ChaingunGuy,ZombieMan,ZombieMan,ZombieMan,ZombieMan,ZombieMan
 ImpHorde,Imp_Horde,DoomImp,DoomImp,Devil,DoomImp,DoomImp,DoomImp,Devil,Devil,DoomImp,DoomImp

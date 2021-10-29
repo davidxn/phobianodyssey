@@ -7,9 +7,9 @@ maps
 	
 	ARENA2
 	{
-		defaultwalltexture = "OROCKQ03";
+		defaultwalltexture = "GRAY7";
 		overridemiddletexture = false;
-		defaultceiltexture = "0ROCKR01";
+		defaultceiltexture = "CEIL5_1";
 		overrideceiltexture = false;
 		custombrightness = 196;
 		scriptcompiler = "zdoom_acs.cfg";
@@ -17,8 +17,8 @@ maps
 		resources
 		{
 		}
-		viewpositiony = 157.8272f;
-		viewpositionx = 1539.083f;
+		viewpositiony = 1458.356f;
+		viewpositionx = 482.7662f;
 		
 		testprecommand
 		{
@@ -38,11 +38,11 @@ maps
 			gridrotate = 0;
 			backscalex = 100;
 			gridoriginx = 0;
-			gridsize = 16;
+			gridsize = 32;
 			background = "";
 			backoffsety = 0;
 		}
-		viewscale = 0.6887331f;
+		viewscale = 1.086276f;
 		
 		reloadresourceprecommand
 		{
@@ -50,10 +50,38 @@ maps
 			exitcodeiserror = true;
 			stderriserror = true;
 		}
-		defaulttoptexture = "OROCKQ03";
+		defaulttoptexture = "GRAY7";
 		overridebottomtexture = false;
-		defaultbottomtexture = "OROCKQ03";
-		defaultfloortexture = "0ROCKR01";
+		
+		fieldtypes
+		{
+			
+			sidedef
+			{
+				offsety_bottom = 1;
+				offsetx_top = 1;
+				offsety_mid = 1;
+				offsetx_bottom = 1;
+				offsetx_mid = 1;
+				offsety_top = 1;
+			}
+			
+			sector
+			{
+				rotationfloor = 1;
+				xscalefloor = 1;
+				ypanningceiling = 1;
+				ypanningfloor = 1;
+				xpanningceiling = 1;
+				yscalefloor = 1;
+				xpanningfloor = 1;
+				yscaleceiling = 1;
+				xscaleceiling = 1;
+				rotationceiling = 1;
+			}
+		}
+		defaultbottomtexture = "GRAY7";
+		defaultfloortexture = "FLAT14";
 		overrideceilheight = false;
 		overridebrightness = false;
 		
@@ -73,20 +101,6 @@ maps
 			autocloseonsuccess = true;
 			exitcodeiserror = true;
 			stderriserror = true;
-		}
-		
-		fieldtypes
-		{
-			
-			sidedef
-			{
-				offsetx_mid = 1;
-				offsety_mid = 1;
-				offsetx_top = 1;
-				offsetx_bottom = 1;
-				offsety_top = 1;
-				offsety_bottom = 1;
-			}
 		}
 	}
 }

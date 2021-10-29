@@ -177,13 +177,13 @@ class PODroppable : Inventory {
         M012 A 0;
         M013 A 0;
       Spawn:
-        M001 A 4 { applySprite(); }
-        M001 B 4 { applySprite(); }
+        TNT1 A 4 { applySprite(); }
+        TNT1 B 4 { applySprite(); }
         Loop;
       Decaying:
-        M001 A 4 { applySprite(); }
-        M001 B 4 { applySprite(); }
-        M001 C 4;
+        TNT1 A 4 { applySprite(); }
+        TNT1 B 4 { applySprite(); }
+        TNT1 C 4;
         Loop;
     }
 

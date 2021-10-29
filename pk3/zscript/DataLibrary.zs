@@ -303,6 +303,7 @@ class DataLibrary : Thinker
         MapDescriber m; ThinkerIterator it = ThinkerIterator.Create("MapDescriber");
         while (m = MapDescriber(it.Next() ) ) {
             DataLibrary.inst().WriteData(null, "ArenaMap", m.args[1] .. "");
+            DataLibrary.inst().WriteData(null, "SpecialArenaMap", m.args[2] .. "");
             return m.args[0];
         }
         return 0;
@@ -320,6 +321,21 @@ class DataLibrary : Thinker
         DataLibrary.WriteData(null, "eventDialogPage", "1");
         DataLibrary.WriteData(null, "eventDialogConversation", convId);
         DataLibrary.WriteData(null, "showEventDialog", "1");
+    }
+    
+    static void outputData(int which) {
+        Dictionary theDictionary;
+        
+        if (which == 0) { theDictionary = DataLibrary.getInstance().dic; }
+        if (which == 1) { theDictionary = DataLibrary.getInstance().monsterParties; }
+        if (which == 2) { theDictionary = DataLibrary.getInstance().monsterPops; }
+        
+        DictionaryIterator d = DictionaryIterator.Create(theDictionary);
+
+        console.printf("\ckDictionary Contents");
+        while (d.Next()) {    
+            console.printf("\ck%-30s \cl%s", d.Key(), d.Value());
+        }
     }
     
 }

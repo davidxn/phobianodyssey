@@ -120,7 +120,7 @@ CONV_TUNNELS_BODY_5 = "[S:SearchedTunnelBody] You rummage around in their standa
 CONV_TUNNELS_BODY_6 = "What? It's not like they're going to be needing them.";
 
 CONV_TUNNELS_TRAPPED_1 = "Well. This seems to be a problem.";
-CONV_TUNNELS_TRAPPED_2 = "This isn't a Sierra game, though, so you try not to panic. You crouch down and look at the underside of the door carefully.";
+CONV_TUNNELS_TRAPPED_2 = "This isn't that sort of game, though, so you try not to panic. You crouch down and look at the underside of the door carefully.";
 CONV_TUNNELS_TRAPPED_3 = "The dust and pebbles on the floor make the rolling door sit just a little off the ground. With some effort, you might be able to fit your fingers underneath.";
 CONV_TUNNELS_TRAPPED_4 = "Alternatively, you could concentrate on the top and try to convince the mechanism with your pistol.";
 CONV_TUNNELS_TRAPPED_5 = "[R:Use_brute_strength] [D:6] [R:Use_firepower] [D:8] What do you think?";
@@ -132,6 +132,20 @@ CONV_TUNNELS_TRAPPED_STRENGTH_1 = "You smile as you finally wrench the door upwa
 CONV_TUNNELS_TRAPPED_STRENGTH_2 = "Then you stop. Honestly, your arms are killing you.";
 
 CONV_TUNNELS_TRAPPED_SHOOT_1 = "It takes more than a few shots, but eventually there is a sharp metallic snapping noise and the door noticeably loosens.";
+CONV_TUNNELS_TRAPPED_SHOOT_2 = "A gentle push is all it needs to retract into the ceiling. You're free!";
+
+CONV_BASE_BOSS_WARNING_1 = "As you approach the door, you sense the presence of something more malicious than anything you've faced yet.";
+CONV_BASE_BOSS_WARNING_2 = "You check your provisions before putting your hand on the switch.";
+CONV_BASE_BOSS_WARNING_3 = "\ckYes, it's a warning about a boss battle coming up. Make sure you're stocked up before proceeding!";
+
+CONV_BASE_BOSS_INTRO_1 = "As you expected, nauseating chittering sounds echo around the ceiling as you pull your prize from the chest.";
+CONV_BASE_BOSS_INTRO_2 = "Within moments, you see a dozen pairs of evil shining eyes staring down at you from the rafters.";
+CONV_BASE_BOSS_INTRO_3 = "You pull your weapon out and prepare to defend yourself!";
+
+CONV_BASE_BOSS_OUTRO_1 = "You smile with renewed confidence as the last of the skinny hellspawn collapses to the floor.";
+CONV_BASE_BOSS_OUTRO_2 = "Now you've got to return to the weapon shop with the blueprints!";
+
+
 CONV_TUNNELS_TRAPPED_SHOOT_2 = "A gentle push is all it needs to retract into the ceiling. You're free!";
 
 CONV_TUNNELS_TRAPPED_NOTAGAIN_1 = "You've broken the mechanism on this one - you've probably messed with it enough.";
@@ -164,4 +178,5 @@ INV_MFITreasure6 = "A crown forged in the hellfires. Sell it for 5000pt";
 INV_MFIBookPower = "This looks like it would be useful for Exo at the weapons shop.";
 INV_MFIBookSpeed = "This looks like it would be useful for Exo at the weapons shop.";
 INV_MFIBookLuck = "This looks like it would be useful for Exo at the weapons shop.";
+INV_MFIBookShotgun = "This looks like it would be useful for Exo at the weapons shop.";
 INV_MFIEmpty = "";

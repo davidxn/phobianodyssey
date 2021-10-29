@@ -435,6 +435,13 @@ class FriendlyUIHandler : EventHandler
             DataLibrary.GetInstance().dic.Insert("shouldEraseText", "1");
 
             if (theString == "STOP" || theString == dialogKey) {
+                //If this is a chest and it forces an event afterwards, run it now
+                if (
+                    DataLibrary.ReadData("eventDialogConversation") == "OPEN_CHEST" &&
+                    (DataLibrary.GetInstance().chestToOpen && DataLibrary.GetInstance().chestToOpen.causeEvent > 0)
+                ) {
+                    DataLibrary.writeData(NULL, "ForceEvent", "runEvent" .. DataLibrary.GetInstance().chestToOpen.causeEvent);
+                }
                 DataLibrary.WriteData(NULL, "shouldHideDialog", "1");
                 DataLibrary.WriteData(NULL, "showEventDialog", "0");
                 DataLibrary.WriteData(NULL, "eventDialogPage", "");

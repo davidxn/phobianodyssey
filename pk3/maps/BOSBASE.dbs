@@ -7,9 +7,9 @@ maps
 	
 	ARENA2
 	{
-		defaultwalltexture = "OROCKQ03";
+		defaultwalltexture = "SUPPORT2";
 		overridemiddletexture = false;
-		defaultceiltexture = "0ROCKR01";
+		defaultceiltexture = "FLOOR4_8";
 		overrideceiltexture = false;
 		custombrightness = 196;
 		scriptcompiler = "zdoom_acs.cfg";
@@ -17,8 +17,8 @@ maps
 		resources
 		{
 		}
-		viewpositiony = 157.8272f;
-		viewpositionx = 1539.083f;
+		viewpositiony = 395.8227f;
+		viewpositionx = 1376.786f;
 		
 		testprecommand
 		{
@@ -42,7 +42,7 @@ maps
 			background = "";
 			backoffsety = 0;
 		}
-		viewscale = 0.6887331f;
+		viewscale = 1.086276f;
 		
 		reloadresourceprecommand
 		{
@@ -50,10 +50,61 @@ maps
 			exitcodeiserror = true;
 			stderriserror = true;
 		}
-		defaulttoptexture = "OROCKQ03";
+		defaulttoptexture = "SUPPORT2";
 		overridebottomtexture = false;
-		defaultbottomtexture = "OROCKQ03";
-		defaultfloortexture = "0ROCKR01";
+		
+		fieldtypes
+		{
+			
+			sidedef
+			{
+				offsety_bottom = 1;
+				offsetx_top = 1;
+				offsety_mid = 1;
+				offsetx_bottom = 1;
+				offsetx_mid = 1;
+				offsety_top = 1;
+			}
+			
+			sector
+			{
+				rotationfloor = 17;
+				xscalefloor = 1;
+				ypanningceiling = 1;
+				ypanningfloor = 1;
+				xpanningceiling = 1;
+				yscalefloor = 1;
+				xpanningfloor = 1;
+				yscaleceiling = 1;
+				xscaleceiling = 1;
+				rotationceiling = 17;
+			}
+		}
+		defaultbottomtexture = "SUPPORT2";
+		
+		scriptdocuments
+		{
+			
+			document1
+			{
+				filename = "SCRIPTS";
+				hash = 3469170009;
+				resource;
+				tabtype = 0;
+				scripttype = 1;
+				activetab = true;
+			}
+			
+			document0
+			{
+				filename = "DIALOGUE";
+				hash = 3588187714;
+				resource;
+				tabtype = 0;
+				scripttype = 18;
+			}
+		}
+		defaultfloortexture = "FLAT14";
 		overrideceilheight = false;
 		overridebrightness = false;
 		
@@ -73,20 +124,6 @@ maps
 			autocloseonsuccess = true;
 			exitcodeiserror = true;
 			stderriserror = true;
-		}
-		
-		fieldtypes
-		{
-			
-			sidedef
-			{
-				offsetx_mid = 1;
-				offsety_mid = 1;
-				offsetx_top = 1;
-				offsetx_bottom = 1;
-				offsety_top = 1;
-				offsety_bottom = 1;
-			}
 		}
 	}
 }

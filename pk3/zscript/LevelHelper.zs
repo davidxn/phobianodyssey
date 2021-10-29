@@ -64,6 +64,11 @@ class LevelHelper : Thinker
         return "";
     }
     
+    static String CheckForForcedEvent(Actor activator)
+    {
+        return DataLibrary.readData("ForceEvent");
+    }
+    
     static bool PlayerCanMoveTo(Actor activator, double stepX, double stepY) {
         double initialX = activator.pos.x;
         double initialY = activator.pos.y;
@@ -82,13 +87,13 @@ class LevelHelper : Thinker
             testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
             testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
             //Is this point inside the level?
-            if(!level.IsPointInLevel((testX, testY, testZFloor))) { console.printf("DEBUG: Point not in level, rejecting"); return false; }
+            if(!level.IsPointInLevel((testX, testY, testZFloor))) { console.printf("MOVEDEBUG: Point not in level, rejecting"); return false; }
             //Is this point in a place the player could fit?
-            if(testZCeiling - testZFloor < 56) { console.printf("DEBUG: Point too small for player, rejecting"); return false; }
+            if(testZCeiling - testZFloor < 56) { console.printf("MOVEDEBUG: Point too small for player, rejecting"); return false; }
             
             //Is this point greater than a 16-unit jump up from the last point we checked AND greater than a 16-unit jump from the initial floor?
             if(currentZ-testZFloor < -16 && initialZ-testZFloor < -16) {
-                console.printf("DEBUG: Journey has more than 16-unit step up"); return false;
+                console.printf("MOVEDEBUG: Journey has more than 16-unit step up"); return false;
             }
             //If it's a drop, allow 3 in a row before we reject - allows little cracks in ground
             else if (initialZ-testZFloor >= 32) {
@@ -96,18 +101,22 @@ class LevelHelper : Thinker
                     //Doesn't count as a drop
                 } else {
                     if (dropStepsAllowed > 2) {
-                        console.printf("DEBUG: Journey has more than 16-unit step down 3 steps in row"); return false;
+                        console.printf("MOVEDEBUG: Journey has more than 16-unit step down 3 steps in row"); return false;
                     }
                     dropStepsAllowed++;
                 }
             }
             currentZ = testZFloor;
+            
+            //One more check if we've hit one square away - check line of sight to the new position
+            if (i == 1.0) {
+                MapSpot x = MapSpot(Actor.Spawn("MapSpot", (testX, testY, testZFloor + 40)));
+                console.printf("%d %d %d", x.pos.x, x.pos.y, x.pos.z);
+                if (!activator.CheckSight(x, SF_IGNOREVISIBILITY)) { console.printf("MOVEDEBUG: Mapspot sight check returned false, rejecting"); return false; }
+                x.Destroy();
+            }
         }
-        //Finally, check line of sight to the new position
-        MapSpot x = MapSpot(Actor.Spawn("MapSpot", (testX, testY, testZFloor + 40)));
-        console.printf("%d %d %d", x.pos.x, x.pos.y, x.pos.z);
-        if (!activator.CheckSight(x, SF_IGNOREVISIBILITY)) { console.printf("DEBUG: Mapspot sight check returned false, rejecting"); return false; }
-        x.Destroy();
+
         return true;
     }
     

@@ -125,10 +125,19 @@ Class Roach : POMonster
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {      
         poDropItemWithProbability("PoHeal5", 50);
         poDropItemWithProbability("PoCoin10", 100);
+        poDropItemWithProbability("PoCoin10", 100);
+        poDropItemWithProbability("PoCoin10", 100);
+        poDropItemWithProbability("PoCoin10", 100);
+        poDropItemWithProbability("PoCoin10", 100);
         poDropItemWithProbability("PoCoin5", 90);
         poDropItemWithProbability("PoCoin5", 80);
         poDropItemWithProbability("PoCoin5", 70);
         poDropItemWithProbability("PoCoin10", 20);
+        
+        if (MeansOfDeath == "Melee") {
+            poDropItemWithProbability("PoShell2", 100);
+            poDropItemWithProbability("PoClip5", 100);
+        }
         
         super.doBurst();       
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
