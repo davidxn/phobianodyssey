@@ -79,3 +79,14 @@ class HealthRegenerator : MapSpot
     }
 }
 
+class DecorativeWeapon : FloatingSkull
+{
+    Default {
+        Radius 8;
+        Height 16;
+    }
+    States {
+        Spawn:
+            RWEP A -1 NoDelay { frame = random(0, 15);}
+    }
+}

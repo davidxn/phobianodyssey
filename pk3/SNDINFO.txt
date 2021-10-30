@@ -29,6 +29,7 @@ po/items/chain POCHNOPN
 
 po/pickup/cash POCASH
 po/pickup/hp POHPUP
+po/pickup/general POTINK
 po/reload PORELOAD
 po/sell POSELL
 

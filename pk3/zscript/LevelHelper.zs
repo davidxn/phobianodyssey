@@ -154,7 +154,9 @@ class LevelHelper : Thinker
     {
         PoDroppable m; ThinkerIterator it = ThinkerIterator.Create("PoDroppable");
         while (m = PoDroppable(it.Next() ) ) {
-            m.Destroy();
+            if (!m.Owner) {
+                m.Destroy();
+            }
         }
         PoAmmo a; it = ThinkerIterator.Create("PoAmmo");
         while (a = PoAmmo(it.Next() ) ) {

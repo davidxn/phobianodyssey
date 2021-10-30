@@ -128,6 +128,8 @@ class POZombieMan : POMonster replaces ZombieMan
         poDropItemWithProbability("PoCoin1", 80);
         poDropItemWithProbability("PoCoin1", 80);
         
+        poDropItemWithProbability("PoJam", 20);
+        
         super.doBurst();       
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
@@ -205,6 +207,8 @@ class POSergeant : POMonster replaces ShotgunGuy
         poDropItemWithProbability("PoCoin1", 50);
         
         poDropItemWithProbability("PoHeal5", 25);
+        
+        poDropItemWithProbability("PoJam", 30);
         
         super.doBurst();       
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
@@ -284,6 +288,8 @@ Class HazmatZombie : POMonster
         poDropItemWithProbability("PoHeal1", 50);
         poDropItemWithProbability("PoHeal5", 30);
         
+        poDropItemWithProbability("PoJam", 10);
+        
         if (MeansOfDeath == "Melee") {
             poDropItemWithProbability("PoClip5", 100);
         }
@@ -353,7 +359,7 @@ class PoImp : POMonster REPLACES DoomImp
 	}
     
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
-        poDropItemWithProbability("PoHorn", 66);
+        poDropItemWithProbability("PoHorn", 30);
         
         poDropItemWithProbability("PoCoin5", 50);
         poDropItemWithProbability("PoCoin5", 50);
@@ -379,7 +385,7 @@ class PoBlueImp : PoImp
     }
     
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
-        poDropItemWithProbability("PoHorn", 90);
+        poDropItemWithProbability("PoHorn", 30);
         
         poDropItemWithProbability("PoCoin10", 80);
         poDropItemWithProbability("PoCoin10", 70);
@@ -513,83 +519,11 @@ Class Darkling : POMonster
         poDropItemWithProbability("PoCoin5", 70);
         poDropItemWithProbability("PoCoin10", 20);
         
+        poDropItemWithProbability("PoDarkHeart", 20);
+        
         if (MeansOfDeath == "Melee") {
             poDropItemWithProbability("PoShell2", 100);
             poDropItemWithProbability("PoClip5", 100);
-        }
-        
-        super.doBurst();       
-        super.Die(source, inflictor, dmgflags, MeansOfDeath);
-    }
-}
-
-class PoShotgunGuy : PoMonster
-{
-	Default
-	{
-		Health 30;
-		Radius 20;
-		Height 56;
-		Mass 100;
-		Speed 8;
-		PainChance 170;
-		Monster;
-		+FLOORCLIP
-		SeeSound "shotguy/sight";
-		AttackSound "shotguy/attack";
-		PainSound "shotguy/pain";
-		DeathSound "shotguy/death";
-		ActiveSound "shotguy/active";
-		Obituary "$OB_SHOTGUY";
-		Tag "$FN_SHOTGUN";
-		DropItem "Shotgun";
-	}
-	States
-	{
-	Spawn:
-		SPOS AB 10 A_Look;
-		Loop;
-	See:
-		SPOS AABBCCDD 3 A_Chase;
-		Loop;
-	Missile:
-		SPOS E 10 A_FaceTarget;
-		SPOS F 10 BRIGHT A_CustomBulletAttack (22.5, 0, 3, 5 + random(0, 2), "BulletPuff", 0, CBAF_NORANDOM);
-		SPOS E 10;
-		Goto See;
-	Pain:
-		SPOS G 3;
-		SPOS G 3 A_Pain;
-		Goto See;
-	Death:
-		SPOS H 5;
-		SPOS I 5 A_Scream;
-		SPOS J 5 A_NoBlocking;
-		SPOS K 5;
-		SPOS L -1;
-		Stop;
-	XDeath:
-		SPOS M 5;
-		SPOS N 5 A_XScream;
-		SPOS O 5 A_NoBlocking;
-		SPOS PQRST 5;
-		SPOS U -1;
-		Stop;
-	Raise:
-		SPOS L 5;
-		SPOS KJIH 5;
-		Goto See;
-	}
-    
-    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {      
-        poDropItemWithProbability("PoShell2", 80);
-        poDropItemWithProbability("PoCoin10", 90);
-        poDropItemWithProbability("PoCoin5", 80);
-        poDropItemWithProbability("PoCoin5", 70);
-        
-        if (MeansOfDeath == "Melee") {
-            poDropItemWithProbability("PoShell2", 100);
-            poDropItemWithProbability("PoHealth5", 80);
         }
         
         super.doBurst();       

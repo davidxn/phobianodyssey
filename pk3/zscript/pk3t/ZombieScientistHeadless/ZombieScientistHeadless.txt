@@ -126,6 +126,7 @@ Class ZombieScientistHeadless : POMonster
         if (self.dropSpecial) {
             poDropItemWithProbability("PoCoin10", 100);
             poDropItemWithProbability("PoClip5", 100);
+            poDropItemWithProbability("PoJam", 100);
         }
 
         super.Die(source, inflictor, dmgflags, MeansOfDeath);

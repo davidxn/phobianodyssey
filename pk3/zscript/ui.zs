@@ -44,6 +44,7 @@ class FriendlyUIHandler : EventHandler
 	play bool shouldClearUIGrabbedItem;
 	ui bool hoveringDropButton;
     ui bool hoveringOverShop;
+    ui int shopFirstItemIndex;
     
     ui POWeaponSlot uiGrabbedArm;
     play POWeaponSlot grabbedArm;
@@ -69,6 +70,9 @@ class FriendlyUIHandler : EventHandler
     // Item shop measurements
     const ITEM_SHOP_START_X = 0.51;
     const ITEM_SHOP_START_Y = 0.04;
+    
+	const MATERIAL_ICON_WIDTH = 0.03;
+	const MATERIAL_ICON_HEIGHT = 0.03;
 
 	// Drop button
 	const INV_DROP_BUTTON_X = 0.335;
@@ -126,6 +130,7 @@ class FriendlyUIHandler : EventHandler
 		hoveredInvStack = -1;
         hoveredShopNumber = -1;
         hoveredDialogOption = -1;
+        shopFirstItemIndex = 0;
 	}
 
 
@@ -221,25 +226,100 @@ class FriendlyUIHandler : EventHandler
         
         hoveringOverShop = (mv.x >= ITEM_SHOP_START_X);
         hoveredShopNumber = -1;
+        
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        
+        //Display material inventory
+        String materialsString = "POJam,POHorn,POLeather,PODarkHeart";
+        Array<String> materials; materialsString.Split(materials, ",");
+        double materialX = 0.41;
+        double materialY = 0.02;
+        for (int i = 0; i < materials.Size(); i++) {
+            class<Actor> cls = materials[i];
+            int quantity = p.CountInv(materials[i]);
+            String spriteName = POMaterial(GetDefaultByType(cls)).mySprite .. "A0";
+            if (quantity > 0) {
+                TextureID tex = TexMan.CheckForTexture(spriteName, TexMan.Type_Sprite);
+                ScreenDrawTextureWithinArea(tex, materialX, materialY, MATERIAL_ICON_WIDTH, MATERIAL_ICON_HEIGHT);
+                ScreenDrawString(quantity .. "", Font.CR_WHITE, tinyFont, materialX + 0.05, materialY+0.002);
+                materialY += 0.033;
+            }
+        }
+        
+        int shopItemsDisplayed = 0;
+        for (int i = shopFirstItemIndex; i < DataLibrary.GetInstance().itemShopInventory.Size() && shopItemsDisplayed < 6; i++) {
+            
+            MFInventoryItem item = DataLibrary.GetInstance().itemShopInventory[i];
 
-        for (int i = 0; i < DataLibrary.GetInstance().itemShopInventory.Size(); i++) {
-
+            Array<String> interpretedRequirements;
+            int requirementsWithAtLeastOneInventoryItem = 0;
+            bool requirementsAllFulfilled = 1;
+            
+            //If we shouldn't display this item, move on. We can display if we have at least one of all but one required item...
+            Array<String> requirements; item.getRequirements().Split(requirements, ",");
+            if (requirements.Size() > 0) {
+                
+                for (int i = 0; i < requirements.Size(); i += 2) {
+                    class<Actor> cls = requirements[i];
+                    int quantity = requirements[i+1].ToInt();
+                    String spriteName = POMaterial(GetDefaultByType(cls)).mySprite .. "A0";
+                    bool hasEnough = p.CountInv(requirements[i]) >= quantity;
+                    if (!hasEnough) {
+                        requirementsAllFulfilled = 0;
+                    }
+                    bool hasOne = p.CountInv(requirements[i]) > 0;
+                    if (hasOne) {
+                        requirementsWithAtLeastOneInventoryItem++;
+                    }
+                    interpretedRequirements.push(requirements[i] .. "," .. quantity .. "," .. spriteName .. "," .. hasEnough .. "," .. hasOne);
+                }
+                
+                if (requirementsWithAtLeastOneInventoryItem < interpretedRequirements.Size() - 1) {
+                    continue; //Forget it!
+                }
+            }
+            
+            //We've passed the requirements for display!
+            shopItemsDisplayed++;
+            
             ScreenDrawTexture(invItemBG, x, y, alpha: 0.5);
-            //Can't hover over a shop item if we already have something
-            bool hovering = !uiGrabbedItem && (mv.x >= x && mv.x <= x + INV_STACK_BUTTON_WIDTH && mv.y >= y && mv.y <= y + INV_STACK_BUTTON_HEIGHT);
+            //Can't hover over a shop item if we already have something, or if it's disabled
+            bool hovering = requirementsAllFulfilled && !uiGrabbedItem && (mv.x >= x && mv.x <= x + INV_STACK_BUTTON_WIDTH && mv.y >= y && mv.y <= y + INV_STACK_BUTTON_HEIGHT);
             if (hovering) {
                 // hilight box
                 ScreenDrawTexture(invHilight, x, y);
                 hoveredShopNumber = i;
             }
 			// draw item sprite
-            MFInventoryItem item = DataLibrary.GetInstance().itemShopInventory[i];
-            ScreenDrawTextureWithinArea(item.getTexture(), x, y, INV_STACK_BUTTON_WIDTH, INV_STACK_BUTTON_HEIGHT, INV_STACK_BUTTON_MARGIN_INNERPCT);
+            ScreenDrawTextureWithinArea(item.getTexture(), x, y, INV_STACK_BUTTON_WIDTH, INV_STACK_BUTTON_HEIGHT, INV_STACK_BUTTON_MARGIN_INNERPCT, alpha: (requirementsAllFulfilled ? 1.0 : 0.5));
+            
+            int itemNameColor = Font.CR_WHITE;
+            if (!requirementsAllFulfilled) {
+                itemNameColor = Font.CR_DARKGRAY;
+            }
 
-            ScreenDrawString(item.getName(), Font.CR_WHITE, journalFont, x + 0.09, y + 0.03);
-            ScreenDrawString(item.getBuyPrice() .."", Font.CR_GREEN, journalFont, x + 0.4, y + 0.03);
+            ScreenDrawString(item.getName(), itemNameColor, journalFont, x + 0.09, y + 0.01);
+            ScreenDrawString(item.getBuyPrice() .."", Font.CR_GREEN, journalFont, x + 0.4, y + 0.01);
+            DrawItemRequirements(interpretedRequirements, x, y);
 
             y += INV_STACK_BUTTON_HEIGHT + INV_STACK_BUTTON_MARGIN;
+        }
+    }
+    
+    ui void DrawItemRequirements(Array<String> requirements, double startX, double startY) {
+        double y = startY + 0.045;
+        double x = startX + 0.09;
+        for (int i = 0; i < requirements.Size(); i++) {
+            Array<String> requirementsData; requirements[i].Split(requirementsData, ",");
+            int quantity = requirementsData[1].toInt();
+            TextureID icon = TexMan.CheckForTexture(requirementsData[2], TexMan.Type_Sprite);
+            ScreenDrawTextureWithinArea(icon, x, y, MATERIAL_ICON_WIDTH, MATERIAL_ICON_HEIGHT);
+            int itemColor = Font.CR_WHITE;
+            if (!requirementsData[3]) {
+                itemColor = Font.CR_DARKGRAY;
+            }
+            ScreenDrawString("x" .. quantity, itemColor, tinyFont, x + 0.03, y);
+            x += 0.07;
         }
     }
 
@@ -364,6 +444,15 @@ class FriendlyUIHandler : EventHandler
                     }
                     else {
                         p.TakeInventory("POCoin", newGrabbedItem.getBuyPrice());
+                        Array<String> requirements; newGrabbedItem.getRequirements().Split(requirements, ",");
+                        if (requirements.Size() > 0) {
+                            
+                            for (int i = 0; i < requirements.Size(); i += 2) {
+                                String className = requirements[i];
+                                int quantity = requirements[i+1].ToInt();
+                                p.TakeInventory(className, quantity);
+                            }
+                        }
                         p.A_PlaySound("po/pickup/cash", CHAN_VOICE);
                     }
                 }
@@ -383,8 +472,12 @@ class FriendlyUIHandler : EventHandler
         {
             int shopIndex = e.Args[0];
             MFInventoryItem invItem = DataLibrary.GetInstance().itemShopInventory[shopIndex];
+            //If our inventory is full, refuse
+            if (DataLibrary.InventoryIsFull()) {
+                p.A_PlaySound("po/deny");
+            }
             //If we don't already have a new grabbed item, grab this one
-            if (!newGrabbedItem) {
+            else if (!newGrabbedItem) {
                 String newItemClassName = invItem.getClassName();
                 newGrabbedItem = MFInventoryItem(new(newItemClassName)).Init();
                 grabbedItemIsFromShop = true;

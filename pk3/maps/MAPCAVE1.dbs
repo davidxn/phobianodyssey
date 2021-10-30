@@ -17,8 +17,8 @@ maps
 		resources
 		{
 		}
-		viewpositiony = 1914.453f;
-		viewpositionx = 1263.437f;
+		viewpositiony = 1546.095f;
+		viewpositionx = 854.7592f;
 		
 		testprecommand
 		{
@@ -42,7 +42,7 @@ maps
 			background = "E:\\DoomWork\\phobianodyssey\\rpggrid.png";
 			backoffsety = -320;
 		}
-		viewscale = 0.7215289f;
+		viewscale = 0.9379875f;
 		
 		reloadresourceprecommand
 		{

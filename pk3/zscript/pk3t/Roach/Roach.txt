@@ -135,6 +135,8 @@ Class Roach : POMonster
         poDropItemWithProbability("PoCoin5", 70);
         poDropItemWithProbability("PoCoin10", 20);
         
+        poDropItemWithProbability("PoDarkHeart", 50);
+        
         if (MeansOfDeath == "Melee") {
             poDropItemWithProbability("PoShell2", 100);
             poDropItemWithProbability("PoClip5", 100);

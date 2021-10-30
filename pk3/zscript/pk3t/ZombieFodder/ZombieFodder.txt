@@ -53,6 +53,8 @@ Class ZombieFodder : POMonster
         poDropItemWithProbability("PoCoin1", 100);
         poDropItemWithProbability("PoCoin1", 100);
         
+        poDropItemWithProbability("PoLeather", 20);
+        
         if (MeansOfDeath == "Melee") {
             poDropItemWithProbability("PoClip5", 50);
         }
@@ -115,6 +117,8 @@ Class ZombieFodder2 : POMonster
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
         poDropItemWithProbability("PoClip5", 15);
         
+        poDropItemWithProbability("PoLeather", 15);
+        
         poDropItemWithProbability("PoCoin5", 100);
         
         if (MeansOfDeath == "Melee") {
@@ -165,6 +169,8 @@ Class QuakeFodder : ZombieFodder
         poDropItemWithProbability("PoCoin1", 100);
         poDropItemWithProbability("PoCoin1", 100);
         poDropItemWithProbability("PoCoin1", 100);
+        
+        poDropItemWithProbability("PoLeather", 30);
         
         if (MeansOfDeath == "Melee") {
             poDropItemWithProbability("PoCoin5", 100);

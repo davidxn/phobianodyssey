@@ -5,6 +5,7 @@ class MFInventoryItem : Thinker abstract {
     virtual clearscope int getBuyPrice() { return 0; }
     virtual clearscope int getSellPrice() { return 0; }
     virtual clearscope bool isAvailable() { return true; }
+    virtual clearscope String getRequirements() { return ""; }
 
     virtual virtualscope bool use() { return true; }
 
@@ -34,6 +35,7 @@ class MFIMegasphere : MFInventoryItem {
     override String myName() { return "Megasphere"; }
     override int getBuyPrice() { return 2000; }
     override int getSellPrice() { return 1000; }
+    override String getRequirements() { return ""; }
     
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
@@ -50,6 +52,7 @@ class MFIRadsuit : MFInventoryItem {
     override String myName() { return "Radsuit"; }
     override int getBuyPrice() { return 1000; }
     override int getSellPrice() { return 500; }
+    override String getRequirements() { return ""; }
     
     override bool use() {
         return true;
@@ -61,6 +64,7 @@ class MFIMedikit : MFInventoryItem {
     override String myName() { return "Medikit"; }
     override int getBuyPrice() { return 100; }
     override int getSellPrice() { return 50; }
+    override String getRequirements() { return "POJam,10"; }
     
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
@@ -78,6 +82,7 @@ class MFIStimpack : MFInventoryItem {
     override String myName() { return "Stimpack"; }
     override int getBuyPrice() { return 60; }
     override int getSellPrice() { return 30; }
+    override String getRequirements() { return "POJam,5"; }
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         if (p.Health >= 100) {
@@ -94,6 +99,7 @@ class MFIAmmoBox : MFInventoryItem {
     override String myName() { return "Bullet Box"; }
     override int getBuyPrice() { return 30; }
     override int getSellPrice() { return 15; }
+    override String getRequirements() { return "POHorn,2"; }
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         p.GiveInventory("POClip", 25);
@@ -123,6 +129,8 @@ class MFIRiskyBoots : MFInventoryItem {
     override String myName() { return "Risky Boots"; }
     override int getBuyPrice() { return 100; }
     override int getSellPrice() { return 100; }
+    override String getRequirements() { return "POLeather,5"; }
+    
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         p.TakeInventory("PoDanger", 100);
@@ -137,6 +145,8 @@ class MFISneakyBoots : MFInventoryItem {
     override String myName() { return "Sneaky Boots"; }
     override int getBuyPrice() { return 200; }
     override int getSellPrice() { return 100; }
+    override String getRequirements() { return "POLeather,5,PODarkHeart,1"; }
+
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         p.TakeInventory("PoDanger", 100);
@@ -148,8 +158,8 @@ class MFISneakyBoots : MFInventoryItem {
 class MFIHomingDevice : MFInventoryItem {
     override String myTexture() { return "HOMDA0"; }
     override String myName() { return "Homing Device"; }
-    override int getBuyPrice() { return 200; }
-    override int getSellPrice() { return 100; }
+    override int getBuyPrice() { return 250; }
+    override int getSellPrice() { return 150; }
     
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);

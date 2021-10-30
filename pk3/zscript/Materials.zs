@@ -188,7 +188,9 @@ class PODroppable : Inventory {
     }
 
     override void Tick() {
-        
+
+        //Stop decay if this is picked up
+        if (self.owner) { decaying = false; super.Tick(); return; }
         if (maxAge == 0) { maxAge = random(350, 450); }
         age++;
         if (!decaying && (age > maxAge-100)) {
@@ -201,9 +203,58 @@ class PODroppable : Inventory {
         super.Tick();
     }
 
-    action void applySprite() {self.sprite = GetSpriteIndex(invoker.mySprite); }
+    action void applySprite() { self.sprite = GetSpriteIndex(invoker.mySprite); }
+    
+    string GetSprite() {
+        return mySprite;
+    }
 
 }
+
+// Materials are a subclass of Droppable which don't expire once in inventory
+class PoMaterial : PoDroppable {
+  default {
+    Inventory.MaxAmount 999999;
+    Inventory.Amount 1;
+    Inventory.PickupSound "po/pickup/general";
+  }
+}
+
+// Materials
+
+class POHorn : POMaterial
+{
+    default {
+        PODroppable.SpriteName "M001";
+        Inventory.PickupMessage "Demonic Horn";
+    }
+}
+
+class POJam : POMaterial
+{
+    default {
+        PODroppable.SpriteName "M007";
+        Inventory.PickupMessage "Zombie Jam";
+    }
+}
+
+class POLeather : POMaterial
+{
+    default {
+        PODroppable.SpriteName "M008";
+        Inventory.PickupMessage "Tough Leather";
+    }
+}
+
+class PODarkHeart : POMaterial
+{
+    default {
+        PODroppable.SpriteName "M009";
+        Inventory.PickupMessage "Dark Heart";
+    }
+}
+
+// Coins
 
 class POCoin1 : PODroppable
 {
@@ -250,20 +301,22 @@ class POCoin10 : POCoin1
     }
 }
 
-class POCoin50 : POCoin1
+class POCoin20 : POCoin1
 {
     default {
-        Inventory.Amount 50;
+        Inventory.Amount 20;
         Inventory.PickupSound "po/pickup/cash";
         PODroppable.SpriteName "M006";
         Inventory.PickupMessage "Coins";
     }
     
     override void AttachToOwner(Actor owner) {
-        owner.GiveInventory("POCoin", 50);
+        owner.GiveInventory("POCoin", 20);
         self.Destroy();
     }
 }
+
+// Health
 
 class POHeal1 : PODroppable
 {
@@ -295,18 +348,6 @@ class POHeal5 : PODroppable
     }
 }
 
-
-
-class POHorn : PODroppable
-{
-    default {
-        Inventory.Amount 1;
-        Inventory.PickupSound "po/cash";
-        PODroppable.SpriteName "M001";
-        Inventory.PickupMessage "Demonic Horn";
-    }
-}
-
 class POSpeck : Actor
 {
     
@@ -327,17 +368,5 @@ class POSpeck : Actor
             self.Destroy();
         }
         super.Tick();
-    }
-}
-
-class DecorativeWeapon : FloatingSkull
-{
-    Default {
-        Radius 8;
-        Height 16;
-    }
-    States {
-        Spawn:
-            RWEP A -1 NoDelay { frame = random(0, 15);}
     }
 }

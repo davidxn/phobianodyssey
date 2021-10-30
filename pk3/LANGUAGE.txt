@@ -93,7 +93,7 @@ CONV_FIRST_ARMORY_VISIT_10 = "[F:FCWEAP8] Your lot came down and installed some 
 CONV_FIRST_ARMORY_VISIT_11 = "[F:FCWEAP2] [R:Go_on...] I'll tell you what - I'll make you a deal. It'll help us both - my business and your survival.";
 CONV_FIRST_ARMORY_VISIT_12 = "[F:FCWEAP4] Here's the thing - we were helping Elan at the item shop dig into the cliff to make a storage space and we hit some sort of maintenance tunnel. He just uses it to keep the health drinks cold, but I think it's got to connect up with that base somehow.";
 CONV_FIRST_ARMORY_VISIT_13 = "[F:FCWEAP4] Ask him to open it up for you, and bring back anything you can find about weapons they were building down there.";
-CONV_FIRST_ARMORY_VISIT_14 = "[F:FCWEAP3] I'm a swords and pikes kind of guy, but you're going to need more than that to get past the meaner demons... if you can find something that would help make guns like that pistol of yours, I might be able to cook something up with some more punch for you.";
+CONV_FIRST_ARMORY_VISIT_14 = "[F:FCWEAP3] I'm a swords and pikes kind of guy, but you're going to need more than that to get past the meaner demons... if you can find something that would help make new guns like that pistol of yours, I might be able to cook something up with some more punch for you.";
 CONV_FIRST_ARMORY_VISIT_15 = "[F:FCWEAP3] [R:All_right!] Sound good? I'll see you back here soon...";
 
 CONV_ARMORY_NOTHING_CARRIED_1 = "[F:FCWEAP3] The moment you find anything down there, bring it up and I'll see what I can do with it.";
@@ -158,7 +158,14 @@ CONV_ARMORY_GOTBOOK_MFIBookSpeed_5 = "[F:FCWEAP4] Can I borrow that pistol for a
 CONV_ARMORY_GOTBOOK_MFIBookSpeed_6 = "[F:FCWEAP6] So the barrel lock catch ratchets along the flintcollar and the bassoon pin comes into contact with the sprout-flap here, which means...";
 CONV_ARMORY_GOTBOOK_MFIBookSpeed_7 = "[F:FCWEAP3] There! Try that out.";
 CONV_ARMORY_GOTBOOK_MFIBookSpeed_8 = "[F:FCWEAP3] It should fire a bit faster now... that should help you with the demons, but make sure to watch your ammo.";
-CONV_ARMORY_GOTBOOK_MFIBookSpeed_9 = "[F:FCWEAP3] And let me know if you find anything that could help make new weapons down there!";
+CONV_ARMORY_GOTBOOK_MFIBookSpeed_9 = "[F:FCWEAP3] Let me know once you reach the base...";
+
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_1 = "[F:FCWEAP4] You're back! I was starting to wonder if you'd make it.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_2 = "[F:FCWEAP2] Wow. Now that's a weapon...";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[F:FCWEAP4] Yes. I can make this. Oh, this is going to be good...";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[S:GotCavesKey] [F:FCWEAP4] So you did it - here's the key to get deeper into the caves.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_4 = "[F:FCWEAP6] Oh, and uh - sorry, but I'm gonna have to start charging you. These materials don't come cheap! I'll do mate's rates as a thank you, but no more freebies.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_5 = "[F:FCWEAP4] Take a look and pick the parts you want.";
 
 ///////////////////////////
 
