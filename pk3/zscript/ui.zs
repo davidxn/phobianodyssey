@@ -310,13 +310,15 @@ class FriendlyUIHandler : EventHandler
         double y = startY + 0.045;
         double x = startX + 0.09;
         for (int i = 0; i < requirements.Size(); i++) {
+            console.printf(requirements[i]);
             Array<String> requirementsData; requirements[i].Split(requirementsData, ",");
             int quantity = requirementsData[1].toInt();
             TextureID icon = TexMan.CheckForTexture(requirementsData[2], TexMan.Type_Sprite);
             ScreenDrawTextureWithinArea(icon, x, y, MATERIAL_ICON_WIDTH, MATERIAL_ICON_HEIGHT);
-            int itemColor = Font.CR_WHITE;
-            if (!requirementsData[3]) {
-                itemColor = Font.CR_DARKGRAY;
+            
+            int itemColor = Font.CR_DARKGRAY;
+            if (requirementsData[3] == "1") {
+                itemColor = Font.CR_WHITE;
             }
             ScreenDrawString("x" .. quantity, itemColor, tinyFont, x + 0.03, y);
             x += 0.07;
