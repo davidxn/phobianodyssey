@@ -6,6 +6,7 @@ class MFInventoryItem : Thinker abstract {
     virtual clearscope int getSellPrice() { return 0; }
     virtual clearscope bool isAvailable() { return true; }
     virtual clearscope String getRequirements() { return ""; }
+    virtual clearscope bool instantUse() { return false; }
 
     virtual virtualscope bool use() { return true; }
 
@@ -27,6 +28,20 @@ class MFIEmpty : MFInventoryItem {
     override String myTexture() { return ""; }
     override String myName() { return ""; }
     override bool isAvailable() { return false; }
+}
+
+class MFIPouch : MFInventoryItem {
+    override String myTexture() { return "APCHB0"; }
+    override String myName() { return "extra inventory pouch"; }
+    override int getBuyPrice() { return 0; }
+    override int getSellPrice() { return 0; }
+    override String getRequirements() { return ""; }
+    override bool instantUse() { return true; }
+    
+    override bool use() {
+        DataLibrary.InventoryExpand(1);
+        return true;
+    }
 }
 
 class MFIMegasphere : MFInventoryItem {

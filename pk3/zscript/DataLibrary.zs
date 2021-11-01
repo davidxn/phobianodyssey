@@ -143,7 +143,6 @@ class DataLibrary : Thinker
         let thing = MFInventoryItem(new(classname)).Init();
         if (slot >= 0 && slot < DataLibrary.inst().inventorySize) {
             DataLibrary.inst().MFinventory[slot] = thing;
-            //console.printf("DEBUG: Added %s to inventory at position %d", classname, slot);
             return true;
         }
         
@@ -151,7 +150,6 @@ class DataLibrary : Thinker
         for (int i = 0; i < DataLibrary.inst().inventorySize; i++) {
             if (DataLibrary.inst().MFinventory[i].getClassName() == "MFIEmpty") {
                 DataLibrary.inst().MFinventory[i] = thing;
-                //console.printf("DEBUG: Added %s to inventory at position %d", classname, i);
                 return true;
             }
         }
@@ -192,12 +190,10 @@ class DataLibrary : Thinker
     }
     
     static void InventoryExpand(int slots) {
-        if (slots < DataLibrary.GetInstance().MFinventory.Size()) {
-            return;
-        }
-        while (DataLibrary.GetInstance().MFinventory.Size() < slots) {
+        for (int i = 0; i < slots; i++) {
             MFInventoryItem newItem = MFInventoryItem(new("MFIEmpty")).Init();
             DataLibrary.GetInstance().MFinventory.Push(newItem);
+            DataLibrary.GetInstance().inventorySize++;
         }
     }
     
@@ -267,14 +263,12 @@ class DataLibrary : Thinker
         String popId = DataLibrary.ReadSquareData(key);
 
         //Ask the monsterpop dictionary which parties correspond to this population ID
-        //console.printf("DEBUG: Key %s has monster population ID %s", key, popId);
         return ChooseMonsterPartyFromPopulationID(popId);
     }
     
     static String ChooseMonsterPartyFromPopulationID(String popId) {
         //Get the parties that correspond to this monster population
         String monsterPartyString = DataLibrary.inst().monsterPops.At(popId);
-        //console.printf("DEBUG: Monster parties: %s", monsterPartyString);
         //Now split the string and return a name
         Array<String> monsterParties; monsterPartyString.Split(monsterParties, ",");
         if (monsterParties.Size() == 0) {
@@ -285,7 +279,6 @@ class DataLibrary : Thinker
         }
         
         String chosenParty = monsterParties[random(0, monsterParties.Size()-1)];
-        //console.printf("DEBUG: Chosen party is: %s", chosenParty);
         DataLibrary.inst().WriteData(null, "NextMonsterParty", chosenParty);
         String chosenPartyName = DataLibrary.inst().ReadMonsterParty(chosenParty, "Name");
         chosenPartyName.Replace("_", " ");

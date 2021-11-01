@@ -18,6 +18,9 @@ class FriendlyUIHandler : EventHandler
 	ui transient Font journalFont;
 
 	ui TextureID invBGFrame;
+    ui TextureID invBGFrame2;
+    ui TextureID invBGFrame3;
+    ui TextureID invBGFrame4;
     ui TextureID invBGClosedFrame;
 	ui TextureID invItemBG;
 	ui TextureID invHilight;
@@ -63,6 +66,7 @@ class FriendlyUIHandler : EventHandler
 	const INV_STACK_BUTTON_WIDTH = 0.08;
 	const INV_STACK_BUTTON_HEIGHT = 0.1;
 	const INV_STACK_BUTTON_MARGIN = 0.01;
+    const INV_STACK_BUTTON_MARGIN_INV = 0.02;
 	const INV_STACK_BUTTON_MARGIN_INNERPCT = 0.25;
 	const INV_STACK_BUTTON_ROWS = 4;
 	const INV_STACK_BUTTON_COLUMNS = 4;
@@ -111,6 +115,9 @@ class FriendlyUIHandler : EventHandler
 		InitFonts();
 
 		invBGFrame = TexMan.CheckForTexture("invbg", 0);
+        invBGFrame2 = TexMan.CheckForTexture("invbg2", 0);
+        invBGFrame3 = TexMan.CheckForTexture("invbg3", 0);
+        invBGFrame4 = TexMan.CheckForTexture("invbg4", 0);
         invBGClosedFrame = TexMan.CheckForTexture("invbgcl", 0);
 		invItemBG = TexMan.CheckForTexture("invitmbg", 0);
         itemShopBG = TexMan.CheckForTexture("shopbg", 0);
@@ -310,7 +317,6 @@ class FriendlyUIHandler : EventHandler
         double y = startY + 0.045;
         double x = startX + 0.09;
         for (int i = 0; i < requirements.Size(); i++) {
-            console.printf(requirements[i]);
             Array<String> requirementsData; requirements[i].Split(requirementsData, ",");
             int quantity = requirementsData[1].toInt();
             TextureID icon = TexMan.CheckForTexture(requirementsData[2], TexMan.Type_Sprite);
@@ -327,8 +333,19 @@ class FriendlyUIHandler : EventHandler
 
 	ui void DrawInvScreen()
 	{
-        //TODO Alter this for expanding inventory
-		ScreenDrawTexture(invBGFrame, 0, 0, alpha: 0.9);
+        if (DataLibrary.GetInstance().inventorySize <= 4) {
+            ScreenDrawTexture(invBGFrame, 0, 0, alpha: 0.9);
+        }
+        else if (DataLibrary.GetInstance().inventorySize <= 8) {
+            ScreenDrawTexture(invBGFrame2, 0, 0, alpha: 0.9);
+        }
+        else if (DataLibrary.GetInstance().inventorySize <= 12) {
+            ScreenDrawTexture(invBGFrame3, 0, 0, alpha: 0.9);
+        }
+        else {
+            ScreenDrawTexture(invBGFrame4, 0, 0, alpha: 0.9);
+        }
+		
 
         // draw stack buttons
 		double x = INV_STACK_BUTTON_START_X;
@@ -369,7 +386,7 @@ class FriendlyUIHandler : EventHandler
 				stackNum++;
 			}
 			x = INV_STACK_BUTTON_START_X;
-			y += INV_STACK_BUTTON_HEIGHT + INV_STACK_BUTTON_MARGIN;
+			y -= INV_STACK_BUTTON_HEIGHT + INV_STACK_BUTTON_MARGIN_INV;
 		}
 
 		hoveringDropButton = mv.x >= INV_DROP_BUTTON_X && mv.x <= INV_DROP_BUTTON_X + INV_DROP_BUTTON_WIDTH && mv.y >= INV_DROP_BUTTON_Y && mv.y <= INV_DROP_BUTTON_Y + INV_DROP_BUTTON_HEIGHT;
@@ -430,7 +447,7 @@ class FriendlyUIHandler : EventHandler
             //If we don't have a grabbed item, see if we're clicking an empty stack - if not, grab this one
 			if (!newGrabbedItem) {
                 if (invItem.getClassName() != "MFIEmpty") {
-                    //console.printf("DEBUG: Grabbed item %s from %d without replacing", invItem.getClassName(), stackIndex);
+                    //console.printf("\ckDEBUG: Grabbed item %s from %d without replacing", invItem.getClassName(), stackIndex);
                     newGrabbedItem = invItem;
                     DataLibrary.GetInstance().InventoryRemove(stackIndex);
                     p.A_PlaySound("po/inventory/up", CHAN_VOICE);
@@ -501,7 +518,7 @@ class FriendlyUIHandler : EventHandler
         }
         else if (e.Name == "DroppedItemToShop") {
             if (!newGrabbedItem) {
-                console.printf("ERROR: Requested to drop an item to shop, but no item found!");
+                console.printf("\caERROR: Requested to drop an item to shop, but no item found!");
             }
             else if (grabbedItemIsFromShop) {
                 //Put it back
@@ -713,7 +730,7 @@ class FriendlyUIHandler : EventHandler
         //Check to see whether we should swallow the use key for any other reason (used when player is moving)
         if (e.Type == InputEvent.Type_KeyDown && (e.KeyScan == useBind1 || e.KeyScan == useBind2)) {
             if (DataLibrary.ReadInt("BlockUseKey")) {
-                console.printf("DEBUG: Blocked use key");
+                console.printf("\ckDEBUG: Blocked use key");
                 return true;
             }
         }
@@ -831,7 +848,6 @@ class FriendlyUIHandler : EventHandler
                 //This means we don't have to provide a destination if it doesn't matter (e.g. single response)
                 while (parsedDialogOptions.Size() > parsedDialogDestinations.size()) {
                     parsedDialogDestinations.push(0);
-                    console.printf("Padded dialogue destinations");
                 }
             }
             

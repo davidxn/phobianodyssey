@@ -33,7 +33,7 @@ class POChest : FloatingSkull
     {
         if (user && !hasBeenOpened)
         {
-            if (self.containedItem && DataLibrary.GetInstance().InventoryIsFull()) {
+            if (self.containedItem && !self.containedItem.instantUse() && DataLibrary.GetInstance().InventoryIsFull()) {
                 DataLibrary.SetChestToOpen(self);
                 DataLibrary.StartConversation("CANNOT_TAKE_CHEST");
                 return false;
@@ -43,7 +43,11 @@ class POChest : FloatingSkull
             DataLibrary.SetChestToOpen(self);
             DataLibrary.StartConversation("OPEN_CHEST");
             if (self.containedItem) {
-                DataLibrary.InventoryAdd(self.containedItem.getClassName(), -1);
+                if (!self.containedItem.instantUse()) {
+                    DataLibrary.InventoryAdd(self.containedItem.getClassName(), -1);
+                } else {
+                    self.containedItem.use();
+                }
             }
             if (self.containedAmmo) {
                 switch (self.containedAmmoType) {

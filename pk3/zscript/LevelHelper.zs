@@ -38,7 +38,6 @@ class LevelHelper : Thinker
             if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
                 int squareNum = spot.args[1];
                 double myangle = spot.angle * 182; //This converts from degrees to fixed-point angle
-                //console.printf("DEBUG: Translated angle is %f", myangle);
                 DataLibrary.inst().WriteData(null, "FieldSquare", squareNum .. "");
                 DataLibrary.inst().WriteData(null, "FieldAngle",  myangle .. "");
                 return spot.args[0]; //This is the mapnum for the exit's target
@@ -52,9 +51,7 @@ class LevelHelper : Thinker
         EventSpot spot; ThinkerIterator it = ThinkerIterator.Create("EventSpot");
         while (spot = EventSpot(it.Next() ) ) {
             if (spot.pos.x == activator.pos.x && spot.pos.y == activator.pos.y) {
-                //console.printf("DEBUG: Hit event number " .. spot.args[0]);
                 int blocked = DataLibrary.inst().ReadInt("blockEvent" .. spot.args[0]);
-                //console.printf("DEBUG: Blocked? %d", blocked);
                 if (!blocked) {
                     return "runEvent" .. spot.args[0];
                 }
@@ -87,13 +84,13 @@ class LevelHelper : Thinker
             testZFloor = activator.GetZAt(testX, testY, 0, GZF_ABSOLUTEPOS);
             testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
             //Is this point inside the level?
-            if(!level.IsPointInLevel((testX, testY, testZFloor))) { console.printf("MOVEDEBUG: Point not in level, rejecting"); return false; }
+            if(!level.IsPointInLevel((testX, testY, testZFloor))) { console.printf("\ckMOVEDEBUG: Point not in level, rejecting"); return false; }
             //Is this point in a place the player could fit?
-            if(testZCeiling - testZFloor < 56) { console.printf("MOVEDEBUG: Point too small for player, rejecting"); return false; }
+            if(testZCeiling - testZFloor < 56) { console.printf("\ckMOVEDEBUG: Point too small for player, rejecting"); return false; }
             
             //Is this point greater than a 16-unit jump up from the last point we checked AND greater than a 16-unit jump from the initial floor?
             if(currentZ-testZFloor < -16 && initialZ-testZFloor < -16) {
-                console.printf("MOVEDEBUG: Journey has more than 16-unit step up"); return false;
+                console.printf("\ckMOVEDEBUG: Journey has more than 16-unit step up"); return false;
             }
             //If it's a drop, allow 3 in a row before we reject - allows little cracks in ground
             else if (initialZ-testZFloor >= 32) {
@@ -101,7 +98,7 @@ class LevelHelper : Thinker
                     //Doesn't count as a drop
                 } else {
                     if (dropStepsAllowed > 2) {
-                        console.printf("MOVEDEBUG: Journey has more than 16-unit step down 3 steps in row"); return false;
+                        console.printf("\ckMOVEDEBUG: Journey has more than 16-unit step down 3 steps in row"); return false;
                     }
                     dropStepsAllowed++;
                 }
@@ -112,7 +109,7 @@ class LevelHelper : Thinker
             if (i == 1.0) {
                 MapSpot x = MapSpot(Actor.Spawn("MapSpot", (testX, testY, testZFloor + 40)));
                 console.printf("%d %d %d", x.pos.x, x.pos.y, x.pos.z);
-                if (!activator.CheckSight(x, SF_IGNOREVISIBILITY)) { console.printf("MOVEDEBUG: Mapspot sight check returned false, rejecting"); return false; }
+                if (!activator.CheckSight(x, SF_IGNOREVISIBILITY)) { console.printf("\ckMOVEDEBUG: Mapspot sight check returned false, rejecting"); return false; }
                 x.Destroy();
             }
         }

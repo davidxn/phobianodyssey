@@ -42,6 +42,10 @@ script "powish" (int type) {
     ScriptCall("DataLibrary", "InventoryAdd", typestring, -1);
 }
 
+script "popockets" (int number) {
+    ScriptCall("DataLibrary", "InventoryExpand", number);
+}
+
 script "powonga" (int amount) {
     GiveInventory("POCoin", amount);
 }
