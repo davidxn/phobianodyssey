@@ -19,9 +19,12 @@ DarklingAndHeadless,Scout_Group,NONE,NONE,Darkling,NONE,NONE,HazmatZombie,NONE,N
 ImpSiblings,Wretched_Siblings,ZombieFodder,DoomImp,ZombieFodder,DoomImp,NONE,NONE,DoomImp,QuakeFodder,NONE,NONE
 TwoDarklings,Double_Darklings,NONE,NONE,Darkling,NONE,Darkling,NONE,QuakeFodder,NONE,QuakeFodder,NONE
 DarklingsAndImps,Darkling_Creepers,NONE,NONE,Darkling,DoomImp,Darkling,NONE,Darkling,DoomImp,NONE,NONE
+DarkImpFodder,Darkling_Invaders,Darkling,Darkling,ZombieFodder2,ZombieFodder,DoomImp,DoomImp,NONE,NONE,NONE,NONE
 ZombieDet,Zombie_Scouts,NONE,ZombieMan,ZombieMan,ShotgunGuy,NONE,ZombieMan,ZombieMan,NONE,NONE,NONE
 ZombieSquad,Zombie_Squadron,ZombieMan,NONE,NONE,ShotgunGuy,NONE,ZombieMan,ZombieMan,ZombieMan,NONE,ShotgunGuy
 Shotgunners,Shotgun_Crew,NONE,NONE,NONE,NONE,NONE,ShotgunGuy,ShotgunGuy,ShotgunGuy,ShotgunGuy,NONE
+ShotgunAndSci,Scout_Crew,NONE,ZombieScientistHeadless,NONE,HazmatZombie,ZombieScientistHeadless,ShotgunGuy,NONE,HazmatZombie,NONE,NONE
+ShotgunAndSci2,Shotguns_and_Science,NONE,NONE,NONE,NONE,NONE,NONE,ShotgunGuy,ZombieScientistHeadless,ShotgunGuy,ZombieScientistHeadless
 DarkMixture,Dark_Smorgasbord,ZombieFodder,Darkling,ZombieFodder2,NONE,ZombieScientistHeadless,NONE,DoomImp,QuakeFodder,Darkling,ShotgunGuy
 ZombieTeams,Zombies_Vs_Zombies,ZombieMan,ZombieScientistHeadless,HazmatZombie,ZombieMan,NONE,ZombieFodder2,ZombieFodder2,ZombieFodder,QuakeFodder,QuakeFodder
 DarklingTrio,Darkling_Trio,NONE,Darkling,NONE,NONE,Darkling,NONE,NONE,Darkling,NONE,NONE

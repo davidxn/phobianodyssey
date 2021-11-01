@@ -119,7 +119,7 @@ script "enter" ENTER {
     } else if (mapType == 2) {
         ACS_NamedExecute("setupArena", 0);
     } else {
-        Log(s:"ERROR: No map type");
+        Log(s:"\caERROR: No map type");
     }
 }
 

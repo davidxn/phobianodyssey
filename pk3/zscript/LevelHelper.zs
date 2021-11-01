@@ -108,7 +108,7 @@ class LevelHelper : Thinker
             //One more check if we've hit one square away - check line of sight to the new position
             if (i == 1.0) {
                 MapSpot x = MapSpot(Actor.Spawn("MapSpot", (testX, testY, testZFloor + 40)));
-                console.printf("%d %d %d", x.pos.x, x.pos.y, x.pos.z);
+                //console.printf("\ckMOVEDEBUG: %d %d %d", x.pos.x, x.pos.y, x.pos.z);
                 if (!activator.CheckSight(x, SF_IGNOREVISIBILITY)) { console.printf("\ckMOVEDEBUG: Mapspot sight check returned false, rejecting"); return false; }
                 x.Destroy();
             }
@@ -182,7 +182,7 @@ class LevelHelper : Thinker
                 if (weapon) {
                     weapon.changeWeaponType(s.myType(), s.myElement(), s.myPower());
                 } else {
-                    console.printf("Failed to add weapon %s", "POWeapon" .. i+1);
+                    console.printf("\caERROR: Failed to add weapon %s", "POWeapon" .. i+1);
                 }
                 
             }

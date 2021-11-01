@@ -730,7 +730,7 @@ class FriendlyUIHandler : EventHandler
         //Check to see whether we should swallow the use key for any other reason (used when player is moving)
         if (e.Type == InputEvent.Type_KeyDown && (e.KeyScan == useBind1 || e.KeyScan == useBind2)) {
             if (DataLibrary.ReadInt("BlockUseKey")) {
-                console.printf("\ckDEBUG: Blocked use key");
+                //console.printf("\ckDEBUG: Blocked use key");
                 return true;
             }
         }
@@ -783,8 +783,6 @@ class FriendlyUIHandler : EventHandler
                 y -= playerY * MAP_SQUARE_DISTANCE_Y;
                 
                 ScreenDrawTexture(mapCounter, x, y, centerX:true, centerY:true);
-                //p.pos.x, p.pos.y;
-                //console.printf("%d", squarenum);
             }
             return;
         }

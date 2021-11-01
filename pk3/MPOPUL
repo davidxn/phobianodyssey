@@ -14,9 +14,9 @@
 14=Fodder3,DarklingAndFodder,HazmatSquadEasy,Fodder3,DarklingAndFodder,HazmatSquadEasy,TwoDarklings
 15=TwoDarklings,TwoDarklings,DarklingAndFodder,DarklingAndImps
 16=DarklingsAndImps,ZombieDet,DarklingAndImps,DarklingAndHeadless,DarkMixture
-17=ZombieDet,ZombieSquad,Shotgunners
-18=DarkMixture,ZombieTeams
-19=DarklingAndImps,DarklingTrio,DarklingAndFodder
+17=ZombieDet,ZombieSquad,Shotgunners,ShotgunAndSci,ShotgunAndSci2
+18=DarkMixture,ZombieTeams,ShotgunAndSci2
+19=DarklingAndImps,DarklingTrio,DarklingAndFodder,DarkImpFodder
 1001=FOEBarons
 1002=ImpParty
 1003=Boss1

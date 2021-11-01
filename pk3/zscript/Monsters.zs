@@ -34,7 +34,7 @@ class POMonster : Actor
     void doDrop(String classname) {
         let spawnedActor = Actor.Spawn(classname, (pos.x, pos.y, pos.z + (height/2)));
         if (!spawnedActor) {
-            console.printf("No spawned actor found for dropped item");
+            console.printf("\caERROR: No spawned actor found for dropped item " .. classname);
             return;
         }
         spawnedActor.vel.X = frandom(-3, 3);

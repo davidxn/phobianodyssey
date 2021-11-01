@@ -228,7 +228,8 @@ class DataLibrary : Thinker
         type = "PoWeaponSlot" .. type;
         POWeaponSlot s = POWeaponSlot(new(type)).Init();
         if (!s) {
-            console.printf("Bad weapon type: %s", type);
+            console.printf("\caERROR: Bad weapon type: %s", type);
+            return;
         }
         s.weaponElement = (element != "") ? element : "None";
         s.weaponPower = (power != "") ? power : "None";
@@ -272,7 +273,7 @@ class DataLibrary : Thinker
         //Now split the string and return a name
         Array<String> monsterParties; monsterPartyString.Split(monsterParties, ",");
         if (monsterParties.Size() == 0) {
-            console.printf("WARNING: No monster parties set for population %s", popId);
+            console.printf("\caWARNING: No monster parties set for population %s", popId);
             DataLibrary.inst().WriteData(null, "NextMonsterParty", "ZombieWeak");
             DataLibrary.inst().WriteData(null, "NextMonsterPartyName", "Nobody really");
             return "ZombieWeak";
@@ -332,7 +333,7 @@ class DataLibrary : Thinker
         
         DictionaryIterator d = DictionaryIterator.Create(theDictionary);
 
-        console.printf("\ckDictionary Contents");
+        console.printf("\caDictionary Contents");
         while (d.Next()) {    
             console.printf("\ck%-30s \cl%s", d.Key(), d.Value());
         }
