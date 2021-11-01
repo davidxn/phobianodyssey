@@ -60,12 +60,9 @@ class POMonster : Actor
     
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
         poDropItemWithProbability("PoCoin1", 100);
-        poDropItemWithProbability("PoCoin1", 100);
-        poDropItemWithProbability("PoCoin1", 100);
-        poDropItemWithProbability("PoCoin1", 80);
+        poDropItemWithProbability("PoCoin1", 90);
         poDropItemWithProbability("PoCoin1", 60);
-        poDropItemWithProbability("PoCoin1", 40);
-        poDropItemWithProbability("PoCoin1", 20);
+        poDropItemWithProbability("PoCoin1", 30);
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
     
@@ -74,6 +71,7 @@ class POMonster : Actor
 class POZombieMan : POMonster replaces ZombieMan
 {
     Default {
+        Tag "Zombieman";
 		SeeSound "grunt/sight";
 		AttackSound "grunt/attack";
 		PainSound "grunt/pain";
@@ -145,6 +143,7 @@ class POZombieMan : POMonster replaces ZombieMan
 class POSergeant : POMonster replaces ShotgunGuy
 {
     Default {
+        Tag "Sergeant";
 		Health 30;
 		Radius 20;
 		Height 56;
@@ -226,6 +225,7 @@ Class HazmatZombie : POMonster
 {
   Default
   {
+    Tag "Hazmat Zombie";
     obituary "%o was electrocuted by a zombie scientist.";
     health 20;
     mass 90;
@@ -309,6 +309,7 @@ Class HazmatZombie : POMonster
 class PoImp : POMonster REPLACES DoomImp
 {
     Default {
+        Tag "Imp";
         DamageFunction 10;
 		Health 60;
 		Radius 20;
@@ -382,6 +383,7 @@ class PoImp : POMonster REPLACES DoomImp
 class PoBlueImp : PoImp
 {
     Default {
+        Tag "Blue Imp";
         Translation "64:79=192:199";
         DamageFunction 11;
         Health 70;
@@ -406,6 +408,91 @@ class PoBlueImp : PoImp
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 }
+
+class Devil : POImp
+{
+    Default {
+      //$Category Monsters
+      Tag "Devil";
+      obituary "%o was fried by a Devil.";
+      hitobituary "%o was flayed by a Devil.";
+      health 120;
+      radius 20;
+      height 56;
+      mass 120;
+      speed 10;
+      painchance 100;
+      seesound "monster/dvlsit";
+      painsound "monster/dvlpai";
+      deathsound "monster/dvldth";
+      activesound "monster/dvlact";
+      MONSTER;
+      +FLOORCLIP;
+    }
+    states
+    {
+    Spawn:
+      TRO2 AB 10 A_Look;
+      loop;
+    See:
+      TRO2 AABBCCDD 3 A_Chase;
+      loop;
+    Melee:
+    Missile:
+      TRO2 EF 6 A_FaceTarget;
+      TRO2 G 4 A_TroopAttack;
+      TRO2 B 2;
+      TRO2 VW 6 A_FaceTarget;
+      TRO2 X 4 A_TroopAttack;
+      TRO2 E 0 A_Jump(200,9);
+      TRO2 D 2;
+      TRO2 EF 6 A_FaceTarget;
+      TRO2 G 4 A_TroopAttack;
+      TRO2 B 2;
+      TRO2 VW 6 A_FaceTarget;
+      TRO2 X 4 A_TroopAttack;
+      TRO2 B 0;
+      goto See;
+    Pain:
+      TRO2 H 2;
+      TRO2 H 2 A_Pain;
+      goto See;
+    Death:
+      TRO2 I 8;
+      TRO2 J 8 A_Scream;
+      TRO2 K 6;
+      TRO2 L 6 A_NoBlocking;
+      TRO2 M -1;
+      stop;
+    XDeath:
+      TRO2 N 5;
+      TRO2 O 5 A_XScream;
+      TRO2 P 5;
+      TRO2 Q 5 A_NoBlocking;
+      TRO2 RST 5;
+      TRO2 U -1;
+      stop;
+    Raise:
+      TRO2 ML 8;
+      TRO2 KJI 6;
+      goto See;
+    }
+    
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        poDropItemWithProbability("PoHorn", 50);
+        poDropItemWithProbability("PoMagmaWad", 30);
+        
+        poDropItemWithProbability("PoCoin10", 80);
+        poDropItemWithProbability("PoCoin5", 50);
+        poDropItemWithProbability("PoCoin1", 50);
+        poDropItemWithProbability("PoCoin20", 30);
+                
+        super.doBurst();       
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+}
+
+
 
 Class Darkling : POMonster
 {
@@ -537,3 +624,126 @@ Class Darkling : POMonster
     }
 }
 
+class ZombieScientistPlasma : POMonster
+{
+  default {
+      //$Category Monsters
+      Tag "Zombie Scientist Plasma";
+      obituary "%o was melted by a zombie scientist.";
+      health 50;
+      mass 100;
+      speed 16;
+      Radius 20;
+      Height 52;
+      painchance 150;
+      seesound "scientist/sight";
+      painsound "scientist/pain";
+      deathsound "scientist/death";
+      activesound "scientist/active";
+      +FLOORCLIP;
+      +AVOIDMELEE;
+      +MISSILEMORE;
+  }
+  States
+  {
+  Spawn:
+    SCZP AB 10 A_Look;
+    loop;
+  See:
+    SCZP AABBCCDD 3 A_Chase;
+    loop;
+  Missile:
+    SCZP E 6 A_FaceTarget;
+    SCZP E 1 A_PlaySound ("PlasmaHi/Fire");
+	SCZP F 5 A_SpawnProjectile ("ZombiePlasmaBall", 45, 3, (1)*Random(-3, 3), CMF_OFFSETPITCH, (0.1)*Random(-3, 3));
+	SCZP E 12;
+    goto See;
+  Pain:
+    SCZP G 3;
+    SCZP G 3 A_Pain;
+    goto See;
+  Death:
+    SCZP H 5 A_SpawnItemEx ("ZombiePlasmaDeathExplosion", 0.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, SXF_NOCHECKPOSITION, 0);
+    SCZP I 5 A_Scream;
+    SCZP J 5 A_NoBlocking;
+    SCZP K 5;
+    SCZP L 5;
+    SCZP M 5;
+    SCZP N -1;
+    stop;
+  XDeath:
+    SCZP O 5 A_SpawnItemEx ("ZombiePlasmaDeathExplosion", 0.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, SXF_NOCHECKPOSITION, 0);
+    SCZP P 5 A_XScream;
+    SCZP Q 5 A_NoBlocking;
+    SCZP RSTUV 5;
+    SCZP W -1;
+    stop;
+  Raise:
+    SCZP MLKJIH 5;
+    goto See;
+  }
+  
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {      
+        poDropItemWithProbability("PoHeal5", 50);
+        poDropItemWithProbability("PoCoin10", 80);
+        poDropItemWithProbability("PoCoin5", 50);
+        poDropItemWithProbability("PoCoin10", 20);
+        poDropItemWithProbability("PoCell2", 50);
+        
+        if (MeansOfDeath == "Melee") {
+            poDropItemWithProbability("PoCell2", 100);
+            poDropItemWithProbability("PoCell5", 50);
+        }
+        
+        super.doBurst();       
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+}
+
+class ZombiePlasmaBall : Actor
+{
+  default {
+      Height 8;
+      Radius 6;
+      Speed 15;
+      FastSpeed 25;
+      Projectile;
+      RenderStyle "Add";
+      DamageFunction (10 + random(1,5));
+      Scale 0.4;
+      DeathSound "weapons/plasmax";
+      Decal "PlasmaScorch";
+  }
+  States
+  {
+  Spawn:
+    ZPLS AB 2 BRIGHT;
+	loop;
+  Death:
+    PLSE ABCDE 4 Bright;
+	Stop;
+  }
+}
+
+
+//Why can we get his plasma gun?
+//Because it went up in a flash of plasma when he died, that's why. :P
+class ZombiePlasmaDeathExplosion : Actor
+{
+  default {
+      Radius 1;
+      Height 2;
+      +NOGRAVITY;
+      RenderStyle "Add";
+      Alpha 0.75;
+      Scale 0.5;
+  }
+  States
+  {
+  Spawn:
+    ZPLX A 0;
+    ZPLX A 4 A_PlaySound("weapons/plasmax");
+    ZPLX BCDE 4 Bright;
+    Stop;
+  }
+}

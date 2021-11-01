@@ -35,6 +35,7 @@ class DataLibrary : Thinker
         itemShopInventory.push(new("MFIHomingDevice").Init());
         itemShopInventory.push(new("MFIStimpack").Init());
         itemShopInventory.push(new("MFIAmmoBox").Init()); 
+        itemShopInventory.push(new("MFIShellBox").Init()); 
         itemShopInventory.push(new("MFISneakyBoots").Init()); 
         itemShopInventory.push(new("MFIRiskyBoots").Init()); 
         
@@ -44,6 +45,8 @@ class DataLibrary : Thinker
             POWeaponSlot w = POWeaponSlot(new("POWeaponSlotEmpty").Init());
             weaponSlots.push(w);
         }
+        
+        // ---
         
         int lumpindex = Wads.FindLump('MPARTY', 0, 0);
         String lumpdata = Wads.ReadLump(lumpindex);
@@ -336,6 +339,13 @@ class DataLibrary : Thinker
         console.printf("\caDictionary Contents");
         while (d.Next()) {    
             console.printf("\ck%-30s \cl%s", d.Key(), d.Value());
+        }
+    }
+    
+    static void decrementMovementPowers() {
+        int biosuitRemaining = DataLibrary.getInstance().ReadInt("PowerBiosuit");
+        if (bioSuitRemaining) {
+            DataLibrary.getInstance().WriteData(NULL, "PowerBiosuit", (bioSuitRemaining - 1) .. "");
         }
     }
     

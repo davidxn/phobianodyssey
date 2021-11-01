@@ -145,7 +145,8 @@ script "useHomingDevice" (void) {
 }
 
 script "rpgMovement" (void) {
-
+    clearFlag("PreventMovement");
+    setFlag(StrParam(s:"VisitedMap", d:LEVELINFO_LEVELNUM));
     delay(15);
     
     switch (GetLevelInfo(LEVELINFO_LEVELNUM)) {
@@ -254,8 +255,11 @@ script "rpgMovement" (void) {
             //Move turn-based things in the level forward a step here
             ScriptCall("LevelHelper", "AdvanceTurnBasedTraps");
             
+            //Decrement any specials
+            ScriptCall("DataLibrary", "DecrementMovementPowers");
+            
             //As a result of this move, are we on a damaging floor?
-            if (ScriptCall("LevelHelper", "IsOnDamagingFloor")) {
+            if (ScriptCall("LevelHelper", "IsOnDamagingFloor") && ScriptCall("DataLibrary", "ReadInt", "PowerBiosuit") == 0) {
                 PlaySound(0, "po/damage", CHAN_AUTO);
                 DamageActor(0, AAPTR_DEFAULT, 0, AAPTR_NULL, 5, "");
             }
@@ -319,6 +323,7 @@ script "rpgMovement" (void) {
 
 script "beginEncounter" (int forcedPopulation, int encounterType, int useSpecialArena) {
     ACS_NamedTerminate("rpgMovement", 0);
+    setFlag("DisableHomingDevice");
 	str monsterParty = "";
     
     //Load the next monster party data into data library
@@ -422,7 +427,11 @@ script "setupArena" (void) {
         delay(20);
     }
 
-
+    //Allow homing device if this is a standard encounter
+    if (encounterType == 0) {
+        clearFlag("DisableHomingDevice");
+    }
+    
 	//Spawn the monsters meant to go into each slot in this arena!
 	for (int i = 0; i < 10; i++) {
 		str monsterClass = ScriptCall("DataLibrary", "ReadMonsterParty", chosenMonsterParty, StrParam(d:i));

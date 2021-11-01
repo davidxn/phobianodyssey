@@ -5,9 +5,9 @@ strictpatches = 0;
 maps
 {
 	
-	MAP01
+	ARENA2
 	{
-		defaultwalltexture = "STARBR2";
+		defaultwalltexture = "OROCKQ03";
 		overridemiddletexture = false;
 		defaultceiltexture = "0ROCKR01";
 		overrideceiltexture = false;
@@ -17,8 +17,8 @@ maps
 		resources
 		{
 		}
-		viewpositiony = 1237.606f;
-		viewpositionx = 1490.178f;
+		viewpositiony = 1778.037f;
+		viewpositionx = 4191.051f;
 		
 		testprecommand
 		{
@@ -31,18 +31,18 @@ maps
 		
 		grid
 		{
-			backoffsetx = -320;
-			backsource = 2;
+			backoffsetx = 0;
+			backsource = 0;
 			gridoriginy = 0;
-			backscaley = 200;
+			backscaley = 100;
 			gridrotate = 0;
-			backscalex = 200;
+			backscalex = 100;
 			gridoriginx = 0;
-			gridsize = 8;
-			background = "E:\\DoomWork\\phobianodyssey\\rpggrid.png";
-			backoffsety = -320;
+			gridsize = 16;
+			background = "";
+			backoffsety = 0;
 		}
-		viewscale = 0.4269402f;
+		viewscale = 0.4075345f;
 		
 		reloadresourceprecommand
 		{
@@ -50,10 +50,10 @@ maps
 			exitcodeiserror = true;
 			stderriserror = true;
 		}
-		defaulttoptexture = "STARBR2";
+		defaulttoptexture = "OROCKQ03";
 		overridebottomtexture = false;
-		defaultbottomtexture = "STARBR2";
-		defaultfloortexture = "0SANDB02";
+		defaultbottomtexture = "OROCKQ03";
+		defaultfloortexture = "0ROCKR01";
 		overrideceilheight = false;
 		overridebrightness = false;
 		
@@ -78,36 +78,20 @@ maps
 		fieldtypes
 		{
 			
-			linedef
-			{
-				arg0str = 2;
-			}
-			
 			sidedef
 			{
 				offsetx_mid = 1;
 				offsety_mid = 1;
 				offsetx_top = 1;
-				offsety_top = 1;
 				offsetx_bottom = 1;
+				offsety_top = 1;
 				offsety_bottom = 1;
-				light = 0;
 			}
 			
 			sector
 			{
-				xpanningceiling = 1;
-				ypanningceiling = 1;
-				rotationceiling = 17;
-				xscaleceiling = 1;
-				yscaleceiling = 1;
 				xpanningfloor = 1;
 				ypanningfloor = 1;
-				rotationfloor = 17;
-				xscalefloor = 1;
-				yscalefloor = 1;
-				fadecolor = 0;
-				lightceiling = 0;
 			}
 		}
 	}

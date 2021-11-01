@@ -23,7 +23,12 @@ class POFist : Fist replaces Fist {
         Loop;
       Fire:
         PUNG B 2;
-        PUNG C 2 A_Punch;
+        TNT1 A 0 A_JumpIfInventory("PowerStrength", 1, "Berserked");
+        PUNG C 2 A_CustomPunch(random(5, 8), TRUE);
+        Goto PunchEnd;
+      Berserked:
+        PUNG C 3 A_CustomPunch(20 + random(5, 8), TRUE);
+      PunchEnd:
         PUNG D 5;
         PUNG C 5;
         PUNG B 4 A_ReFire;
@@ -109,7 +114,7 @@ class POWeapon : Weapon {
 		PISG B 0 firePistolBullets();
         PISG B 0 A_TakeInventory("POClip", 1);
         PISG B 0 A_JumpIf(invoker.myPower == "Speed", "SpeedyPistolOK");
-        PISG B 6 A_GunFlash;
+        PISG B 6 A_GunFlash("FlashPistol");
 		PISG C 4;
 		PISG B 5 A_ReFire;
 		Goto ReadyPistol;
@@ -130,16 +135,28 @@ class POWeapon : Weapon {
         SHTG A 1 A_Raise(12);
         Loop;
     FireShotgun:
+        SHTG A 0 A_JumpIfInventory("POShell", 1, "FireShotgunOK");
+        SHTG A 4 A_PlaySound("po/empty", CHAN_WEAPON);
+        SHTG A 0 A_Jump(255, "ReadyShotgun");
+    FireShotgunOK:
         SHTG A 1;
-        SHTG A 0 A_FireBullets (5.6, 0, 7, 15 + random(0,5), "BulletPuff", FBF_NORANDOM);
+        SHTG A 0 fireShotgunBullets();
         SHTG A 0 A_PlaySound ("weapons/shotgf", CHAN_WEAPON);
         SHTG A 0 A_TakeInventory("POShell", 1);
-        SHTG A 7 A_GunFlash;
+        SHTG A 7 A_GunFlash("FlashShotgun");
+        SHTG A 0 A_JumpIf(invoker.myPower == "Speed", "SpeedyShotgunOK");
         SHTG BC 5;
         SHTG D 4;
         SHTG CB 5;
         SHTG A 3;
         SHTG A 7 A_ReFire;
+        Goto ReadyShotgun;
+    SpeedyShotgunOK:
+        SHTG BC 3;
+        SHTG D 3;
+        SHTG CB 3;
+        SHTG A 2;
+        SHTG A 5 A_ReFire;
         Goto ReadyShotgun;
     FlashShotgun:
         SHTF A 4 Bright A_Light1;
@@ -154,13 +171,37 @@ class POWeapon : Weapon {
         CHGG A 1 A_Raise(12);
         Loop;
     FireChaingun:
-        CHGG AB 4 A_FireCGun;
+        CHGG A 0 A_JumpIfInventory("POClip", 1, "FireChaingunOK");
+        CHGG A 4 A_PlaySound("po/empty", CHAN_WEAPON);
+        CHGG A 0 A_Jump(255, "ReadyChaingun");
+    FireChaingunOK:
+        CHGG A 0 A_JumpIf(invoker.myPower == "Speed", "SpeedyChaingunOK");
+        CHGG A 0 A_PlaySound("weapons/chngun", CHAN_WEAPON);
+        CHGG A 0 A_GunFlash("FlashChaingun");
+        CHGG A 4 fireChaingunBullets();
+        CHGG A 0 A_TakeInventory("POClip", 1);
+        CHGG B 0 A_PlaySound("weapons/chngun", CHAN_WEAPON);
+        CHGG B 0 A_GunFlash("FlashChaingun2");
+        CHGG B 4 fireChaingunBullets();
+        CHGG B 0 A_TakeInventory("POClip", 1);
+        CHGG B 0 A_ReFire;
+        Goto ReadyChaingun;
+    SpeedyChaingunOK:
+        CHGG A 0 A_PlaySound("weapons/chngun", CHAN_WEAPON);
+        CHGG A 0 A_GunFlash("FlashChaingun");
+        CHGG A 3 fireChaingunBullets();
+        CHGG A 0 A_TakeInventory("POClip", 1);
+        CHGG B 0 A_PlaySound("weapons/chngun", CHAN_WEAPON);
+        CHGG B 0 A_GunFlash("FlashChaingun2");
+        CHGG B 3 A_FireBullets(5.6, 0, 1, 5, "BulletPuff");
+        CHGG B 0 A_TakeInventory("POClip", 1);
         CHGG B 0 A_ReFire;
         Goto ReadyChaingun;
     FlashChaingun:
-        CHGF A 5 Bright A_Light1;
+        CHGF A 2 Bright A_Light1;
         Goto LightDone;
-        CHGF B 5 Bright A_Light1;
+    FlashChaingun2:
+        CHGF B 2 Bright A_Light2;
         Goto LightDone;
 
     //Rocket launcher!
@@ -204,7 +245,24 @@ class POWeapon : Weapon {
         String puffClass = ("BulletPuff" .. invoker.myElement);
         int baseDamage = 8;
         if (invoker.myPower == "Power") { baseDamage += 10; }
+        if (invoker.myPower == "Speed") { baseDamage -= 2; }
         A_FireBullets(3.5, 0.5, 1, baseDamage + random(0,5), puffClass, FBF_NORANDOM);
+    }
+    
+    action void fireShotgunBullets() {
+        String puffClass = ("BulletPuff" .. invoker.myElement);
+        int baseDamage = 10;
+        if (invoker.myPower == "Power") { baseDamage += 7; }
+        if (invoker.myPower == "Speed") { baseDamage -= 2; }
+        A_FireBullets (5.6, 0, 7, baseDamage + random(0,5), puffClass, FBF_NORANDOM);
+    }
+    
+    action void fireChaingunBullets() {
+        String puffClass = ("BulletPuff" .. invoker.myElement);
+        int baseDamage = 8;
+        if (invoker.myPower == "Power") { baseDamage += 2; }
+        if (invoker.myPower == "Speed") { baseDamage -= 3; }
+        A_FireBullets (5.6, 0, 1, baseDamage + random(0,5), puffClass, FBF_NORANDOM);
     }
     
     void changeWeaponType(String type, String element, String power) {

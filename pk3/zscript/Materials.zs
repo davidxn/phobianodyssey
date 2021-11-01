@@ -38,6 +38,7 @@ class POAmmo : Ammo {
         A007 A 0;
         A008 A 0;
         A009 A 0;
+        A010 A 0;
       Spawn:
         TNT1 A 4 { applySprite(); }
         TNT1 B 4 { applySprite(); }
@@ -140,6 +141,29 @@ class POShell4 : POShell2
       Inventory.Amount 4;
       Inventory.PickupSound "po/ammo2";
       POAmmo.SpriteName "A004";
+  }
+}
+
+class POCell2 : POAmmo
+{
+    default {
+        Inventory.Amount 2;
+        Inventory.PickupSound "po/ammo1";
+        Inventory.PickupMessage "Cells";
+        POAmmo.SpriteName "A005";
+    }
+    
+    override Class<Ammo> GetParentAmmo () {
+        return (class<Ammo>) ("POCell");
+    }
+}
+
+class POCell5 : POCell2
+{
+  default {
+      Inventory.Amount 5;
+      Inventory.PickupSound "po/ammo2";
+      POAmmo.SpriteName "A006";
   }
 }
 
@@ -254,6 +278,14 @@ class PODarkHeart : POMaterial
     }
 }
 
+class POMagmaWad : POMaterial
+{
+    default {
+        PODroppable.SpriteName "M010";
+        Inventory.PickupMessage "Magma Wad";
+    }
+}
+
 // Coins
 
 class POCoin1 : PODroppable
@@ -353,6 +385,11 @@ class POSpeck : Actor
     
     int age;
     int maxAge;
+    
+    Default {
+      Height 2;
+      Radius 2;
+    }
     
     states {
       Spawn:

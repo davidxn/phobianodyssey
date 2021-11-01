@@ -64,17 +64,16 @@ CONV_FIRST_SHOP_VISIT_6 = "[F:FCSHOP4] Of course, we have to get customers to si
 CONV_FIRST_SHOP_VISIT_7 = "[F:FCSHOP3] But as long as I've already upsold them on the equipment insurance, I've done my job, right?";
 CONV_FIRST_SHOP_VISIT_8 = "[F:FCSHOP1] [R:...] Not sure how you got in there, but hey, you look like you made it out in one piece. Anyway, want to buy something?";
 
-CONV_SHOP_LOST_KEYS_1 = "Ah... I know they're in here somewhere...";
-CONV_SHOP_LOST_KEYS_2 = "Um, good morning - sorry, I know it's time to open but I can't remember which pocket I put my keys in...";
-CONV_SHOP_LOST_KEYS_3 = "Could you come back a bit later? Sorry... bye...";
+CONV_SHOP_LOST_KEYS_1 = "There's a note on the door...";
+CONV_SHOP_LOST_KEYS_2 = "'Sorry - left keys at home. Will be back soon'";
 
-CONV_MONSTER_HINT_HEADLESS_1 = "I love watching the fountain in the mornings. It's so calming.";
-CONV_MONSTER_HINT_HEADLESS_2 = "[R:(Sigh)_Yeah,_it's_nostalgic] Reminds me of the sight of demon blood squirting out of a freshly severed cartoid artery, you know?";
-CONV_MONSTER_HINT_HEADLESS_3 = "Hey, did you know that if you zap some monsters at just the right time, you can get some neat stuff?";
-CONV_MONSTER_HINT_HEADLESS_4 = "I had to kick one of those weird headless guys out of my vegetable patch this morning...";
-CONV_MONSTER_HINT_HEADLESS_5 = "Usually they can't tell where you are very well on account of having no head and all, but if you get right up close to them they'll hear you and get ready to fire a big attack!";
-CONV_MONSTER_HINT_HEADLESS_6 = "That's when you need to strike - 'chh-CHK!', you'll hear a noise like that. If you knock 'em out right when that happens, they drop a lot more stuff than normal.";
-CONV_MONSTER_HINT_HEADLESS_7 = "'Course, that comes with a chance of having an uzi emptied into your face if you're not quick, but you know. Risk and reward.";
+CONV_MONSTER_HINT_HEADLESS_1 = "[F:FCVILL1] I love watching the fountain in the mornings. It's so calming.";
+CONV_MONSTER_HINT_HEADLESS_2 = "[F:FCVILL1] [R:(Sigh)_Yeah,_it's_nostalgic] Reminds me of the sight of demon blood squirting out of a freshly severed cartoid artery, you know?";
+CONV_MONSTER_HINT_HEADLESS_3 = "[F:FCVILL3] Hey, did you know that if you zap some monsters at just the right time, you can get some neat stuff?";
+CONV_MONSTER_HINT_HEADLESS_4 = "[F:FCVILL2] I had to kick one of those weird headless guys out of my vegetable patch this morning...";
+CONV_MONSTER_HINT_HEADLESS_5 = "[F:FCVILL3] Usually they can't tell where you are very well on account of having no head and all, but if you get right up close to them they'll hear you and get ready to fire a big attack!";
+CONV_MONSTER_HINT_HEADLESS_6 = "[F:FCVILL3] That's when you need to strike - 'chh-CHK!', you'll hear a noise like that. If you knock 'em out right when that happens, they drop a lot more stuff than normal.";
+CONV_MONSTER_HINT_HEADLESS_7 = "[F:FCVILL4] 'Course, that comes with a chance of having an uzi emptied into your face if you're not quick, but you know. Risk and reward.";
 
 CONV_TOWN_FENCE_1 = "You can see the entrance to some sort of cave in the rock face, but a securely locked fence bars your way.";
 
@@ -145,7 +144,6 @@ CONV_BASE_BOSS_INTRO_3 = "You pull your weapon out and prepare to defend yoursel
 CONV_BASE_BOSS_OUTRO_1 = "You smile with renewed confidence as the last of the skinny hellspawn collapses to the floor.";
 CONV_BASE_BOSS_OUTRO_2 = "Now you've got to return to the weapon shop with the blueprints!";
 
-
 CONV_TUNNELS_TRAPPED_SHOOT_2 = "A gentle push is all it needs to retract into the ceiling. You're free!";
 
 CONV_TUNNELS_TRAPPED_NOTAGAIN_1 = "You've broken the mechanism on this one - you've probably messed with it enough.";
@@ -163,14 +161,26 @@ CONV_ARMORY_GOTBOOK_MFIBookSpeed_9 = "[F:FCWEAP3] Let me know once you reach the
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_1 = "[F:FCWEAP4] You're back! I was starting to wonder if you'd make it.";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_2 = "[F:FCWEAP2] Wow. Now that's a weapon...";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[F:FCWEAP4] Yes. I can make this. Oh, this is going to be good...";
-CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[S:GotCavesKey] [F:FCWEAP4] So you did it - here's the key to get deeper into the caves.";
-CONV_ARMORY_GOTBOOK_MFIBookShotgun_4 = "[F:FCWEAP6] Oh, and uh - sorry, but I'm gonna have to start charging you. These materials don't come cheap! I'll do mate's rates as a thank you, but no more freebies.";
-CONV_ARMORY_GOTBOOK_MFIBookShotgun_5 = "[F:FCWEAP4] Take a look and pick the parts you want.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[S:GotCavesKey] [F:FCWEAP4] Oh yeah - we had a deal, didn't we? Here's the key to get back to the other base entrance.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_4 = "Exo hands you a metal plate shaped like a stylized broken skull. It resembles the strange skull locks you saw as you were fumbling your way out of the caves.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_5 = "[F:FCWEAP6] Oh, and uh - sorry to break this to you, but I'm gonna have to start charging you.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_6 = "[F:FCWEAP4] I appreciate you bashing the zombies and all, but these materials don't come cheap - I'll do mate's rates as a thank you, but no more freebies.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_7 = "[F:FCWEAP4] I'll get things set up - why don't you take a look and pick the parts you want?";
 
-CONV_TOWN_HINT_1 = "\ckJust a quick word before you go in there... Tharotia is a good place to resupply, so keep an eye on your health and ammunition supplies and where you are in the tunnels, and plan to return here regularly.";
+CONV_ARMORY_DEMO_1 = "[F:FCWEAP35] Sorry! I can't do anything else for you just now - this is only a demo.";
+
+CONV_BASE_DEMO_1 = "[F:FCDAVD1] \ckWell done for reaching the end of the first techbase floor - that's as far as I've got! I hope you enjoyed the Phobian Odyssey demo - if enough people do, it might eventually become a full game.";
+CONV_BASE_DEMO_2 = "[F:FCDAVD1] \ckThanks as always to Scwiba and/or Ryath as usual for NaNoWADMo 2021, and I hope you had a good time creating things for Doom as well.";
+CONV_BASE_DEMO_3 = "[F:FCDAVD1] \ckThanks also to everyone in the community for the sprite and texture resources, Exo and Boomer Spacely for the use of their characters, and for everyone who helped my accidental learning of ZScript in the GZDoom Discord!";
+
+CONV_TOWN_HINT_1 = "\ckJust a quick word before you go in there... Tharotia is a good place to resupply, so keep an eye on your health and ammunition and where you are in the tunnels, and plan to return here regularly.";
 CONV_TOWN_HINT_2 = "\ckOnce you venture further in, it might be worth buying a Homing Device from the item shop - use one to transport yourself back instantly instead of having to trek all the way back.";
 CONV_TOWN_HINT_3 = "\ckYou can restock your ammunition from the vending machine, and you heal automatically here. You should also return here whenever you want to save the game.";
 CONV_TOWN_HINT_4 = "\ckI didn't disable it or anything, I'm not the save police. But that's the spirit of it, you know.";
+
+CONV_FOE_1 = "A bulbous monstrosity hovers around the room in front of you like a grotesque hellish potato.";
+CONV_FOE_2 = "You don't know what it is, but you know that your chances of leaving this place alive will diminish very quickly if you touch it.";
+CONV_FOE_3 = "\ckPain Elementals will burst and summon very tough INESCAPABLE monster encounters if touched! Study their movement and make sure you don't get caught.";
 
 CONV_TUNNEL_DIP_INTRO_1 = "[R:Yes] [D:3] [R:No] [D:2] You feel something drifting around underneath the pool of mud. Do you want to try to fish it out?";
 CONV_TUNNEL_DIP_INTRO_2 = "STOP";
@@ -179,7 +189,7 @@ CONV_TUNNEL_DIP_INTRO_3 = "[S:TunnelDipActive] You put your hands under the surf
 CONV_TUNNEL_DIP_COIN_1 = "...";
 CONV_TUNNEL_DIP_COIN_2 = "......";
 CONV_TUNNEL_DIP_COIN_3 = "Finally getting a grip on the something, you haul it out of the mud.";
-CONV_TUNNEL_DIP_COIN_4 = "It's barely recognizable, but it's definitely a bag of 50 coins!";
+CONV_TUNNEL_DIP_COIN_4 = "It's barely recognizable, but it's a bag of 50 coins!";
 
 CONV_TUNNEL_DIP_IMP_1 = "...";
 CONV_TUNNEL_DIP_IMP_2 = "......";

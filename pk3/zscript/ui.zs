@@ -47,12 +47,14 @@ class FriendlyUIHandler : EventHandler
 	play bool shouldClearUIGrabbedItem;
 	ui bool hoveringDropButton;
     ui bool hoveringOverShop;
-    ui int shopFirstItemIndex;
+    ui int shopItemsDisplayed;
+    play int shopFirstItemIndex;
     
     ui POWeaponSlot uiGrabbedArm;
     play POWeaponSlot grabbedArm;
     play bool shouldClearUIGrabbedArm;
     
+    ui int hoveredArmOption;
     ui int hoveredArmStack;
     ui int hoveringForgeButton;
 
@@ -137,9 +139,7 @@ class FriendlyUIHandler : EventHandler
 		hoveredInvStack = -1;
         hoveredShopNumber = -1;
         hoveredDialogOption = -1;
-        shopFirstItemIndex = 0;
 	}
-
 
     ui void DrawDialog()
     {
@@ -253,7 +253,7 @@ class FriendlyUIHandler : EventHandler
             }
         }
         
-        int shopItemsDisplayed = 0;
+        shopItemsDisplayed = 0;
         for (int i = shopFirstItemIndex; i < DataLibrary.GetInstance().itemShopInventory.Size() && shopItemsDisplayed < 6; i++) {
             
             MFInventoryItem item = DataLibrary.GetInstance().itemShopInventory[i];
@@ -535,6 +535,13 @@ class FriendlyUIHandler : EventHandler
                 p.A_PlaySound("po/sell");
             }
         }
+        else if (e.Name == "ScrolledShop") {
+            int direction = e.Args[0] ? 1 : -1;
+            shopFirstItemIndex += direction;
+            if (shopFirstItemIndex < 0) {
+                shopFirstItemIndex = 0;
+            }
+        }
         else if ( e.Name == "ClickedPastDialog" ) {
             int destination = e.args[0];
             if (destination == 0) {
@@ -669,6 +676,17 @@ class FriendlyUIHandler : EventHandler
                     EventHandler.SendNetworkEvent("RightClickedInvStack", e.KeyScan-2);
                     return true;
                 }
+                if (e.KeyScan == InputEvent.Key_MWheelDown || e.KeyScan == InputEvent.Key_MWheelUp) {
+                    if (DataLibrary.ReadData("OpenShopScreen") == "1") {
+                        if (shopItemsDisplayed == 6 && e.KeyScan == InputEvent.Key_MWheelDown) {
+                            EventHandler.SendNetworkEvent("ScrolledShop", true);
+                        }
+                        else if (shopFirstItemIndex > 0 && e.KeyScan == InputEvent.Key_MWheelUp) {
+                            EventHandler.SendNetworkEvent("ScrolledShop", false);
+                        }
+                    }
+                    return true;
+                }
                 
                 //If just the inventory screen is open, return false to allow other inputs. But return true to block other inputs if the shop/armory screen is open
                 return (DataLibrary.ReadData("OpenShopScreen") == "1" || DataLibrary.ReadData("OpenArmoryScreen") == "1"); 
@@ -686,6 +704,8 @@ class FriendlyUIHandler : EventHandler
                 EventHandler.SendNetworkEvent("ClearedUIGrabbedArm");
             }
             if ( e.KeyScan == InputEvent.Key_Mouse1 ) {
+                //If we're over any of the active tiles, select it
+                
                 //if (uiGrabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("DroppedItemToShop"); return true; }
                 //if (hoveredShopNumber != -1) { EventHandler.SendNetworkEvent("ClickedShopStack", hoveredShopNumber); return true; }
             }

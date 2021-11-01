@@ -22,6 +22,9 @@ po/empty POCLICK
 po/vend POVEND
 po/magic POMAGIC
 po/compute POCOMPUT
+po/power POPOWER
+
+po/switch POSWIT1
 
 po/water/bubble POBUBBLE
 po/water/stop POWASH

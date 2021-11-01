@@ -7,6 +7,7 @@ class MFInventoryItem : Thinker abstract {
     virtual clearscope bool isAvailable() { return true; }
     virtual clearscope String getRequirements() { return ""; }
     virtual clearscope bool instantUse() { return false; }
+    virtual clearscope int displayAfterLevel() { return 0; }
 
     virtual virtualscope bool use() { return true; }
 
@@ -70,6 +71,9 @@ class MFIRadsuit : MFInventoryItem {
     override String getRequirements() { return ""; }
     
     override bool use() {
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        p.A_PlaySound("po/power");
+        DataLibrary.WriteData(NULL, "PowerBiosuit", "30");
         return true;
     }
 }
@@ -77,8 +81,8 @@ class MFIRadsuit : MFInventoryItem {
 class MFIMedikit : MFInventoryItem {
     override String myTexture() { return "MEDIA0"; }
     override String myName() { return "Medikit"; }
-    override int getBuyPrice() { return 100; }
-    override int getSellPrice() { return 50; }
+    override int getBuyPrice() { return 300; }
+    override int getSellPrice() { return 150; }
     override String getRequirements() { return "POJam,10"; }
     
     override bool use() {
@@ -95,8 +99,8 @@ class MFIMedikit : MFInventoryItem {
 class MFIStimpack : MFInventoryItem {
     override String myTexture() { return "STIMA0"; }
     override String myName() { return "Stimpack"; }
-    override int getBuyPrice() { return 60; }
-    override int getSellPrice() { return 30; }
+    override int getBuyPrice() { return 100; }
+    override int getSellPrice() { return 50; }
     override String getRequirements() { return "POJam,5"; }
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
@@ -112,12 +116,26 @@ class MFIStimpack : MFInventoryItem {
 class MFIAmmoBox : MFInventoryItem {
     override String myTexture() { return "AMMOA0"; }
     override String myName() { return "Bullet Box"; }
-    override int getBuyPrice() { return 30; }
-    override int getSellPrice() { return 15; }
+    override int getBuyPrice() { return 100; }
+    override int getSellPrice() { return 50; }
     override String getRequirements() { return "POHorn,2"; }
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
         p.GiveInventory("POClip", 25);
+        p.A_PlaySound("po/reload");
+        return true;
+    }
+}
+
+class MFIShellBox : MFInventoryItem {
+    override String myTexture() { return "SBOXA0"; }
+    override String myName() { return "Shell Box"; }
+    override int getBuyPrice() { return 200; }
+    override int getSellPrice() { return 100; }
+    override String getRequirements() { return "POHorn,3,POMagmaWad,1"; }
+    override bool use() {
+        PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
+        p.GiveInventory("POShell", 20);
         p.A_PlaySound("po/reload");
         return true;
     }
@@ -158,8 +176,8 @@ class MFIRiskyBoots : MFInventoryItem {
 class MFISneakyBoots : MFInventoryItem {
     override String myTexture() { return "BOT1A0"; }
     override String myName() { return "Sneaky Boots"; }
-    override int getBuyPrice() { return 200; }
-    override int getSellPrice() { return 100; }
+    override int getBuyPrice() { return 300; }
+    override int getSellPrice() { return 150; }
     override String getRequirements() { return "POLeather,5,PODarkHeart,1"; }
 
     override bool use() {
@@ -173,7 +191,7 @@ class MFISneakyBoots : MFInventoryItem {
 class MFIHomingDevice : MFInventoryItem {
     override String myTexture() { return "HOMDA0"; }
     override String myName() { return "Homing Device"; }
-    override int getBuyPrice() { return 250; }
+    override int getBuyPrice() { return 300; }
     override int getSellPrice() { return 150; }
     
     override bool use() {
