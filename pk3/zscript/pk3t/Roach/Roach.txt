@@ -112,14 +112,13 @@ Class Roach : POMonster
   {
     super.tick(); //Call original in case of another override
 
-    //Heal every six tics
-    if( level.time%6 == 0 && health > 0 && health < 60 )
+    if( level.time%10 == 0 && health > 0 && health < 60 )
       HealThing(2);
 
     //Run away when low on health, get aggressive when healed up again
-    if(health < 40 && !bFrightened)
+    if(health < 30 && !bFrightened)
       bFrightened = true;
-    if(health > 60 && bFrightened)
+    if(health >= 50 && bFrightened)
       bFrightened = false;
   }
   
