@@ -2,13 +2,16 @@
 #include "zcommon.acs"
 
 #define TURN_RATE 0.025
-#define STEP_RATE 8
 #define ANGLE_QUARTER_TURN 0.25
 #define TILE_SIZE 128
 
 #define ENCOUNTER_TEXT_X 400.0
 #define ENCOUNTER_TEXT_Y 200.0
 #define ENCOUNTER_NAME_Y_OFFSET 60.0
+
+#define COMBAT_NORMAL 0
+#define COMBAT_FOE 1
+#define COMBAT_BOSS 2
 
 //These are used to simulate passing multiple ints back from getPositionFromSquare
 int registerX = 0;
@@ -20,6 +23,8 @@ int levelNum;
 
 int currentAngle;
 int squareNum;
+
+int STEP_RATE = 8;
 
 //Cheats/debug
 script "poarsenal" (int type, int element, int power) {
@@ -52,6 +57,12 @@ script "poprance" (int rate) {
 
 script "povomit" (int dic) {
     ScriptCall("DataLibrary", "OutputData", dic);
+}
+
+script "poskates" (int rate) {
+    if (rate > 0 && rate < 4) {
+        STEP_RATE = 8 * rate;
+    }
 }
 
 script "skiptownintro" (void) {
@@ -318,7 +329,7 @@ script "beginEncounter" (int forcedPopulation, int encounterType, int useSpecial
     ScriptCall("DataLibrary", "WriteData", "EncounterType", StrParam(d:encounterType));
     
 	FadeTo(1.0, 0.0, 0.0, 1.0, 0.0);
-    if (encounterType != 2) {
+    if (encounterType != COMBAT_BOSS) {
         SetMusic("POFIGHT");
     } else {
         SetMusic("POBOSS");
@@ -339,7 +350,7 @@ script "beginEncounter" (int forcedPopulation, int encounterType, int useSpecial
 
 script "displayEncounterText" (int encounterType) {
     str partyName = ScriptCall("DataLibrary", "ReadData", "NextMonsterPartyName");
-    if (encounterType == 1) {
+    if (encounterType == COMBAT_FOE) {
         partyName = "Pain Elemental approaching!";
     }
 	SetHudSize(800, 600, false);

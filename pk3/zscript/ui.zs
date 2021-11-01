@@ -756,7 +756,7 @@ class FriendlyUIHandler : EventHandler
         //Then do the rest conditionally
 		if ( automapactive ) {
             //Block out the automap if we're not playing on a skill that allows it!
-            if ( G_SkillPropertyInt(SKILLP_ACSReturn) != 1) {
+            if ( G_SkillPropertyInt(SKILLP_ACSReturn) != 1 && DataLibrary.ReadInt("InFight") == 0) {
                 ScreenDrawTexture(blockMapSquares, 0.5, 0.5, alpha: 1.0, centerX: true, centerY: true);
                 double x = MAP_SQUARE_START_X;
                 double y = MAP_SQUARE_START_Y + (MAP_SQUARE_DISTANCE_Y * 19);

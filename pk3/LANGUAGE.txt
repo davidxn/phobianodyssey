@@ -167,6 +167,25 @@ CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[S:GotCavesKey] [F:FCWEAP4] So you did i
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_4 = "[F:FCWEAP6] Oh, and uh - sorry, but I'm gonna have to start charging you. These materials don't come cheap! I'll do mate's rates as a thank you, but no more freebies.";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_5 = "[F:FCWEAP4] Take a look and pick the parts you want.";
 
+CONV_TOWN_HINT_1 = "\ckJust a quick word before you go in there... Tharotia is a good place to resupply, so keep an eye on your health and ammunition supplies and where you are in the tunnels, and plan to return here regularly.";
+CONV_TOWN_HINT_2 = "\ckOnce you venture further in, it might be worth buying a Homing Device from the item shop - use one to transport yourself back instantly instead of having to trek all the way back.";
+CONV_TOWN_HINT_3 = "\ckYou can restock your ammunition from the vending machine, and you heal automatically here. You should also return here whenever you want to save the game.";
+CONV_TOWN_HINT_4 = "\ckI didn't disable it or anything, I'm not the save police. But that's the spirit of it, you know.";
+
+CONV_TUNNEL_DIP_INTRO_1 = "[R:Yes] [D:3] [R:No] [D:2] You feel something drifting around underneath the pool of mud. Do you want to try to fish it out?";
+CONV_TUNNEL_DIP_INTRO_2 = "STOP";
+CONV_TUNNEL_DIP_INTRO_3 = "[S:TunnelDipActive] You put your hands under the surface...";
+
+CONV_TUNNEL_DIP_COIN_1 = "...";
+CONV_TUNNEL_DIP_COIN_2 = "......";
+CONV_TUNNEL_DIP_COIN_3 = "Finally getting a grip on the something, you haul it out of the mud.";
+CONV_TUNNEL_DIP_COIN_4 = "It's barely recognizable, but it's definitely a bag of 50 coins!";
+
+CONV_TUNNEL_DIP_IMP_1 = "...";
+CONV_TUNNEL_DIP_IMP_2 = "......";
+CONV_TUNNEL_DIP_IMP_3 = "Finally getting a grip on the something, you haul it out of the mud.";
+CONV_TUNNEL_DIP_IMP_4 = "You're holding some sort of imp by one leg. He's not happy.";
+
 ///////////////////////////
 
 INV_MFIMedikit = "Restores 50hp when used, up to a maximum of 100hp";

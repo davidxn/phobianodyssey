@@ -1,1 +1,13 @@
 Texture Optional MFALL1 Range MFALL4 Tics 8
+
+switch SW1CNDOR on sound Switch1 pic SW2CNDOR tics 0
+switch SW2CNDOR on sound Switch2 pic SW1CNDOR tics 0
+
+switch SW1CNVAL on sound Switch1 pic SW2CNVAL tics 0
+switch SW2CNVAL on sound Switch2 pic SW1CNVAL tics 0
+
+switch SW1CNVL2 on sound Switch1 pic SW2CNVL2 tics 0
+switch SW2CNVL2 on sound Switch2 pic SW1CNVL2 tics 0
+
+switch SW1CNVL3 on sound Switch1 pic SW2CNVL3 tics 0
+switch SW2CNVL3 on sound Switch2 pic SW1CNVL3 tics 0

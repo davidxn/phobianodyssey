@@ -42,3 +42,4 @@ ScientistHeadless,Headless_Horrors,NONE,ZombieScientistHeadless,NONE,NONE,Zombie
 SciImps1,Science_Alliance,NONE,ZombieScientistPlasma,NONE,ZombieScientistHeadless,NONE,Devil,NONE,DoomImp,NONE,NONE
 SciImps2,Projectile_Partnership,ZombieScientistPlasma,NONE,ZombieScientistPlasma,NONE,DoomImp,NONE,DoomImp,NONE,NONE,NONE
 TwoArchviles,Archvile_Twins,NONE,Archvile,NONE,NONE,NONE,NONE,Archvile,NONE,NONE,NONE
+Devil,Devil,NONE,NONE,Devil,NONE,NONE,NONE,NONE,NONE,NONE,NONE

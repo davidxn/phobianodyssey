@@ -43,7 +43,7 @@ class POMonster : Actor
     }
     
     void doBurst() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             let spawnedActor = Actor.Spawn("POSpeck", (pos.x, pos.y, pos.z + 40));
             spawnedActor.vel.X = frandom(-3, 3);
             spawnedActor.vel.Y = frandom(-3, 3);
@@ -59,7 +59,13 @@ class POMonster : Actor
     }
     
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
-        console.printf("%s %d", MeansOfDeath, self.deathDamage);
+        poDropItemWithProbability("PoCoin1", 100);
+        poDropItemWithProbability("PoCoin1", 100);
+        poDropItemWithProbability("PoCoin1", 100);
+        poDropItemWithProbability("PoCoin1", 80);
+        poDropItemWithProbability("PoCoin1", 60);
+        poDropItemWithProbability("PoCoin1", 40);
+        poDropItemWithProbability("PoCoin1", 20);
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
     
