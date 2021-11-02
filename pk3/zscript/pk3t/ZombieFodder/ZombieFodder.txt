@@ -59,7 +59,6 @@ Class ZombieFodder : POMonster
             poDropItemWithProbability("PoClip5", 50);
         }
         
-        super.doBurst();
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 
@@ -125,7 +124,6 @@ Class ZombieFodder2 : POMonster
             poDropItemWithProbability("PoClip5", 60);
         }
         
-        super.doBurst();
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 
@@ -177,8 +175,7 @@ Class QuakeFodder : ZombieFodder
             poDropItemWithProbability("PoCoin5", 100);
             poDropItemWithProbability("PoClip5", 100);
         }
-        
-        super.doBurst();       
+            
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 

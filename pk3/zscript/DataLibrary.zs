@@ -294,7 +294,8 @@ class DataLibrary : Thinker
     {
         String key = "DN-" .. mapnum .. "-" .. square;
         int value = DataLibrary.ReadSquareData(key).ToInt();
-        int cheatValue = DataLibrary.ReadInt("CheatForceDangerLevel");
+        value = Random(max(0, value-2), value);
+        int cheatValue = DataLibrary.ReadInt("CheatForceDangerLevel");       
         if (cheatValue != 0) {
             value = cheatValue;
         }

@@ -121,7 +121,7 @@ class MFIAmmoBox : MFInventoryItem {
     override String getRequirements() { return "POHorn,2"; }
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);
-        p.GiveInventory("POClip", 25);
+        p.GiveInventory("POClip", 40);
         p.A_PlaySound("po/reload");
         return true;
     }

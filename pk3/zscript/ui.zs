@@ -33,6 +33,8 @@ class FriendlyUIHandler : EventHandler
     ui TextureID weaponCursorTex;
     ui TextureID itemShopBG;
     ui TextureID armoryBG;
+    
+    ui TextureID power1;
 
     // Mouse position
 	ui Vector2 mouseCursorPos;
@@ -95,6 +97,12 @@ class FriendlyUIHandler : EventHandler
     const MAP_SQUARE_START_Y = 0.155;
     const MAP_SQUARE_DISTANCE_X = 0.0275;
     const MAP_SQUARE_DISTANCE_Y = 0.0366;
+    
+    const POWERS_X = -0.048;
+    const POWERS_Y = 0.85;
+    const POWERS_SIZE = 0.03;
+    const POWERS_TEXT_GAP = 0.033;
+    const POWERS_VERTICAL_GAP = 0.04;
 
     play bool showInvScreen;
     
@@ -125,6 +133,8 @@ class FriendlyUIHandler : EventHandler
         itemShopBG = TexMan.CheckForTexture("shopbg", 0);
         armoryBG = TexMan.CheckForTexture("armorybg", 0);
 		invHilight = TexMan.CheckForTexture("invsel", 0);
+        
+        power1 = TexMan.CheckForTexture("POPOWER1", 0);
 
         dialogBackFrame = TexMan.CheckForTexture("DIALBACK", 0);
         dialogOptionFrame = TexMan.CheckForTexture("DIALRESP", 0);
@@ -789,6 +799,21 @@ class FriendlyUIHandler : EventHandler
             }
             weaponX += WEAPON_WIDTH;
         }
+        
+        //Massively handy thing by JP - activate this to read from a lump constantly and edit layout while Doom is running!
+        //int lumpindex = Wads.FindLump('LIVEVARS', 0, 0);
+        //String varData = Wads.ReadLump(lumpindex);
+        //Array<String> vars; varData.Split(vars, ",");
+        double powerX = POWERS_X;
+        double powerY = POWERS_Y;
+
+        int powerBiosuit = DataLibrary.ReadInt("PowerBiosuit");
+        if (powerBiosuit) {
+            ScreenDrawTextureWithinArea(power1, powerX, powerY, POWERS_SIZE, POWERS_SIZE);
+            ScreenDrawString(powerBiosuit .. "", Font.CR_GREEN, journalFont, powerX + POWERS_TEXT_GAP, powerY);
+        }
+        powerY += POWERS_VERTICAL_GAP;
+
 
         //Then do the rest conditionally
 		if ( automapactive ) {

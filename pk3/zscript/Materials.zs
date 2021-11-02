@@ -407,3 +407,12 @@ class POSpeck : Actor
         super.Tick();
     }
 }
+
+class POSpeck2 : POSpeck
+{
+    states {
+      Spawn:
+        SPEK B -1 Bright;
+        Loop;
+    }
+}

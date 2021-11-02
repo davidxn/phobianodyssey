@@ -140,8 +140,7 @@ Class Roach : POMonster
             poDropItemWithProbability("PoShell2", 100);
             poDropItemWithProbability("PoClip5", 100);
         }
-        
-        super.doBurst();       
+            
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 }

@@ -248,6 +248,12 @@ script "rpgMovement" (void) {
                 delay(1);
 			}
 			SetActorPosition(0, playerX + step_x * TILE_SIZE, playerY + step_y * TILE_SIZE, GetActorZ(0), false);
+            //If we've failed to set the player to an exact coordinate then zap them back quick!
+            if ((GetActorX(0) >> 16) % 128 != 0 || (GetActorY(0) >> 16) % 128 != 0) {
+                Log(s:"\caERROR: Player in invalid position ", d:GetActorX(0), s:" ", d:GetActorY(0));
+                getPositionFromSquare(oldSquareNum);
+                SetActorPosition(0, registerX, registerY, registerZ, false);
+            }
 
 			//What's our new square?
 			squareNum = getSquareFromPosition(GetActorX(0), GetActorY(0));
@@ -294,9 +300,6 @@ script "rpgMovement" (void) {
 
 			//Now add the new square's danger value to the existing one
 			int dangerValue = ScriptCall("DataLibrary", "ReadDangerValue", levelNum, squareNum);
-
-			dangerValue = Random(max(0, dangerValue-5), dangerValue);
-
 			GiveInventory("PoDanger", dangerValue);
 
 			//If we're over 100 danger, this is an encounter! Time to pick a monster party

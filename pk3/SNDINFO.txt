@@ -40,3 +40,5 @@ po/sell POSELL
 po/warp POWARP
 
 hazmat/tazer	DSTAZER
+
+sprog/hiss SPRHISS

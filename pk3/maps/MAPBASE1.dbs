@@ -28,8 +28,8 @@ maps
 		overrideceilheight = false;
 		overridebrightness = false;
 		uselongtexturenames = false;
-		viewpositionx = 1932.332f;
-		viewpositiony = 594.2346f;
+		viewpositionx = 1726.005f;
+		viewpositiony = 1242.46f;
 		viewscale = 1.66988f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
