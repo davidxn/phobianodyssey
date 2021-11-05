@@ -1,0 +1,198 @@
+class BaseFlora : Actor
+{
+	Default
+	{
+		//$Category "Flora"
+	}
+}
+
+class BaseFoliage : BaseFlora
+{
+	Default
+	{
+		//+NOINTERACTION
+	}
+}
+
+class SmallFlowersA : BaseFoliage
+{
+	Default
+	{
+		//$Title "Flowers, Dry"
+		Radius 10;
+		Height 1;
+	}
+	
+	States
+	{
+		Spawn:
+			FLWR A -1;
+			Stop;
+	}
+}
+	
+class SmallFlowersB : BaseFoliage
+{
+	Default
+	{
+		//$Title "Flowers"
+		Radius 10;
+		Height 1;
+	}
+	
+	States
+	{
+		Spawn:
+			FLWR B -1;
+			Stop;
+	}
+}
+
+class CeilingRootA : BaseFlora
+{
+	 Default
+	{
+		//$Title "Root, Thick"
+		Radius 10;
+		Height 50;
+		+SPAWNCEILING
+		+NOGRAVITY
+	}
+	
+	States
+	{
+		Spawn:
+			ROOT A -1;
+			Stop;
+	}
+}
+
+class CeilingRootB : BaseFlora
+{
+	 Default
+	{
+		//$Title "Roots, Thin"
+		Radius 10;
+		Height 50;
+		+SPAWNCEILING
+		+NOGRAVITY
+	}
+	
+	States
+	{
+		Spawn:
+			ROOT B -1;
+			Stop;
+	}
+}
+
+class GrassTuft : BaseFoliage
+{
+	Default
+	{
+		//$Title "Grass Tuft"
+		Radius 20;
+		Height 48;
+		Scale 0.7;
+		+FORCEYBILLBOARD
+	}
+	
+	States
+	{
+		Spawn:
+			GTFT A 0 A_Jump(127, "Spawn2");
+			GTFT A 0 A_Jump(127, "Spawn3");
+			GTFT A 0 A_Jump(127, "Spawn4");
+			GTFT A 0 A_Jump(32, "Spawn5");
+			GTFT A 0 A_Jump(32, "Spawn6");
+		Spawn1:
+			GTFT A 0 A_SetScale(FRandom(0.4, 0.6));
+			GTFT A -1;
+		Spawn2:
+			GTFT A 0 A_SetScale(FRandom(0.4, 0.6));
+			GTFT B -1;
+		Spawn3:
+			GTFT A 0 A_SetScale(FRandom(0.4, 0.7));
+			GTFT C -1;
+		Spawn4:
+			GTFT A 0 A_SetScale(FRandom(0.4, 0.6));
+			GTFT D -1;
+		Spawn5:
+			GTFT A 0 A_SetScale(FRandom(0.5, 0.7));
+			GTFT E -1;
+		Spawn6:
+			GTFT A 0 A_SetScale(FRandom(0.5, 0.7));
+			GTFT F -1;
+	}
+}
+
+class PlantArgemone : GrassTuft
+{
+	Default
+	{
+		//$Title "Plant Argemone"
+		Radius 20;
+		Height 48;
+		Scale 0.7;
+	}
+	
+	States
+	{
+		Spawn:
+			TNT1 A 0;
+			GTFT A 0 A_SetScale(FRandom(0.5, 0.8));
+			GTFT F -1;
+	}
+}
+
+class PlantClitoria : GrassTuft
+{
+	Default
+	{
+		//I swear to god, this is its actual name
+		//$Title "Plant Clitoria"
+		Radius 20;
+		Height 48;
+		Scale 0.7;
+	}
+	
+	States
+	{
+		Spawn:
+			TNT1 A 0;
+			GTFT A 0 A_SetScale(FRandom(0.5, 0.8));
+			GTFT E -1;
+	}
+}
+
+class SmallMushroomRandom : BaseFlora
+{
+  Default
+  {
+    //$Title "Mushroom Random"
+    //$Sprite SHRMF0
+    Radius 16;
+    Height 24;
+    -RANDOMIZE;
+  }
+  
+  States
+  {
+  Spawn:
+    SHRM F 0;
+    SHRM F 0 A_SetScale(FRandom(0.5, 1.0));
+    SHRM F 0 A_Jump(255, "Red", "Green", "Brown", "Red2", "Green2", "Brown2");
+  Brown:
+    SHRM F -1;
+  Red:
+    SHRM D -1;
+  Green:
+    SHRM E -1;
+  Brown2:
+    SHRM I -1;
+  Red2:
+    SHRM G -1;
+  Green2:
+    SHRM H -1;
+  }
+}

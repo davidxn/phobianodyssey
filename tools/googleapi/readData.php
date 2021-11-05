@@ -86,6 +86,7 @@ foreach ($mapSheets as $mapSheetNum) {
     }
 
     $squareNumber = 11900;
+    $rowStartNumber = $squareNumber;
     if (!$sheet['sheets']) {
         continue;
     }
@@ -108,7 +109,8 @@ foreach ($mapSheets as $mapSheetNum) {
             }
             $squareNumber++;
         }
-        $squareNumber -= 120;
+        $rowStartNumber -= 100;
+        $squareNumber = $rowStartNumber;
     }
 }
 

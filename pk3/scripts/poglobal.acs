@@ -146,7 +146,7 @@ script "useHomingDevice" (void) {
 
 script "rpgMovement" (void) {
     clearFlag("PreventMovement");
-    setFlag(StrParam(s:"VisitedMap", d:LEVELINFO_LEVELNUM));
+    setFlag(StrParam(s:"VisitedMap", d:GetLevelInfo(LEVELINFO_LEVELNUM)));
     delay(15);
     
     switch (GetLevelInfo(LEVELINFO_LEVELNUM)) {
@@ -342,7 +342,11 @@ script "beginEncounter" (int forcedPopulation, int encounterType, int useSpecial
     
 	FadeTo(1.0, 0.0, 0.0, 1.0, 0.0);
     if (encounterType != COMBAT_BOSS) {
-        SetMusic("POFIGHT");
+        if (GetLevelInfo(LEVELINFO_LEVELNUM) == 4 || GetLevelInfo(LEVELINFO_LEVELNUM) == 6) {
+            SetMusic("POFIGHT2");
+        } else {
+            SetMusic("POFIGHT");
+        }
     } else {
         SetMusic("POBOSS");
     }

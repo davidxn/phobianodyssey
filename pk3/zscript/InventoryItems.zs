@@ -162,7 +162,7 @@ class MFIRiskyBoots : MFInventoryItem {
     override String myName() { return "Risky Boots"; }
     override int getBuyPrice() { return 100; }
     override int getSellPrice() { return 100; }
-    override String getRequirements() { return "POLeather,5"; }
+    override String getRequirements() { return "POLeather,2"; }
     
     override bool use() {
         PlayerPawn p = PlayerPawn(players[consoleplayer].mo);

@@ -75,6 +75,11 @@ CONV_MONSTER_HINT_HEADLESS_5 = "[F:FCVILL3] Usually they can't tell where you ar
 CONV_MONSTER_HINT_HEADLESS_6 = "[F:FCVILL3] That's when you need to strike - 'chh-CHK!', you'll hear a noise like that. If you knock 'em out right when that happens, they drop a lot more stuff than normal.";
 CONV_MONSTER_HINT_HEADLESS_7 = "[F:FCVILL4] 'Course, that comes with a chance of having an uzi emptied into your face if you're not quick, but you know. Risk and reward.";
 
+CONV_MONSTER_HINT_ZOMBIE_1 = "[F:FCVIL21] Do you ever find yourself deep in a dungeon going 'Aaaaaah!! I've run out of ammunition!!'?";
+CONV_MONSTER_HINT_ZOMBIE_2 = "[F:FCVIL23] Well, don't give up! Remember you've still got your trusty fists.";
+CONV_MONSTER_HINT_ZOMBIE_3 = "[F:FCVIL22] Just go right up to those monsters and - BAM! KER-POW! Most of them will drop extra ammo if you finish them off like that, so you can get back on your feet.";
+CONV_MONSTER_HINT_ZOMBIE_4 = "[F:FCVIL22] Try biffing some of those red-eyed crumbling naked things! They fall apart faster than a flat-pack dresser.";
+
 CONV_TOWN_FENCE_1 = "You can see the entrance to some sort of cave in the rock face, but a securely locked fence bars your way.";
 
 CONV_TOWN_FENCE_UNLOCK_1 = "You fumble the key into the lock, and the rickety gate swings open. You brace yourself to venture into the tunnels and fight whatever lies in wait inside them...";
@@ -87,7 +92,7 @@ CONV_FIRST_ARMORY_VISIT_5 = "[F:FCWEAP8] I used to do a roaring trade making wea
 CONV_FIRST_ARMORY_VISIT_6 = "[F:FCWEAP8] Then the demons started getting crankier and we had to lock up everything past the first level.";
 CONV_FIRST_ARMORY_VISIT_7 = "[F:FCWEAP1] [R:Can_you_unlock_the_caves?] Now we've turned into a corny little tourist attraction and all I can sell are these stupid souvenir T-shirts.";
 CONV_FIRST_ARMORY_VISIT_8 = "[F:FCWEAP6] What? You want to go further in?! Hmm...";
-CONV_FIRST_ARMORY_VISIT_9 = "[F:FCWEAP8] Look, you must be made of tough stuff if you got out of the caves, but there something very weird going on down there...";
+CONV_FIRST_ARMORY_VISIT_9 = "[F:FCWEAP8] Look, you must be made of tough stuff if you got out of the caves, but there's something very weird going on down there...";
 CONV_FIRST_ARMORY_VISIT_10 = "[F:FCWEAP8] Your lot came down and installed some kind of techno-base a few years back, not far from the entrance. That's where most of the monsters come from - and just last month they went crazy.";
 CONV_FIRST_ARMORY_VISIT_11 = "[F:FCWEAP2] [R:Go_on...] I'll tell you what - I'll make you a deal. It'll help us both - my business and your survival.";
 CONV_FIRST_ARMORY_VISIT_12 = "[F:FCWEAP4] Here's the thing - we were helping Elan at the item shop dig into the cliff to make a storage space and we hit some sort of maintenance tunnel. He just uses it to keep the health drinks cold, but I think it's got to connect up with that base somehow.";
@@ -135,7 +140,7 @@ CONV_TUNNELS_TRAPPED_SHOOT_2 = "A gentle push is all it needs to retract into th
 
 CONV_BASE_BOSS_WARNING_1 = "As you approach the door, you sense the presence of something more malicious than anything you've faced yet.";
 CONV_BASE_BOSS_WARNING_2 = "You check your provisions before putting your hand on the switch.";
-CONV_BASE_BOSS_WARNING_3 = "\ckYes, it's a warning about a boss battle coming up. Make sure you're stocked up before proceeding!";
+CONV_BASE_BOSS_WARNING_3 = "\ckYes, it's a warning about a boss battle coming up. Make sure you're stocked up before proceeding! It's either death or glory - boss fights can't be escaped from using the Homing Device.";
 
 CONV_BASE_BOSS_INTRO_1 = "As you expected, you sense a dangerous presence as you pull your prize from the chest.";
 CONV_BASE_BOSS_INTRO_2 = "Nauseating chittering sounds echo around the ceiling, and within moments, you see a dozen pairs of evil shining eyes staring down at you from the rafters.";
@@ -162,7 +167,7 @@ CONV_ARMORY_GOTBOOK_MFIBookShotgun_1 = "[F:FCWEAP4] You're back! I was starting 
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_2 = "[F:FCWEAP2] Wow. Now that's a weapon...";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[F:FCWEAP4] Yes. I can make this. Oh, this is going to be good...";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_3 = "[S:GotCavesKey] [F:FCWEAP4] Oh yeah - we had a deal, didn't we? Here's the key to get back to the other base entrance.";
-CONV_ARMORY_GOTBOOK_MFIBookShotgun_4 = "Exo hands you a metal plate shaped like a stylized broken skull. It resembles the strange skull locks you saw as you were fumbling your way out of the caves.";
+CONV_ARMORY_GOTBOOK_MFIBookShotgun_4 = "Ezo hands you a metal plate shaped like a stylized broken skull. It resembles the strange skull locks you saw as you were fumbling your way out of the caves.";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_5 = "[F:FCWEAP6] Oh, and uh - sorry to break this to you, but I'm gonna have to start charging you.";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_6 = "[F:FCWEAP4] I appreciate you bashing the zombies and all, but these materials don't come cheap - I'll do mate's rates as a thank you, but no more freebies.";
 CONV_ARMORY_GOTBOOK_MFIBookShotgun_7 = "[F:FCWEAP4] I'll get things set up - why don't you take a look and pick the parts you want?";
@@ -170,8 +175,9 @@ CONV_ARMORY_GOTBOOK_MFIBookShotgun_7 = "[F:FCWEAP4] I'll get things set up - why
 CONV_ARMORY_DEMO_1 = "[F:FCWEAP35] Sorry! I can't do anything else for you just now - this is only a demo.";
 
 CONV_BASE_DEMO_1 = "[F:FCDAVD1] \ckWell done for reaching the end of the first techbase floor - that's as far as I've got! I hope you enjoyed the Phobian Odyssey demo - if enough people do, it might eventually become a full game.";
-CONV_BASE_DEMO_2 = "[F:FCDAVD1] \ckThanks as always to Scwiba and/or Ryath as usual for NaNoWADMo 2021, and I hope you had a good time creating things for Doom as well.";
-CONV_BASE_DEMO_3 = "[F:FCDAVD1] \ckThanks also to everyone in the community for the sprite and texture resources, Exo and Boomer Spacely for the use of their characters, and for everyone who helped my accidental learning of ZScript in the GZDoom Discord!";
+CONV_BASE_DEMO_2 = "[F:FCDAVD1] \ckThanks as always to Scwiba and/or Ryath for NaNoWADMo 2021, and I hope you had a good time creating things for Doom as well.";
+CONV_BASE_DEMO_3 = "[F:FCDAVD1] \ckAlso, thanks to: Everyone in the community for the sprite and texture resources; Liko, Ginji, Ezo and Boomer Spacely for the use of their characters, and for everyone who helped my accidental learning of ZScript in the GZDoom Discord!";
+CONV_BASE_DEMO_4 = "[F:FCDAVD1] \ckYou can't go downstairs until I build it, but you can still poke around in the tunnels and caves for more secrets...";
 
 CONV_TOWN_HINT_1 = "\ckJust a quick word before you go in there... Tharotia is a good place to resupply, so keep an eye on your health and ammunition and where you are in the tunnels, and plan to return here regularly.";
 CONV_TOWN_HINT_2 = "\ckOnce you venture further in, it might be worth buying a Homing Device from the item shop - use one to transport yourself back instantly instead of having to trek all the way back.";
@@ -214,8 +220,8 @@ INV_MFITreasure3 = "A wristband with some enchantment on it. Sell it for 750pt";
 INV_MFITreasure4 = "A silver statue of a divine being. Sell it for 1000pt";
 INV_MFITreasure5 = "A cross-shaped treasure. Sell it for 2500pt";
 INV_MFITreasure6 = "A crown forged in the hellfires. Sell it for 5000pt";
-INV_MFIBookPower = "This looks like it would be useful for Exo at the weapons shop.";
-INV_MFIBookSpeed = "This looks like it would be useful for Exo at the weapons shop.";
-INV_MFIBookLuck = "This looks like it would be useful for Exo at the weapons shop.";
-INV_MFIBookShotgun = "This looks like it would be useful for Exo at the weapons shop.";
+INV_MFIBookPower = "This looks like it would be useful for Ezo at the weapons shop.";
+INV_MFIBookSpeed = "This looks like it would be useful for Ezo at the weapons shop.";
+INV_MFIBookLuck = "This looks like it would be useful for Ezo at the weapons shop.";
+INV_MFIBookShotgun = "Ezo was after this! Bring it to the weapons shop!";
 INV_MFIEmpty = "";

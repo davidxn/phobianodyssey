@@ -204,7 +204,8 @@ Class Darkling : POMonster
         poDropItemWithProbability("PoDarkHeart", 20);
         
         if (MeansOfDeath == "Melee") {
-            poDropItemWithProbability("PoShell2", 100);
+            poDropItemWithProbability("PoShell4", 100);
+            poDropItemWithProbability("PoClip5", 100);
             poDropItemWithProbability("PoClip5", 100);
         }  
         super.Die(source, inflictor, dmgflags, MeansOfDeath);

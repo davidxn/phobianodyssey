@@ -26,4 +26,12 @@ DoomEdNums {
     4612 = GreyWallLampYellow
     4613 = GreyWallLampPurple
     3160 = Roach
+    7000 = GrassTuft
+    7100 = PlantArgemone
+    7101 = PlantClitoria
+    7400 = CeilingRootA
+    7401 = CeilingRootB
+    7300 = SmallMushroomRandom
+    7102 = SmallFlowersA
+    7103 = SmallFlowersB
 }

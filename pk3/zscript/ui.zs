@@ -173,7 +173,7 @@ class FriendlyUIHandler : EventHandler
            ScreenDrawTexture(TexMan.checkForTexture(parsedDialogTexture, 0), 0.5, 0.54, centerX: true, lowerUnpegged: true); 
         }
         
-        if (dialogOpacity < 1.0) dialogOpacity += 0.01;
+        if (dialogOpacity < 1.0) dialogOpacity += 0.05;
         ScreenDrawTexture(dialogBackFrame, 0.5, 0.75, alpha: dialogOpacity, centerX: true, centerY: true);
 
         //If there's a chest item mentioned, get information about the chest

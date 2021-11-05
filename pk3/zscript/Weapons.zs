@@ -244,9 +244,10 @@ class POWeapon : Weapon {
     action void firePistolBullets() {
         String puffClass = ("BulletPuff" .. invoker.myElement);
         int baseDamage = 8;
+        int maxBonusDamage = 5;
         if (invoker.myPower == "Power") { baseDamage += 10; }
-        if (invoker.myPower == "Speed") { baseDamage -= 2; }
-        A_FireBullets(3.5, 0.5, 1, baseDamage + random(0,5), puffClass, FBF_NORANDOM);
+        if (invoker.myPower == "Speed") { baseDamage -= 2; maxBonusDamage += 2; }
+        A_FireBullets(3.5, 0.5, 1, baseDamage + random(0,maxBonusDamage), puffClass, FBF_NORANDOM);
     }
     
     action void fireShotgunBullets() {

@@ -223,11 +223,28 @@ class PoCharacterVillager1 : FloatingSkull
         Radius 16;
         Height 2;
         Scale 1;
+        +USESPECIAL;
     }
   States
   {
   Spawn:
     CRVL A -1;
+    Loop;
+  }
+}
+
+class PoCharacterVillager2 : FloatingSkull
+{
+    Default {
+        Radius 16;
+        Height 2;
+        Scale 1;
+        +USESPECIAL;
+    }
+  States
+  {
+  Spawn:
+    CRVL B -1;
     Loop;
   }
 }
