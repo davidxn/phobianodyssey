@@ -44,6 +44,7 @@ $results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!A2:L
 $parties = $results->getValues();
 
 foreach($parties as $partyData) {
+    info("Reading monster party " . $partyData[0]);
     $monstersThisParty = [];
     for ($i = 2; $i <= 11; $i++) {
         if (isset($partyData[$i])) {
@@ -56,12 +57,14 @@ foreach($parties as $partyData) {
 }
 
 file_put_contents($fileMonsterParties, $monsterParties);
+info("Wrote monster party file");
 
 //Get monster populations
 $results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterPartyGroup!A1:L');
 $parties = $results->getValues();
 
 foreach($parties as $partyData) {
+    info("Reading monster population " . $partyData[0]);
     $monstersThisParty = [];
     for ($i = 1; $i <= 10; $i++) {
         if (isset($partyData[$i])) {
@@ -72,16 +75,19 @@ foreach($parties as $partyData) {
 }
 
 file_put_contents($fileMonsterPopulations, $monsterPopulations);
+info("Wrote monster population file");
 
 $results = $service->spreadsheets_values->get($spreadsheetId, 'MonsterParty!B1:L');
 
 
 //Now interpret the map data
 foreach ($mapSheets as $mapSheetNum) {
+    info("Interpreting data for map " . $mapSheetNum);
     try {
         $sheet = $service->spreadsheets->get($spreadsheetId, ['includeGridData' => true, 'ranges' => 'Floor' . $mapSheetNum . '!A1:T20', 'fields' => 'sheets/data/rowData/values/effectiveFormat/backgroundColor,sheets/data/rowData/values/formattedValue']);
     }
     catch (Google\Service\Exception $e) {
+        info("Couldn't find data for map " . $mapSheetNum);
         continue;
     }
 
@@ -97,7 +103,7 @@ foreach ($mapSheets as $mapSheetNum) {
                        ((round(($bgProperties['green'] ?? 1) * 255))) . ' ' .
                        ((round(($bgProperties['blue']  ?? 1) * 255)));
                        if (!isset($rgbMap[$bgColor])) {
-                           echo("WARNING: Don't know what danger level " . $bgColor . " is! Will be 0");
+                           info("WARNING: Don't know what danger level " . $bgColor . " is! Will be treated as 0");
                        }
             $dangerLevel = $rgbMap[$bgColor] ?? 0;
             $monsterPopulation = $cellData['formattedValue'] ?? 0;
@@ -115,3 +121,8 @@ foreach ($mapSheets as $mapSheetNum) {
 }
 
 file_put_contents($fileSquareData, $squareData);
+info("Wrote map square data file");
+
+function info($str) {
+    print($str . PHP_EOL);
+}

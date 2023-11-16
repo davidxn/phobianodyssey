@@ -1,5 +1,5 @@
 type = "Doom Builder Map Settings Configuration";
-gameconfig = "GZDoom_Phobian.cfg";
+gameconfig = "GZDoom_DoomUDMF.cfg";
 strictpatches = 0;
 
 maps
@@ -28,9 +28,9 @@ maps
 		overrideceilheight = false;
 		overridebrightness = false;
 		uselongtexturenames = false;
-		viewpositionx = 1465.099f;
-		viewpositiony = 937.3712f;
-		viewscale = 0.5846714f;
+		viewpositionx = 1692.542f;
+		viewpositiony = 2227.125f;
+		viewscale = 2.170844f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid
@@ -73,39 +73,6 @@ maps
 			autocloseonsuccess = true;
 			exitcodeiserror = true;
 			stderriserror = true;
-		}
-		
-		fieldtypes
-		{
-			
-			linedef
-			{
-				alpha = 1;
-			}
-			
-			sidedef
-			{
-				offsetx_top = 1;
-				offsety_top = 1;
-				offsetx_bottom = 1;
-				offsety_bottom = 1;
-				offsetx_mid = 1;
-				offsety_mid = 1;
-			}
-			
-			sector
-			{
-				xpanningceiling = 1;
-				ypanningceiling = 1;
-				rotationceiling = 1;
-				xscaleceiling = 1;
-				yscaleceiling = 1;
-				xpanningfloor = 1;
-				ypanningfloor = 1;
-				rotationfloor = 1;
-				xscalefloor = 1;
-				yscalefloor = 1;
-			}
 		}
 		
 		scriptdocuments

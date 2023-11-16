@@ -85,18 +85,18 @@ class LevelHelper : Thinker
             testZCeiling = activator.GetZAt(testX, testY, 0, GZF_CEILING | GZF_ABSOLUTEPOS);
             //Is this point inside the level?
             if(!level.IsPointInLevel((testX, testY, testZFloor))) {
-                //console.printf("\ckMOVEDEBUG: Point not in level, rejecting");
+                PoLogger.Log("walk", "Point not in level, rejecting");
                 return false;
             }
             //Is this point in a place the player could fit?
             if(testZCeiling - testZFloor < 56) {
-                //console.printf("\ckMOVEDEBUG: Point too small for player, rejecting");
+                PoLogger.Log("walk", "Point too small for player, rejecting");
                 return false;
             }
             
             //Is this point greater than a 16-unit jump up from the last point we checked AND greater than a 16-unit jump from the initial floor?
             if(currentZ-testZFloor < -16 && initialZ-testZFloor < -16) {
-                //console.printf("\ckMOVEDEBUG: Journey has more than 16-unit step up");
+                PoLogger.Log("walk", "Journey has more than 16-unit step up");
                 return false;
             }
             //If it's a drop, allow 3 in a row before we reject - allows little cracks in ground
@@ -105,7 +105,7 @@ class LevelHelper : Thinker
                     //Doesn't count as a drop
                 } else {
                     if (dropStepsAllowed > 2) {
-                        //console.printf("\ckMOVEDEBUG: Journey has more than 16-unit step down 3 steps in row");
+                        PoLogger.Log("walk", "Journey has more than 16-unit step down 3 steps in row");
                         return false;
                     }
                     dropStepsAllowed++;
@@ -116,9 +116,9 @@ class LevelHelper : Thinker
             //One more check if we've hit one square away - check line of sight to the new position
             if (i == 1.0) {
                 MapSpot x = MapSpot(Actor.Spawn("MapSpot", (testX, testY, testZFloor + 40)));
-                //console.printf("\ckMOVEDEBUG: %d %d %d", x.pos.x, x.pos.y, x.pos.z);
+                PoLogger.Log("walk", String.Format("Checking visibility towards %d %d %d", x.pos.x, x.pos.y, x.pos.z));
                 if (!activator.CheckSight(x, SF_IGNOREVISIBILITY)) {
-                    //console.printf("\ckMOVEDEBUG: Mapspot sight check returned false, rejecting");
+                    PoLogger.Log("walk", "Mapspot sight check returned false, rejecting");
                     return false;
                 }
                 x.Destroy();

@@ -454,7 +454,7 @@ class FriendlyUIHandler : EventHandler
 			int stackIndex = e.Args[0];
 			MFInventoryItem invItem = DataLibrary.GetInstance().MFinventory[stackIndex];
 
-            //If we don't have a grabbed item, see if we're clicking an empty stack - if not, grab this one
+            //If we don't have a grabbed item and we've clicked on a non-empty stack, grab it.
 			if (!newGrabbedItem) {
                 if (invItem.getClassName() != "MFIEmpty") {
                     //console.printf("\ckDEBUG: Grabbed item %s from %d without replacing", invItem.getClassName(), stackIndex);
@@ -463,19 +463,20 @@ class FriendlyUIHandler : EventHandler
                     p.A_PlaySound("po/inventory/up", CHAN_VOICE);
                 }
             }
-			//If we do have a grabbed item, put it there. If we have an item in there already, it becomes the new grabbed item
+			//If we do have a grabbed item, put it where we've clicked. If we have an item in there already, it becomes the new grabbed item
 			else
 			{
                 if (grabbedItemIsFromShop) {
                     if (p.CountInv("POCoin") < newGrabbedItem.getBuyPrice()) {
+                        //Insufficient funds
                         p.A_PlaySound("po/deny", CHAN_VOICE);
                         return;
                     }
                     else {
+                        //Take the coin price and (if applicable) the consumed materials from the player's inventory
                         p.TakeInventory("POCoin", newGrabbedItem.getBuyPrice());
                         Array<String> requirements; newGrabbedItem.getRequirements().Split(requirements, ",");
                         if (requirements.Size() > 0) {
-                            
                             for (int i = 0; i < requirements.Size(); i += 2) {
                                 String className = requirements[i];
                                 int quantity = requirements[i+1].ToInt();
@@ -488,6 +489,7 @@ class FriendlyUIHandler : EventHandler
                 else {
                     p.A_PlaySound("po/inventory/down", CHAN_VOICE);
                 }
+                //If there was already an item in this space, grab it now
  				MFInventoryItem itemToGrab = (invItem.getClassName() == "MFIEmpty" ? NULL : invItem);
                 if (!itemToGrab) {
                     shouldClearUIGrabbedItem = true;
@@ -867,14 +869,14 @@ class FriendlyUIHandler : EventHandler
                     String tokenType = tokens[i].Mid(1, 1);
                     String tokenValue = tokens[i].Mid(3, tokens[i].Length()-4);
 
-                    if (tokenType == "F") {
+                    if (tokenType == "F") { //Indicates face texture to use
                         parsedDialogTexture = tokenValue;
                     }
                     if (tokenType == "R") { //Response
                         tokenValue.Substitute("_", " ");
                         parsedDialogOptions.push(tokenValue);
                     }
-                    if (tokenType == "D") { //Destination (for responses)
+                    if (tokenType == "D") { //Destination (immediately follows response, otherwise response has no effect on flow)
                         parsedDialogDestinations.push(tokenValue.ToInt());
                     }
                     if (tokenType == "S") { //Set flag

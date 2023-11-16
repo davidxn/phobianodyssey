@@ -171,27 +171,25 @@ script "rpgMovement" (void) {
         clearFlag("BlockUseKey");
 		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
 		int oldButtons = GetPlayerInput(0, INPUT_OLDBUTTONS);
-		if (buttons & BT_LEFT) {
+		int targetAngle = 0;
+		int myTurnRate = TURN_RATE;
+		if (buttons & BT_LEFT || buttons & BT_RIGHT) {
             SetPlayerProperty(1, 1, PROP_TOTALLYFROZEN);
 			SetActorAngle(0, quantizeAngle(GetActorAngle(0)));
-			int targetAngle = GetActorAngle(0) + 0.25;
+			ScriptCall("PoLogger", "Log", "turn", StrParam(s:"Player angle quantized to ", f:GetActorAngle(0)));
+			targetAngle = GetActorAngle(0) + 0.25;
+
+			//Switch the directions if we're going right
+			if (buttons & BT_RIGHT) { targetAngle = GetActorAngle(0) - 0.25; myTurnRate = 0 - myTurnRate; }
+
+			//Loop to perform the turn
 			for (i = 0; i < ANGLE_QUARTER_TURN/TURN_RATE; i++) {
-				ChangeActorAngle(0, GetActorAngle(0) + TURN_RATE);
+				ChangeActorAngle(0, GetActorAngle(0) + myTurnRate);
 				delay(1);
 			}
+			if (targetAngle < 0.0) { targetAngle += 1.0; }
 			ChangeActorAngle(0, targetAngle);
-			delay(2);
-            SetPlayerProperty(1, 0, PROP_TOTALLYFROZEN);
-		}
-		if (buttons & BT_RIGHT) {
-            SetPlayerProperty(1, 1, PROP_TOTALLYFROZEN);
-			SetActorAngle(0, quantizeAngle(GetActorAngle(0)));
-			targetAngle = GetActorAngle(0) - 0.25;
-			for (i = 0; i < ANGLE_QUARTER_TURN/TURN_RATE; i++) {
-				ChangeActorAngle(0, GetActorAngle(0) - TURN_RATE);
-				delay(1);
-			}
-			ChangeActorAngle(0, targetAngle);
+			ScriptCall("PoLogger", "Log", "turn", StrParam(s:"Player angle finished at ", f:GetActorAngle(0)));
 			delay(2);
             SetPlayerProperty(1, 0, PROP_TOTALLYFROZEN);
 		}
@@ -514,6 +512,7 @@ function int quantizeAngle(int angle) {
 		case 1 << 16: x = 0.25; break;
 		case 2 << 16: x = 0.5; break;
 		case 3 << 16: x = 0.75; break;
+		default: x = 0;
 	}
 	return x;
 }

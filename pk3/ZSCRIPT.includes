@@ -1,5 +1,6 @@
 version "4.0"
 
+#include "zscript/Logger.zs"
 #include "zscript/DataLibrary.zs"
 #include "zscript/FieldItems.zs"
 #include "zscript/FOE.zs"
