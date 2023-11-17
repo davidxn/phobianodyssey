@@ -425,12 +425,10 @@ class FriendlyUIHandler : EventHandler
         {
             int shopIndex = e.Args[0];
             MFInventoryItem invItem = DataLibrary.GetInstance().itemShopInventory[shopIndex];
-            //If our inventory is full, refuse
-            if (DataLibrary.InventoryIsFull()) {
-                p.A_PlaySound("po/deny");
-            }
+            if (DataLibrary.InventoryIsFull()) { p.A_PlaySound("po/deny"); return; } //If our inventory is full, refuse
+            
             //If we don't already have a new grabbed item, grab this one
-            else if (!newGrabbedItem) {
+            if (!newGrabbedItem) {
                 String newItemClassName = invItem.getClassName();
                 newGrabbedItem = MFInventoryItem(new(newItemClassName)).Init();
                 grabbedItemIsFromShop = true;
@@ -576,7 +574,7 @@ class FriendlyUIHandler : EventHandler
 
                     //If we have the item shop open, also handle shop-related clicks
                     if (DataLibrary.ReadData("OpenShopScreen") == "1") {
-                        if (uiGrabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("DroppedItemToShop"); return true; }
+                        if (uiGrabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("Action_DroppedItemToShop"); return true; }
                         if (hoveredShopNumber != -1) { EventHandler.SendNetworkEvent("Action_ClickedShopStack", hoveredShopNumber); return true; }
                     }
                     return true;
