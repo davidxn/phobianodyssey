@@ -1,15 +1,22 @@
 class DataLibrary : Thinker
 {
-    //Level status index corresponds to map number
+    //Read/write dictionary for all global variables
     Dictionary dic;
+
+    //Read dictionaries for game data
     Dictionary monsterParties;
     Dictionary monsterPops;
     Dictionary squareData;
+
+    //Player properties
     Array<MFInventoryItem> MFinventory;
     Array<POWeaponSlot> weaponSlots;
     int inventorySize;
     int weaponInventorySize;
+
     POChest chestToOpen;
+
+    //Shop inventories
     Array<MFInventoryItem> itemShopInventory;
     Array<POWeaponSlot> armoryInventory;
     
@@ -133,9 +140,9 @@ class DataLibrary : Thinker
     
     static clearscope String ReadData(String position) { return DataLibrary.GetInstance().dic.At(position); }
     static clearscope String ReadSquareData(String position) { return DataLibrary.GetInstance().squareData.At(position); }
-
     static clearscope int ReadInt(String position) { return DataLibrary.GetInstance().dic.At(position).ToInt(); }
     static clearscope double ReadDouble(String position) { return DataLibrary.GetInstance().dic.At(position).ToDouble(); }
+
     static String ReadClassnameByID(int id) { return DataLibrary.inst().squareData.At("ItemID" .. id); }
     
     //////////////////////////////////////////////

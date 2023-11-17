@@ -92,7 +92,7 @@ class FriendlyUIHandler : EventHandler
 		initialized = true;
 		InitFonts();
 
-        //Retrieve and cache textures
+        //Set up our delegates
         dialogParser = new("DialogParser");
         tx = new("TextureCache");
         tx.Init();
@@ -110,13 +110,8 @@ class FriendlyUIHandler : EventHandler
         }
         // get mouse coordinates in % based numbers used by drawers
 		Vector2 mv = DrawFunctions.GetVirtualVector(mouseCursorPos);
-        
-        if (DataLibrary.ReadInt("shouldHideDialog") == 1) { dialogParser.dialogOpacity = 0; DataLibrary.GetInstance().dic.Insert("shouldHideDialog", "0"); return; }
-        if (DataLibrary.ReadInt("shouldEraseText") == 1) {
-            dialogParser.ClearDialog();
-            DataLibrary.GetInstance().dic.Insert("shouldEraseText", "0");
-            return;
-        }
+
+        if (DataLibrary.ReadInt("UIRequest_ClearDialog")) { dialogParser.ClearDialog(); DataLibrary.GetInstance().dic.Insert("UIRequest_ClearDialog", "0"); return; }
 
         //We display the dialogue texture first because it has to appear behind the dialogue window
         if (dialogParser.parsedDialogTexture && dialogParser.dialogOpacity >= 1.0) {
@@ -456,23 +451,15 @@ class FriendlyUIHandler : EventHandler
             }
         }
         else if (e.Name == "Action_DroppedItemToShop") {
-            if (!newGrabbedItem) {
-                PoLogger.Log("inv", String.Format("\caERROR: Requested to drop an item to shop, but no item found!"));
-            }
-            else if (grabbedItemIsFromShop) {
-                //Put it back
-                newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
-            }
-            else if (newGrabbedItem.getSellPrice() == 0) {
-                //No sale price means this is a key item
-                p.A_PlaySound("po/deny");
-            }
-            else {
-                int sellPrice = newGrabbedItem.getSellPrice();
-                p.GiveInventory("POCoin", sellPrice);
-                newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
-                p.A_PlaySound("po/sell");
-            }
+            if (!newGrabbedItem) { PoLogger.Log("inv", String.Format("\caERROR: Requested to drop an item to shop, but no item found!")); return; }
+            if (grabbedItemIsFromShop) { newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false; return; } //Just put it back if this item came from the shop
+            if (newGrabbedItem.getSellPrice() == 0) { p.A_PlaySound("po/deny"); return; } // No sale price = this is a key item
+
+            // OK, sell the item
+            int sellPrice = newGrabbedItem.getSellPrice();
+            p.GiveInventory("POCoin", sellPrice);
+            newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
+            p.A_PlaySound("po/sell");
         }
         else if (e.Name == "Action_ScrolledShop") {
             int direction = e.Args[0] ? 1 : -1;
@@ -490,7 +477,7 @@ class FriendlyUIHandler : EventHandler
             String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
             String dialogKey = "CONV_" .. eventDialogConversation .. "_" .. destination;
             String theString = StringTable.Localize("$" .. dialogKey);
-            DataLibrary.GetInstance().dic.Insert("shouldEraseText", "1");
+            DataLibrary.GetInstance().dic.Insert("UIRequest_ClearDialog", "1");
 
             if (theString == "STOP" || theString == dialogKey) {
                 //If this is a chest and it forces an event afterwards, run it now
@@ -500,7 +487,6 @@ class FriendlyUIHandler : EventHandler
                 ) {
                     DataLibrary.writeData(NULL, "ForceEvent", "runEvent" .. DataLibrary.GetInstance().chestToOpen.causeEvent);
                 }
-                DataLibrary.WriteData(NULL, "shouldHideDialog", "1");
                 DataLibrary.WriteData(NULL, "showEventDialog", "0");
                 DataLibrary.WriteData(NULL, "eventDialogPage", "");
                 DataLibrary.WriteData(NULL, "eventDialogConversation", "");
@@ -697,12 +683,8 @@ class FriendlyUIHandler : EventHandler
 
 		if ( automapactive ) { RenderAutomapScreen(); return; }
         
-        if (DataLibrary.ReadData("OpenShopScreen") == "1") {
-            DrawItemShopScreen();
-        }
-        if (DataLibrary.ReadData("OpenArmoryScreen") == "1") {
-            DrawArmoryScreen();
-        }
+        if (DataLibrary.ReadData("OpenShopScreen") == "1") { DrawItemShopScreen(); }
+        if (DataLibrary.ReadData("OpenArmoryScreen") == "1") { DrawArmoryScreen(); }
 		
         DrawInvScreen();
 
@@ -710,7 +692,9 @@ class FriendlyUIHandler : EventHandler
             dialogParser.ParseDialog();
             DrawDialog();
         } else {
-            dialogParser.dialogOpacity = 0;
+            if (dialogParser.dialogOpacity > 0) {
+                dialogParser.dialogOpacity = 0;
+            }
         }
 	}
 
