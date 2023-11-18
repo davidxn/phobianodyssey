@@ -149,7 +149,7 @@ class DataLibrary : Thinker
     // Item Inventory
     //////////////////////////////////////////////
     
-    static bool InventoryAdd(String classname, int slot) {
+    static bool InventoryAdd(String classname, int slot = -1) {
         let thing = MFInventoryItem(new(classname)).Init();
         if (slot >= 0 && slot < DataLibrary.inst().inventorySize) {
             DataLibrary.inst().MFinventory[slot] = thing;

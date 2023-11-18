@@ -1,7 +1,7 @@
 class FriendlyUIHandler : EventHandler
 {
 	// mouse movement will be multiplied by this
-	const MOUSE_SENSITIVITY_FACTOR_X = 0.6;
+	const MOUSE_SENSITIVITY_FACTOR_X = 1.9;
     const MOUSE_SENSITIVITY_FACTOR_Y = 1.9;
 
 	ui bool initialized;
@@ -20,10 +20,11 @@ class FriendlyUIHandler : EventHandler
     // Inventory screen stuff
 	ui int hoveredInvStack;
     ui int hoveredShopNumber;
-	ui MFInventoryItem uiGrabbedItem;
-	play MFInventoryItem newGrabbedItem;
+
+	play MFInventoryItem grabbedItem;
     play bool grabbedItemIsFromShop;
-	play bool shouldClearUIGrabbedItem;
+    play int grabbedItemFromSlot;
+
 	ui bool hoveringDropButton;
     ui bool hoveringOverShop;
     ui int shopItemsDisplayed;
@@ -90,6 +91,7 @@ class FriendlyUIHandler : EventHandler
 	ui void Init()
 	{
 		initialized = true;
+        PoLogger.Log("inv", "Initialized UI");
 		InitFonts();
 
         //Set up our delegates
@@ -119,7 +121,6 @@ class FriendlyUIHandler : EventHandler
         }
         
         DrawFunctions.ScreenDrawTexture(tx.get("dialogBackFrame"), 0.5, 0.75, alpha: dialogParser.dialogOpacity, centerX: true, centerY: true);
-
 
         if (dialogParser.parsedDialogChestItem) {
             DrawFunctions.ScreenDrawTextureWithinArea(dialogParser.parsedDialogChestItem.getTexture(), 0.5, 0.2, 0.3, 0.3, alpha:dialogParser.dialogOpacity, centerX:true);
@@ -151,8 +152,6 @@ class FriendlyUIHandler : EventHandler
                 yPos += 0.1;
             }
         }
-
-        return;
     }
 
     ui void DrawItemShopScreen()
@@ -161,8 +160,7 @@ class FriendlyUIHandler : EventHandler
             EventHandler.SendNetworkEvent("OpenInventory");
         }
         DrawFunctions.ScreenDrawTexture(tx.get("itemShopBG"), 0, 0, alpha: 1.0);
-        double x = ITEM_SHOP_START_X;
-		double y = ITEM_SHOP_START_Y;
+        Vector2 drawSpot = (ITEM_SHOP_START_X, ITEM_SHOP_START_Y);
 		Vector2 mv = DrawFunctions.GetVirtualVector(mouseCursorPos);
         
         hoveringOverShop = (mv.x >= ITEM_SHOP_START_X);
@@ -173,17 +171,16 @@ class FriendlyUIHandler : EventHandler
         //Display material inventory
         String materialsString = "POJam,POHorn,POLeather,PODarkHeart";
         Array<String> materials; materialsString.Split(materials, ",");
-        double materialX = 0.41;
-        double materialY = 0.02;
+        Vector2 materialSpot = (0.41, 0.02);
         for (int i = 0; i < materials.Size(); i++) {
             class<Actor> cls = materials[i];
             int quantity = p.CountInv(materials[i]);
             String spriteName = POMaterial(GetDefaultByType(cls)).mySprite .. "A0";
             if (quantity > 0) {
                 TextureID tex = TexMan.CheckForTexture(spriteName, TexMan.Type_Sprite);
-                DrawFunctions.ScreenDrawTextureWithinArea(tex, materialX, materialY, MATERIAL_ICON_WIDTH, MATERIAL_ICON_HEIGHT);
-                DrawFunctions.ScreenDrawString(quantity .. "", Font.CR_WHITE, tinyFont, materialX + 0.05, materialY+0.002);
-                materialY += 0.033;
+                DrawFunctions.ScreenDrawTextureWithinArea(tex, materialSpot.x, materialSpot.y, MATERIAL_ICON_WIDTH, MATERIAL_ICON_HEIGHT);
+                DrawFunctions.ScreenDrawString(quantity .. "", Font.CR_WHITE, tinyFont, materialSpot.x + 0.05, materialSpot.y+0.002);
+                materialSpot.y += 0.033;
             }
         }
         
@@ -223,27 +220,27 @@ class FriendlyUIHandler : EventHandler
             //We've passed the requirements for display!
             shopItemsDisplayed++;
             
-            DrawFunctions.ScreenDrawTexture(tx.get("invItemBG"), x, y, alpha: 0.5);
-            //Can't hover over a shop item if we already have something, or if it's disabled
-            bool hovering = requirementsAllFulfilled && !uiGrabbedItem && (mv.x >= x && mv.x <= x + INV_STACK_BUTTON_WIDTH && mv.y >= y && mv.y <= y + INV_STACK_BUTTON_HEIGHT);
+            DrawFunctions.ScreenDrawTexture(tx.get("invItemBG"), drawSpot.x, drawSpot.y, alpha: 0.5);
+            //Is the mouse hovering over this? Highlight it, if it's eligible
+            bool hovering = requirementsAllFulfilled && !grabbedItem && (mv.x >= drawSpot.x && mv.x <= drawSpot.x + INV_STACK_BUTTON_WIDTH && mv.y >= drawSpot.y && mv.y <= drawSpot.y + INV_STACK_BUTTON_HEIGHT);
             if (hovering) {
                 // hilight box
-                DrawFunctions.ScreenDrawTexture(tx.get("invHilight"), x, y);
+                DrawFunctions.ScreenDrawTexture(tx.get("invHilight"), drawSpot.x, drawSpot.y);
                 hoveredShopNumber = i;
             }
 			// draw item sprite
-            DrawFunctions.ScreenDrawTextureWithinArea(item.getTexture(), x, y, INV_STACK_BUTTON_WIDTH, INV_STACK_BUTTON_HEIGHT, INV_STACK_BUTTON_MARGIN_INNERPCT, alpha: (requirementsAllFulfilled ? 1.0 : 0.5));
+            DrawFunctions.ScreenDrawTextureWithinArea(item.getTexture(), drawSpot.x, drawSpot.y, INV_STACK_BUTTON_WIDTH, INV_STACK_BUTTON_HEIGHT, INV_STACK_BUTTON_MARGIN_INNERPCT, alpha: (requirementsAllFulfilled ? 1.0 : 0.5));
             
             int itemNameColor = Font.CR_WHITE;
             if (!requirementsAllFulfilled) {
                 itemNameColor = Font.CR_DARKGRAY;
             }
 
-            DrawFunctions.ScreenDrawString(item.getName(), itemNameColor, journalFont, x + 0.09, y + 0.01);
-            DrawFunctions.ScreenDrawString(item.getBuyPrice() .."", Font.CR_GREEN, journalFont, x + 0.4, y + 0.01);
-            DrawItemRequirements(interpretedRequirements, x, y);
+            DrawFunctions.ScreenDrawString(item.getName(), itemNameColor, journalFont, drawSpot.x + 0.09, drawSpot.y + 0.01);
+            DrawFunctions.ScreenDrawString(item.getBuyPrice() .."", Font.CR_GREEN, journalFont, drawSpot.x + 0.4, drawSpot.y + 0.01);
+            DrawItemRequirements(interpretedRequirements, drawSpot.x, drawSpot.y);
 
-            y += INV_STACK_BUTTON_HEIGHT + INV_STACK_BUTTON_MARGIN;
+            drawSpot.y += INV_STACK_BUTTON_HEIGHT + INV_STACK_BUTTON_MARGIN;
         }
     }
     
@@ -360,103 +357,116 @@ class FriendlyUIHandler : EventHandler
         }
     }
 
+    play void clearGrabbedItem(bool putItBack = false) {
+        if (!grabbedItem) { return; }
+        if (!putItBack) {
+            PoLogger.Log("inv", "Cleared grabbed item without placing it.");
+            grabbedItem = NULL; grabbedItemIsFromShop = false; grabbedItemFromSlot = -1; return;
+        }
+        PoLogger.Log("inv", "Attempting to replace grabbed item in inventory");
+        DataLibrary.GetInstance().InventoryAdd(grabbedItem.getClassName());
+        grabbedItem = NULL; grabbedItemIsFromShop = false; grabbedItemFromSlot = -1;
+    }
+
+    override void WorldUnloaded(WorldEvent e)
+    {
+        //If an item is grabbed and we transition into another level, attempt to save it
+        clearGrabbedItem(true);
+    }
+
 	override void NetworkProcess(ConsoleEvent e)
 	{
         PlayerPawn p = PlayerPawn(players[e.Player].mo);
 
-		if ( e.Name == "ClearedUIGrabbedItem" ) { newGrabbedItem = NULL; shouldClearUIGrabbedItem = false; grabbedItemIsFromShop = false; }
-        else if ( e.Name == "ClearedUIGrabbedArm" ) { grabbedArm = NULL; shouldClearUIGrabbedArm = false; }
-        else if ( e.Name == "Action_BinnedItem" ) { p.A_PlaySound("po/inventory/bin", CHAN_VOICE); }
-        else if ( e.Name == "CloseInventory" ) { inventoryIsOpen = false; }
+        if ( e.Name == "Action_BinnedGrabbedItem" ) { clearGrabbedItem(); p.A_PlaySound("po/inventory/bin", CHAN_VOICE); }
+        else if ( e.Name == "CloseInventory" ) { inventoryIsOpen = false; clearGrabbedItem(true); }
         else if ( e.Name == "OpenInventory" ) { inventoryIsOpen = true; }
-        else if ( e.Name == "ToggleInventory" ) { p.A_PlaySound("po/inventory/open", CHAN_VOICE); inventoryIsOpen = !inventoryIsOpen; }
+        else if ( e.Name == "ToggleInventory" ) { p.A_PlaySound("po/inventory/open", CHAN_VOICE); inventoryIsOpen = !inventoryIsOpen; clearGrabbedItem(true); }
 
-        else if ( e.Name == "ClickedInvStack" )
+        else if ( e.Name == "Action_ClickedInvStack" )
 		{
-			int stackIndex = e.Args[0];
-			MFInventoryItem invItem = DataLibrary.GetInstance().MFinventory[stackIndex];
+			int inventorySlotNumber = e.Args[0];
+			MFInventoryItem invItem = DataLibrary.GetInstance().MFinventory[inventorySlotNumber];
 
             //If we don't have a grabbed item and we've clicked on a non-empty stack, grab it.
-			if (!newGrabbedItem) {
+			if (!grabbedItem) {
                 if (invItem.getClassName() != "MFIEmpty") {
-                    PoLogger.Log("inv", String.Format("\ckDEBUG: Grabbed item %s from %d without replacing", invItem.getClassName(), stackIndex));
-                    newGrabbedItem = invItem;
-                    DataLibrary.GetInstance().InventoryRemove(stackIndex);
+                    DataLibrary.GetInstance().InventoryRemove(inventorySlotNumber);
+                    grabbedItem = invItem;
+                    grabbedItemFromSlot = inventorySlotNumber;
                     p.A_PlaySound("po/inventory/up", CHAN_VOICE);
                 }
+                return;
             }
 			//If we do have a grabbed item, put it where we've clicked. If we have an item in there already, it becomes the new grabbed item
-			else
-			{
-                if (grabbedItemIsFromShop) {
-                    if (p.CountInv("POCoin") < newGrabbedItem.getBuyPrice()) {
-                        //Insufficient funds
-                        p.A_PlaySound("po/deny", CHAN_VOICE);
-                        return;
-                    }
-                    else {
-                        //Take the coin price and (if applicable) the consumed materials from the player's inventory
-                        p.TakeInventory("POCoin", newGrabbedItem.getBuyPrice());
-                        Array<String> requirements; newGrabbedItem.getRequirements().Split(requirements, ",");
-                        if (requirements.Size() > 0) {
-                            for (int i = 0; i < requirements.Size(); i += 2) {
-                                String className = requirements[i];
-                                int quantity = requirements[i+1].ToInt();
-                                p.TakeInventory(className, quantity);
-                            }
-                        }
-                        p.A_PlaySound("po/pickup/cash", CHAN_VOICE);
-                    }
-                }
+            if (grabbedItemIsFromShop) {
+                // If trying to put this in inventory from shop, check the price first
+                if (p.CountInv("POCoin") < grabbedItem.getBuyPrice()) { p.A_PlaySound("po/deny", CHAN_VOICE); return; }
                 else {
-                    p.A_PlaySound("po/inventory/down", CHAN_VOICE);
+                    //Take the coin price and (if applicable) the consumed materials from the player's inventory
+                    //Materials are checked previously - if insufficient materials, won't be able to pick it up from shop
+                    p.TakeInventory("POCoin", grabbedItem.getBuyPrice());
+                    Array<String> requirements; grabbedItem.getRequirements().Split(requirements, ",");
+                    if (requirements.Size() > 0) {
+                        for (int i = 0; i < requirements.Size(); i += 2) {
+                            String className = requirements[i];
+                            int quantity = requirements[i+1].ToInt();
+                            p.TakeInventory(className, quantity);
+                        }
+                    }
+                    p.A_PlaySound("po/pickup/cash", CHAN_VOICE);
                 }
-                //If there was already an item in this space, grab it now
- 				MFInventoryItem itemToGrab = (invItem.getClassName() == "MFIEmpty" ? NULL : invItem);
-                if (!itemToGrab) {
-                    shouldClearUIGrabbedItem = true;
-                }
-                DataLibrary.GetInstance().InventoryAdd(newGrabbedItem.getClassName(), stackIndex);
-                newGrabbedItem = itemToGrab;
-                grabbedItemIsFromShop = false;
-			}
+            }
+            else {
+                p.A_PlaySound("po/inventory/down", CHAN_VOICE);
+            }
+            DataLibrary.GetInstance().InventoryAdd(grabbedItem.getClassName(), inventorySlotNumber);
+            clearGrabbedItem();
+
+            //If there was already an item in this space, grab it now
+			MFInventoryItem itemToGrab = (invItem.getClassName() == "MFIEmpty" ? NULL : invItem);
+            if (itemToGrab) {
+                grabbedItem = itemToGrab;
+                grabbedItemFromSlot = inventorySlotNumber;
+            }
 		}
         else if ( e.Name == "Action_ClickedShopStack" )
         {
             int shopIndex = e.Args[0];
             MFInventoryItem invItem = DataLibrary.GetInstance().itemShopInventory[shopIndex];
-            if (DataLibrary.InventoryIsFull()) { p.A_PlaySound("po/deny"); return; } //If our inventory is full, refuse
+            if (DataLibrary.InventoryIsFull()) { p.A_PlaySound("po/deny"); return; } //If our inventory is full, can't buy!
             
-            //If we don't already have a new grabbed item, grab this one
-            if (!newGrabbedItem) {
+            //If we don't have an item already grabbed, grab this one
+            if (!grabbedItem) {
                 String newItemClassName = invItem.getClassName();
-                newGrabbedItem = MFInventoryItem(new(newItemClassName)).Init();
+                grabbedItem = MFInventoryItem(new(newItemClassName)).Init();
                 grabbedItemIsFromShop = true;
                 p.A_PlaySound("po/inventory/up", CHAN_VOICE);
             } else {
                 grabbedItemIsFromShop = false;
+                grabbedItemFromSlot = -1;
             }
         }
         else if ( e.Name == "Action_UsedInventorySlot" )
         {
-            int stackIndex = e.Args[0];
-            MFInventoryItem invItem = DataLibrary.GetInstance().MFinventory[stackIndex];
+            int inventorySlotNumber = e.Args[0];
+            MFInventoryItem invItem = DataLibrary.GetInstance().MFinventory[inventorySlotNumber];
             bool success = invItem.use();
             if (success) {
-                DataLibrary.GetInstance().InventoryRemove(stackIndex);
+                DataLibrary.GetInstance().InventoryRemove(inventorySlotNumber);
             } else {
                 p.A_PlaySound("po/deny");
             }
         }
         else if (e.Name == "Action_DroppedItemToShop") {
-            if (!newGrabbedItem) { PoLogger.Log("inv", String.Format("\caERROR: Requested to drop an item to shop, but no item found!")); return; }
-            if (grabbedItemIsFromShop) { newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false; return; } //Just put it back if this item came from the shop
-            if (newGrabbedItem.getSellPrice() == 0) { p.A_PlaySound("po/deny"); return; } // No sale price = this is a key item
+            if (!grabbedItem) { PoLogger.Log("inv", "Requested to drop an item to shop, but no item found!"); return; }
+            if (grabbedItemIsFromShop) { clearGrabbedItem(); return; } //Just put it back if this item came from the shop
+            if (grabbedItem.getSellPrice() == 0) { p.A_PlaySound("po/deny"); return; } // No sale price = this is a key item
 
             // OK, sell the item
-            int sellPrice = newGrabbedItem.getSellPrice();
+            int sellPrice = grabbedItem.getSellPrice();
             p.GiveInventory("POCoin", sellPrice);
-            newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
+            clearGrabbedItem();
             p.A_PlaySound("po/sell");
         }
         else if (e.Name == "Action_ScrolledShop") {
@@ -493,11 +503,11 @@ class FriendlyUIHandler : EventHandler
                 DataLibrary.WriteData(NULL, "eventDialogPage", destination .. "");
             }
         }
-        else if (e.Name == "CloseShopScreen" ) {
-            newGrabbedItem = NULL; shouldClearUIGrabbedItem = true; grabbedItemIsFromShop = false;
+        else if (e.Name == "Action_CloseShopScreen" ) {
+            clearGrabbedItem(true); //Clear grabbed item but put it back in inventory
             DataLibrary.WriteDataFromUI("OpenShopScreen", "0");
         }
-        else if (e.Name == "CloseArmoryScreen" ) {
+        else if (e.Name == "Action_CloseArmoryScreen" ) {
             grabbedArm = NULL; shouldClearUIGrabbedArm = true;
             DataLibrary.WriteDataFromUI("OpenArmoryScreen", "0");
         }
@@ -533,22 +543,14 @@ class FriendlyUIHandler : EventHandler
         if ( e.Type == InputEvent.Type_KeyDown && (e.KeyScan == invBind1 || e.KeyScan == invBind2)) {
             //If the dialogue screen is open, ignore the keypress. If shop/armory is open, close them but let the press through
             if (showEventDialog) { return true; }                        
-            if (DataLibrary.ReadData("OpenArmoryScreen") == "1") { EventHandler.SendNetworkEvent("CloseArmoryScreen"); }
-            if (DataLibrary.ReadData("OpenShopScreen") == "1") { EventHandler.SendNetworkEvent("CloseShopScreen"); }
+            if (DataLibrary.ReadData("OpenArmoryScreen") == "1") { EventHandler.SendNetworkEvent("Action_CloseArmoryScreen"); }
+            if (DataLibrary.ReadData("OpenShopScreen") == "1") { EventHandler.SendNetworkEvent("Action_CloseShopScreen"); }
 
             EventHandler.SendNetworkEvent("ToggleInventory");           
             return true;
         }
 
         if (inventoryIsOpen) {
-            if ( newGrabbedItem ) {	uiGrabbedItem = newGrabbedItem;	}
-
-            if ( shouldClearUIGrabbedItem )
-            {
-                uiGrabbedItem = NULL;
-                EventHandler.SendNetworkEvent("ClearedUIGrabbedItem");
-            }
-
             // grab mouse move & clicks for inventory cursor
             if ( e.Type == InputEvent.Type_Mouse )
             {
@@ -563,18 +565,16 @@ class FriendlyUIHandler : EventHandler
                 // handle mouse clicks
                 if ( e.KeyScan == InputEvent.Key_Mouse1 )
                 {
-                    if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("ClickedInvStack", hoveredInvStack); return true; }
+                    if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("Action_ClickedInvStack", hoveredInvStack); return true; }
 
-                    if ( hoveringDropButton && uiGrabbedItem && !grabbedItemIsFromShop && uiGrabbedItem.getSellPrice() > 0) {
-                        uiGrabbedItem = NULL;
-                        EventHandler.SendNetworkEvent("ClearedUIGrabbedItem");
-                        EventHandler.SendNetworkEvent("Action_BinnedItem");
+                    if ( hoveringDropButton && grabbedItem && !grabbedItemIsFromShop && grabbedItem.getSellPrice() > 0) {
+                        EventHandler.SendNetworkEvent("Action_BinnedGrabbedItem");
                         return true;
                     }
 
                     //If we have the item shop open, also handle shop-related clicks
                     if (DataLibrary.ReadData("OpenShopScreen") == "1") {
-                        if (uiGrabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("Action_DroppedItemToShop"); return true; }
+                        if (grabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("Action_DroppedItemToShop"); return true; }
                         if (hoveredShopNumber != -1) { EventHandler.SendNetworkEvent("Action_ClickedShopStack", hoveredShopNumber); return true; }
                     }
                     return true;
@@ -769,18 +769,18 @@ class FriendlyUIHandler : EventHandler
         //The rest of this is only for the inventory screen
         if (!inventoryIsOpen) { return; }
 
-        if (uiGrabbedItem) {
-            DrawFunctions.ScreenDrawTextureWithinArea(uiGrabbedItem.getTexture(), v.x + iconPadX, v.y + iconPadY, iconArea, iconArea);
+        if (grabbedItem) {
+            DrawFunctions.ScreenDrawTextureWithinArea(grabbedItem.getTexture(), v.x + iconPadX, v.y + iconPadY, iconArea, iconArea);
         }
 
 		// tooltip-style text for grabbed / hovered item
-		MFInventoryItem item;
-		if ( uiGrabbedItem ) { item = uiGrabbedItem; }
-		else if ( hoveredInvStack != -1 ) { item = DataLibrary.GetInstance().InventoryPeek(hoveredInvStack); }
-        else if ( hoveredShopNumber != -1 ) { item = DataLibrary.GetInstance().itemShopInventory[hoveredShopNumber]; }
+		MFInventoryItem tooltipSubject;
+		if ( grabbedItem ) { tooltipSubject = grabbedItem; }
+		else if ( hoveredInvStack != -1 ) { tooltipSubject = DataLibrary.GetInstance().InventoryPeek(hoveredInvStack); }
+        else if ( hoveredShopNumber != -1 ) { tooltipSubject = DataLibrary.GetInstance().itemShopInventory[hoveredShopNumber]; }
 		else return;
 
-		String toolTipText = item.getName();
+		String toolTipText = tooltipSubject.getName();
 		double textMargin = -0.04;
 		Screen.DrawText(tinyFont, Font.CR_LIGHTBLUE,
 						(v.x + textMargin) * DrawFunctions.UI_WIDTH,
@@ -788,7 +788,7 @@ class FriendlyUIHandler : EventHandler
 						toolTipText,
 						DTA_VirtualWidth, DrawFunctions.UI_WIDTH,
 						DTA_VirtualHeight, DrawFunctions.UI_HEIGHT);
-        String descriptionKey = "INV_" .. item.getClassName();
+        String descriptionKey = "INV_" .. tooltipSubject.getClassName();
 		String descriptionText = StringTable.Localize("$" .. descriptionKey);
         if ((descriptionText == descriptionKey) || !descriptionText) {
             return;
