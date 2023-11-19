@@ -4,6 +4,9 @@ class FriendlyUIHandler : EventHandler
 	const MOUSE_SENSITIVITY_FACTOR_X = 1.9;
     const MOUSE_SENSITIVITY_FACTOR_Y = 1.9;
 
+    const SLOT_NONE = -1;
+    const SLOT_SHOP = -2;
+
 	ui bool initialized;
 
 	// Fonts
@@ -22,7 +25,6 @@ class FriendlyUIHandler : EventHandler
     ui int hoveredShopNumber;
 
 	play MFInventoryItem grabbedItem;
-    play bool grabbedItemIsFromShop;
     play int grabbedItemFromSlot;
 
 	ui bool hoveringDropButton;
@@ -358,11 +360,11 @@ class FriendlyUIHandler : EventHandler
         if (!grabbedItem) { return; }
         if (!putItBack) {
             PoLogger.Log("inv", "Cleared grabbed item without placing it.");
-            grabbedItem = NULL; grabbedItemIsFromShop = false; grabbedItemFromSlot = -1; return;
+            grabbedItem = NULL; grabbedItemFromSlot = SLOT_NONE; return;
         }
         PoLogger.Log("inv", "Attempting to replace grabbed item in inventory");
         DataLibrary.GetInstance().InventoryAdd(grabbedItem.getClassName());
-        grabbedItem = NULL; grabbedItemIsFromShop = false; grabbedItemFromSlot = -1;
+        grabbedItem = NULL; grabbedItemFromSlot = SLOT_NONE;
     }
 
     override void WorldUnloaded(WorldEvent e)
@@ -396,7 +398,7 @@ class FriendlyUIHandler : EventHandler
                 return;
             }
 			//If we do have a grabbed item, put it where we've clicked. If it was from the shop we need to take payment now
-            if (grabbedItemIsFromShop) {
+            if (grabbedItemFromSlot == SLOT_SHOP) {
                 // If trying to put this in inventory from shop, check the price first
                 if (p.CountInv("POCoin") < grabbedItem.getBuyPrice()) { p.A_PlaySound("po/deny", CHAN_VOICE); return; }
                 else {
@@ -437,11 +439,10 @@ class FriendlyUIHandler : EventHandler
             if (!grabbedItem) {
                 String newItemClassName = invItem.getClassName();
                 grabbedItem = MFInventoryItem(new(newItemClassName)).Init();
-                grabbedItemIsFromShop = true;
+                grabbedItemFromSlot = SLOT_SHOP;
                 p.A_PlaySound("po/inventory/up", CHAN_VOICE);
             } else {
-                grabbedItemIsFromShop = false;
-                grabbedItemFromSlot = -1;
+                grabbedItemFromSlot = SLOT_NONE;
             }
         }
         else if ( e.Name == "Action_UsedInventorySlot" )
@@ -457,7 +458,7 @@ class FriendlyUIHandler : EventHandler
         }
         else if (e.Name == "Action_DroppedItemToShop") {
             if (!grabbedItem) { PoLogger.Log("inv", "Requested to drop an item to shop, but no item found!"); return; }
-            if (grabbedItemIsFromShop) { clearGrabbedItem(); return; } //Just put it back if this item came from the shop
+            if (grabbedItemFromSlot == SLOT_SHOP) { clearGrabbedItem(); return; } //Just put it back if this item came from the shop
             if (grabbedItem.getSellPrice() == 0) { p.A_PlaySound("po/deny"); return; } // No sale price = this is a key item
 
             // OK, sell the item
@@ -549,7 +550,7 @@ class FriendlyUIHandler : EventHandler
             {
                 if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("Action_ClickedInvStack", hoveredInvStack); return true; }
 
-                if ( hoveringDropButton && grabbedItem && !grabbedItemIsFromShop && grabbedItem.getSellPrice() > 0) {
+                if ( hoveringDropButton && grabbedItem && grabbedItemFromSlot != SLOT_SHOP && grabbedItem.getSellPrice() > 0) {
                     EventHandler.SendNetworkEvent("Action_BinnedGrabbedItem");
                     return true;
                 }
