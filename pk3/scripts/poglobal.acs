@@ -146,7 +146,6 @@ script "useHomingDevice" (void) {
 
 script "rpgMovement" (void) {
     clearFlag("PreventMovement");
-    setFlag(StrParam(s:"VisitedMap", d:GetLevelInfo(LEVELINFO_LEVELNUM)));
     delay(15);
     
     switch (GetLevelInfo(LEVELINFO_LEVELNUM)) {
@@ -223,8 +222,6 @@ script "rpgMovement" (void) {
 			int playerZ = GetActorZ(0);
             
             bool canMove = ScriptCall("LevelHelper", "PlayerCanMoveTo", step_x, step_y);
-            str me = canMove ? "" : "\cgNOT ";
-            
 			if (!canMove) { continue; }
             
             //We can move! Let's start
@@ -292,7 +289,7 @@ script "rpgMovement" (void) {
 				//We've hit a FOE, so return to our square and go to an encounter!
                 PlaySound(0, "po/foe/attack", CHAN_AUTO);
 				SetActorPosition(0, playerX, playerY, playerZ, false);
-				ACS_NamedExecute("beginEncounter", 0, foeHit, true);
+				ACS_NamedExecute("beginEncounter", 0, foeHit, COMBAT_FOE);
 				terminate; //Terminate here, as going back to this level will retrigger the script
 			}
 
@@ -310,7 +307,7 @@ script "rpgMovement" (void) {
 			foeHit = ScriptCall("FOEHelper", "moveFOEs");
 			if (foeHit > 0) {
                 PlaySound(0, "po/foe/attack", CHAN_AUTO);
-				ACS_NamedExecute("beginEncounter", 0, foeHit, true);
+				ACS_NamedExecute("beginEncounter", 0, foeHit, COMBAT_FOE);
 				terminate; //Terminate here, as going back to this level will retrigger the script
 			}
 

@@ -90,7 +90,6 @@ class FriendlyUIHandler : EventHandler
 	ui void Init()
 	{
 		initialized = true;
-        PoLogger.Log("inv", "Initialized UI");
 		InitFonts();
 
         //Set up our delegates
@@ -112,7 +111,7 @@ class FriendlyUIHandler : EventHandler
         // get mouse coordinates in % based numbers used by drawers
 		Vector2 mv = DrawFunctions.GetVirtualVector(mouseCursorPos);
 
-        if (DataLibrary.ReadInt("UIRequest_ClearDialog")) { dialogParser.ClearDialog(); DataLibrary.GetInstance().dic.Insert("UIRequest_ClearDialog", "0"); return; }
+        if (DataLibrary.ReadInt("UIRequest_ClearDialog")) { dialogParser.ClearDialog(); DataLibrary.GetInstance().dic.Insert("UIRequest_ClearDialog", "0"); }
 
         //We display the dialogue texture first because it has to appear behind the dialogue window
         if (dialogParser.parsedDialogTexture && dialogParser.dialogOpacity >= 1.0) {
@@ -449,12 +448,8 @@ class FriendlyUIHandler : EventHandler
         {
             int inventorySlotNumber = e.Args[0];
             MFInventoryItem invItem = DataLibrary.GetInstance().MFinventory[inventorySlotNumber];
-            bool success = invItem.use();
-            if (success) {
-                DataLibrary.GetInstance().InventoryRemove(inventorySlotNumber);
-            } else {
-                p.A_PlaySound("po/deny");
-            }
+            if (invItem.use()) { DataLibrary.GetInstance().InventoryRemove(inventorySlotNumber); }
+            else { p.A_PlaySound("po/deny"); }
         }
         else if (e.Name == "Action_DroppedItemToShop") {
             if (!grabbedItem) { PoLogger.Log("inv", "Requested to drop an item to shop, but no item found!"); return; }
@@ -470,9 +465,7 @@ class FriendlyUIHandler : EventHandler
         else if (e.Name == "Action_ScrolledShop") {
             int direction = e.Args[0] ? 1 : -1;
             shopFirstItemIndex += direction;
-            if (shopFirstItemIndex < 0) {
-                shopFirstItemIndex = 0;
-            }
+            shopFirstItemIndex = max(shopFirstItemIndex, 0);
         }
         else if ( e.Name == "Action_AdvancedDialog" ) {
             int destination = e.args[0];
@@ -483,23 +476,25 @@ class FriendlyUIHandler : EventHandler
             String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
             String dialogKey = "CONV_" .. eventDialogConversation .. "_" .. destination;
             String theString = StringTable.Localize("$" .. dialogKey);
+            POLogger.Log("dialog", "Read dialog line from " .. eventDialogConversation .. " " .. destination);
             DataLibrary.GetInstance().dic.Insert("UIRequest_ClearDialog", "1");
 
-            if (theString == "STOP" || theString == dialogKey) {
-                //If this is a chest and it forces an event afterwards, run it now
-                if (
-                    DataLibrary.ReadData("eventDialogConversation") == "OPEN_CHEST" &&
-                    (DataLibrary.GetInstance().chestToOpen && DataLibrary.GetInstance().chestToOpen.causeEvent > 0)
-                ) {
-                    DataLibrary.writeData(NULL, "ForceEvent", "runEvent" .. DataLibrary.GetInstance().chestToOpen.causeEvent);
-                }
-                DataLibrary.WriteData(NULL, "showEventDialog", "0");
-                DataLibrary.WriteData(NULL, "eventDialogPage", "");
-                DataLibrary.WriteData(NULL, "eventDialogConversation", "");
-            }
-            else {
+            if (theString != "STOP" && theString != dialogKey) {
                 DataLibrary.WriteData(NULL, "eventDialogPage", destination .. "");
+                return;
             }
+            POLogger.Log("dialog", "Stopping dialog");
+
+            //If this is a chest and it forces an event afterwards, run it now
+            if (
+                DataLibrary.ReadData("eventDialogConversation") == "OPEN_CHEST" &&
+                (DataLibrary.GetInstance().chestToOpen && DataLibrary.GetInstance().chestToOpen.causeEvent > 0)
+            ) {
+                DataLibrary.writeData(NULL, "ForceEvent", "runEvent" .. DataLibrary.GetInstance().chestToOpen.causeEvent);
+            }
+            DataLibrary.WriteData(NULL, "showEventDialog", "0");
+            DataLibrary.WriteData(NULL, "eventDialogPage", "");
+            DataLibrary.WriteData(NULL, "eventDialogConversation", "");
         }
         else if (e.Name == "Action_CloseShopScreen" ) {
             clearGrabbedItem(true); //Clear grabbed item but put it back in inventory
@@ -541,7 +536,7 @@ class FriendlyUIHandler : EventHandler
         //Now check for inputs on the special screens.
         if (inventoryIsOpen) {
             handleMouseMovement(e);
-            //If this is a keyup, let it through with a false return
+            //If this is a keyup, let it through by returning false.
             if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
             if ( e.Type != InputEvent.Type_KeyDown ) { return true; }
 
@@ -582,7 +577,7 @@ class FriendlyUIHandler : EventHandler
                 }
                 return true;
             }
-            //If just the inventory screen is open, return false to allow other inputs. But return true to block other inputs if the shop screen is open
+            //Return true to block other inputs if the shop screen is open, otherwise false
             return (DataLibrary.ReadData("OpenShopScreen") == "1");
         }
         
@@ -739,6 +734,10 @@ class FriendlyUIHandler : EventHandler
 		else return;
 
 		String toolTipText = tooltipSubject.getName();
+        if (grabbedItem && hoveringDropButton && grabbedItemFromSlot != SLOT_SHOP) { toolTipText = "\ckDrop " .. tooltipText; }
+        if (grabbedItem && hoveringOverShop && grabbedItemFromSlot != SLOT_SHOP) { toolTipText = "\ckSell " .. tooltipText; }
+        if (grabbedItem && hoveredInvStack != SLOT_NONE && grabbedItemFromSlot == SLOT_SHOP) { toolTipText = "\ckBuy " .. tooltipText; }
+
 		double textMargin = -0.04;
 		Screen.DrawText(tinyFont, Font.CR_LIGHTBLUE,
 						(v.x + textMargin) * DrawFunctions.UI_WIDTH,

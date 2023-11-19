@@ -11,6 +11,7 @@ class DialogParser {
     ui int hoveredDialogOption;
 
     ui void ClearDialog() {
+    	POLogger.Log("dialog", "Cleared dialog");
         textPercentDisplayed = 0;
         parsedDialogString = "";
         parsedDialogChestItem = null;
@@ -23,6 +24,7 @@ class DialogParser {
     	if (!parsedDialogString) {
         	String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
         	int eventDialogPage = DataLibrary.ReadInt("eventDialogPage");
+    		POLogger.Log("dialog", "Parsing dialog from " .. eventDialogConversation .. " " .. eventDialogPage);
 
             parsedDialogTexture = "";
             parsedDialogType = "";
@@ -66,7 +68,7 @@ class DialogParser {
             }
 
             //If there's a chest item mentioned, get information about the chest
-	        if (parsedDialogString.IndexOf("$chestitem$") == 0) { return; }
+	        if (parsedDialogString.IndexOf("$chestitem$") == -1) { return; }
 
 	        POChest chest = DataLibrary.GetInstance().chestToOpen;
 	        if (chest.containedItem) {
