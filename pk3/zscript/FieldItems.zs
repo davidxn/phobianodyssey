@@ -31,41 +31,35 @@ class POChest : FloatingSkull
     }
     override bool Used (Actor user)
     {
-        if (user && !hasBeenOpened)
-        {
-            if (self.containedItem && !self.containedItem.instantUse() && DataLibrary.GetInstance().InventoryIsFull()) {
-                DataLibrary.SetChestToOpen(self);
-                DataLibrary.StartConversation("CANNOT_TAKE_CHEST");
-                return false;
-            }
+        if (!user || hasBeenOpened) { return false; }
 
-            self.SetStateLabel("Opened");
+        if (self.containedItem && !self.containedItem.instantUse() && DataLibrary.GetInstance().InventoryIsFull()) {
             DataLibrary.SetChestToOpen(self);
-            DataLibrary.StartConversation("OPEN_CHEST");
-            if (self.containedItem) {
-                if (!self.containedItem.instantUse()) {
-                    DataLibrary.InventoryAdd(self.containedItem.getClassName(), -1);
-                } else {
-                    self.containedItem.use();
-                }
-            }
-            if (self.containedAmmo) {
-                switch (self.containedAmmoType) {
-                    case 2: user.GiveInventory("POShell", containedAmmo); break;
-                    case 3: user.GiveInventory("PORocket", containedAmmo); break;
-                    case 4: user.GiveInventory("POCell", containedAmmo); break;
-                    default: user.GiveInventory("POClip", containedAmmo); break;
-                }
-                
-            }
-            if (self.containedCoins) {
-                user.GiveInventory("POCoin", containedCoins);
-            }
-            hasBeenOpened = true;
-            return true;
+            DataLibrary.StartConversation("CANNOT_TAKE_CHEST");
+            return false;
         }
 
-        return false;
+        self.SetStateLabel("Opened");
+        hasBeenOpened = true;
+        DataLibrary.SetChestToOpen(self);
+        DataLibrary.StartConversation("OPEN_CHEST");
+
+        if (self.containedItem) {
+            if (self.containedItem.instantUse()) { self.containedItem.use(); }
+            else { DataLibrary.InventoryAdd(self.containedItem.getClassName(), -1); }
+        }
+        if (self.containedAmmo) {
+            switch (self.containedAmmoType) {
+                case 2: user.GiveInventory("POShell", containedAmmo); break;
+                case 3: user.GiveInventory("PORocket", containedAmmo); break;
+                case 4: user.GiveInventory("POCell", containedAmmo); break;
+                default: user.GiveInventory("POClip", containedAmmo); break;
+            }
+        }
+        if (self.containedCoins) {
+            user.GiveInventory("POCoin", containedCoins);
+        }
+        return true;
     }
     
     override void PostBeginPlay() {
@@ -78,11 +72,8 @@ class POChest : FloatingSkull
         containedAmmo = self.args[2];
         containedAmmoType = self.args[3];
         causeEvent = self.args[4];
-        if (self.angle == 1) {
-            self.sprite = GetSpriteIndex("CHS2");
-        } else if (self.angle == 2) {
-            self.sprite = GetSpriteIndex("CHS3");
-        }
+        if (self.angle == 1) { self.sprite = GetSpriteIndex("CHS2"); }
+        else if (self.angle == 2) { self.sprite = GetSpriteIndex("CHS3"); }
     }
 }
 
