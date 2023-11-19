@@ -1,5 +1,5 @@
 class DialogParser {
-	
+
     ui String parsedDialogString;
     ui String parsedDialogTexture;
     ui MFInventoryItem parsedDialogChestItem;
@@ -23,7 +23,7 @@ class DialogParser {
     	if (!parsedDialogString) {
         	String eventDialogConversation = DataLibrary.ReadData("eventDialogConversation");
         	int eventDialogPage = DataLibrary.ReadInt("eventDialogPage");
-        
+
             parsedDialogTexture = "";
             parsedDialogType = "";
             String s = StringTable.Localize("$CONV_" .. eventDialogConversation .. "_" .. eventDialogPage);
@@ -34,7 +34,7 @@ class DialogParser {
                     parsedDialogString = s.Mid(nextTokenStartChar);
                     break; //All special tokens have been handled
                 }
-                
+
                 //This is a special token, let's parse it!
                 String tokenType = tokens[i].Mid(1, 1);
                 String tokenValue = tokens[i].Mid(3, tokens[i].Length()-4);
@@ -55,39 +55,43 @@ class DialogParser {
                 if (tokenType == "C") { //Clear flag
                     DataLibrary.WriteDataFromUI(tokenValue, "0");
                 }
-                
+
                 nextTokenStartChar += tokens[i].Length() + 1;
             }
-            
+
             //To make it easier, fill the destinations with 0s if there are too few for the responses
             //This means we don't have to provide a destination if it doesn't matter (e.g. single response)
             while (parsedDialogOptions.Size() > parsedDialogDestinations.size()) {
                 parsedDialogDestinations.push(0);
             }
-        }
 
-        //If there's a chest item mentioned, get information about the chest
-        if (parsedDialogString.IndexOf("$chestitem$") > 0) {
-            POChest chest = DataLibrary.GetInstance().chestToOpen;
-            if (!chest.containedItem) {
-                //No item - check for coins or ammo instead
-                if (chest.containedCoins) {
-                    parsedDialogString.Substitute("$chestitem$", (chest.containedCoins .. " coins"));
-                }
-                else if (chest.containedAmmo) {
-                    String ammoType = "bullets";
-                    switch (chest.containedAmmoType) {
-                        case 2: ammoType = "shells"; break;
-                        case 3: ammoType = "rockets"; break;
-                        case 4: ammoType = "plasma cells"; break;
-                    }
-                    parsedDialogString.Substitute("$chestitem$", (chest.containedAmmo .. " " .. ammoType));
-                }
-                else { parsedDialogString = "There is nothing in the chest. That's probably a bug."; }
-            } else {
-                parsedDialogString.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
-                parsedDialogChestItem = chest.containedItem;
+            //If there's a chest item mentioned, get information about the chest
+	        if (parsedDialogString.IndexOf("$chestitem$") == 0) { return; }
+
+	        POChest chest = DataLibrary.GetInstance().chestToOpen;
+	        if (chest.containedItem) {
+	            parsedDialogString.Substitute("$chestitem$", "the " .. chest.containedItem.getName());
+	            parsedDialogChestItem = chest.containedItem;
+	            return;
+	        }
+
+            //No item - check for coins or ammo instead
+            if (chest.containedCoins) {
+                parsedDialogString.Substitute("$chestitem$", (chest.containedCoins .. " coins")); return;
             }
+
+            if (chest.containedAmmo) {
+                String ammoType = "bullets";
+                switch (chest.containedAmmoType) {
+                    case 2: ammoType = "shells"; break;
+                    case 3: ammoType = "rockets"; break;
+                    case 4: ammoType = "plasma cells"; break;
+                }
+                parsedDialogString.Substitute("$chestitem$", (chest.containedAmmo .. " " .. ammoType));
+                return;
+            }
+
+            parsedDialogString = "There is nothing in the chest. That's probably a bug.";
         }
     }
 }
