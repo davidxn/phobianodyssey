@@ -31,14 +31,11 @@ class FriendlyUIHandler : EventHandler
     play int shopFirstItemIndex;
     
     // Armory screen stuff
-    ui POWeaponSlot uiGrabbedArm;
     play POWeaponSlot grabbedArm;
-    play bool shouldClearUIGrabbedArm;
     
     ui int hoveredArmOption;
     ui int hoveredArmStack;
     ui int hoveringForgeButton;
-
 
 	// Inventory measurements
 	const INV_STACK_BUTTON_START_X = 0.095;
@@ -340,7 +337,7 @@ class FriendlyUIHandler : EventHandler
 
             DrawFunctions.ScreenDrawTexture(tx.get("invItemBG"), x, y, alpha: 0.5);
             //Can't hover over a weapon if we already have something
-            bool hovering = !uiGrabbedArm && (mv.x >= x && mv.x <= x + INV_STACK_BUTTON_WIDTH && mv.y >= y && mv.y <= y + INV_STACK_BUTTON_HEIGHT);
+            bool hovering = !grabbedArm && (mv.x >= x && mv.x <= x + INV_STACK_BUTTON_WIDTH && mv.y >= y && mv.y <= y + INV_STACK_BUTTON_HEIGHT);
             if (hovering) {
                 // hilight box
                 DrawFunctions.ScreenDrawTexture(tx.get("invHilight"), x, y);
@@ -398,7 +395,7 @@ class FriendlyUIHandler : EventHandler
                 }
                 return;
             }
-			//If we do have a grabbed item, put it where we've clicked. If we have an item in there already, it becomes the new grabbed item
+			//If we do have a grabbed item, put it where we've clicked. If it was from the shop we need to take payment now
             if (grabbedItemIsFromShop) {
                 // If trying to put this in inventory from shop, check the price first
                 if (p.CountInv("POCoin") < grabbedItem.getBuyPrice()) { p.A_PlaySound("po/deny", CHAN_VOICE); return; }
@@ -508,27 +505,19 @@ class FriendlyUIHandler : EventHandler
             DataLibrary.WriteDataFromUI("OpenShopScreen", "0");
         }
         else if (e.Name == "Action_CloseArmoryScreen" ) {
-            grabbedArm = NULL; shouldClearUIGrabbedArm = true;
+            grabbedArm = NULL;
             DataLibrary.WriteDataFromUI("OpenArmoryScreen", "0");
         }
-		else if ( e.Name == "UIStartHover" )
-		{
-			p.A_PlaySound("UIHover", CHAN_VOICE);
-		}
-		else if ( e.Name == "UINegativeFeedback" )
-		{
-			p.A_PlaySound("po/deny");
-		}
+		else if ( e.Name == "UIStartHover" ) { p.A_PlaySound("UIHover", CHAN_VOICE); }
+		else if ( e.Name == "UINegativeFeedback" ) { p.A_PlaySound("po/deny"); }
 	}
 
 	override bool InputProcess(InputEvent e)
 	{
         let dl = DataLibrary.GetInstance();
-        if (!dl) {
-            return false;
-        }
+        if (!dl || !initialized || automapactive) { return false; }
+
         bool showEventDialog = (DataLibrary.ReadData("showEventDialog") == "1");
-		if ( !initialized ) return false;
 
 		// OK, let's get some binds!
 		int leftBind, rightBind, i;
@@ -537,144 +526,120 @@ class FriendlyUIHandler : EventHandler
 
         int useBind1, useBind2; [useBind1, useBind2] = Bindings.GetKeysForCommand("+use");
         int invBind1, invBind2; [invBind1, invBind2] = Bindings.GetKeysForCommand("invscreen");
-        
-		if ( automapactive ) return false;
-        
+
+        //Check the inventory toggle key.
         if ( e.Type == InputEvent.Type_KeyDown && (e.KeyScan == invBind1 || e.KeyScan == invBind2)) {
-            //If the dialogue screen is open, ignore the keypress. If shop/armory is open, close them but let the press through
-            if (showEventDialog) { return true; }                        
+            //If the dialogue screen is open, ignore the keypress. If shop is open, close it. Then toggle the inventory
+            if (showEventDialog) { return true; }
             if (DataLibrary.ReadData("OpenArmoryScreen") == "1") { EventHandler.SendNetworkEvent("Action_CloseArmoryScreen"); }
             if (DataLibrary.ReadData("OpenShopScreen") == "1") { EventHandler.SendNetworkEvent("Action_CloseShopScreen"); }
-
-            EventHandler.SendNetworkEvent("ToggleInventory");           
+            EventHandler.SendNetworkEvent("ToggleInventory");
             return true;
         }
 
+        //Now check for inputs on the special screens.
         if (inventoryIsOpen) {
-            // grab mouse move & clicks for inventory cursor
-            if ( e.Type == InputEvent.Type_Mouse )
+            handleMouseMovement(e);
+            //If this is a keyup, let it through with a false return
+            if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
+            if ( e.Type != InputEvent.Type_KeyDown ) { return true; }
+
+            // handle mouse clicks
+            if ( e.KeyScan == InputEvent.Key_Mouse1 )
             {
-                mouseCursorPos.x += e.MouseX * MOUSE_SENSITIVITY_FACTOR_X;
-                mouseCursorPos.y -= e.MouseY * MOUSE_SENSITIVITY_FACTOR_Y;
-                // clamp within screen edges
-                mouseCursorPos.x = max(0, min(Screen.GetWidth(), mouseCursorPos.x));
-                mouseCursorPos.y = max(0, min(Screen.GetHeight(), mouseCursorPos.y));
+                if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("Action_ClickedInvStack", hoveredInvStack); return true; }
+
+                if ( hoveringDropButton && grabbedItem && !grabbedItemIsFromShop && grabbedItem.getSellPrice() > 0) {
+                    EventHandler.SendNetworkEvent("Action_BinnedGrabbedItem");
+                    return true;
+                }
+
+                //If we have the item shop open, also handle shop-related clicks
+                if (DataLibrary.ReadData("OpenShopScreen") == "1") {
+                    if (grabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("Action_DroppedItemToShop"); return true; }
+                    if (hoveredShopNumber != -1) { EventHandler.SendNetworkEvent("Action_ClickedShopStack", hoveredShopNumber); return true; }
+                }
+                return true;
             }
-            else if ( e.Type == InputEvent.Type_KeyDown )
+            if ( e.KeyScan == InputEvent.Key_Mouse2 )
             {
-                // handle mouse clicks
-                if ( e.KeyScan == InputEvent.Key_Mouse1 )
-                {
-                    if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("Action_ClickedInvStack", hoveredInvStack); return true; }
-
-                    if ( hoveringDropButton && grabbedItem && !grabbedItemIsFromShop && grabbedItem.getSellPrice() > 0) {
-                        EventHandler.SendNetworkEvent("Action_BinnedGrabbedItem");
-                        return true;
-                    }
-
-                    //If we have the item shop open, also handle shop-related clicks
-                    if (DataLibrary.ReadData("OpenShopScreen") == "1") {
-                        if (grabbedItem && hoveringOverShop) { EventHandler.SendNetworkEvent("Action_DroppedItemToShop"); return true; }
-                        if (hoveredShopNumber != -1) { EventHandler.SendNetworkEvent("Action_ClickedShopStack", hoveredShopNumber); return true; }
-                    }
-                    return true;
-                }
-                if ( e.KeyScan == InputEvent.Key_Mouse2 )
-                {
-                    if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("Action_UsedInventorySlot", hoveredInvStack); }
-                    return true;
-                }
-                if (e.KeyScan >=2 && e.KeyScan <= 5) { //1 to 4, funnily enough
-                    EventHandler.SendNetworkEvent("Action_UsedInventorySlot", e.KeyScan-2);
-                    return true;
-                }
-                if (e.KeyScan == InputEvent.Key_MWheelDown || e.KeyScan == InputEvent.Key_MWheelUp) {
-                    if (DataLibrary.ReadData("OpenShopScreen") == "1") {
-                        if (shopItemsDisplayed == 6 && e.KeyScan == InputEvent.Key_MWheelDown) {
-                            EventHandler.SendNetworkEvent("Action_ScrolledShop", true);
-                        }
-                        else if (shopFirstItemIndex > 0 && e.KeyScan == InputEvent.Key_MWheelUp) {
-                            EventHandler.SendNetworkEvent("Action_ScrolledShop", false);
-                        }
-                    }
-                    return true;
-                }
-                
-                //If just the inventory screen is open, return false to allow other inputs. But return true to block other inputs if the shop/armory screen is open
-                return (DataLibrary.ReadData("OpenShopScreen") == "1" || DataLibrary.ReadData("OpenArmoryScreen") == "1"); 
+                if ( hoveredInvStack != -1 ) { EventHandler.SendNetworkEvent("Action_UsedInventorySlot", hoveredInvStack); }
+                return true;
             }
-
-            // process keyup events else inputs active when screen invoked bleed & stay on - otherwise, block other keypresses
-            else if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
-            return true;
+            if (e.KeyScan >=2 && e.KeyScan <= 5) { //1 to 4, funnily enough
+                EventHandler.SendNetworkEvent("Action_UsedInventorySlot", e.KeyScan-2);
+                return true;
+            }
+            if (e.KeyScan == InputEvent.Key_MWheelDown || e.KeyScan == InputEvent.Key_MWheelUp) {
+                if (DataLibrary.ReadData("OpenShopScreen") == "1") {
+                    if (shopItemsDisplayed == 6 && e.KeyScan == InputEvent.Key_MWheelDown) {
+                        EventHandler.SendNetworkEvent("Action_ScrolledShop", true);
+                    }
+                    else if (shopFirstItemIndex > 0 && e.KeyScan == InputEvent.Key_MWheelUp) {
+                        EventHandler.SendNetworkEvent("Action_ScrolledShop", false);
+                    }
+                }
+                return true;
+            }
+            //If just the inventory screen is open, return false to allow other inputs. But return true to block other inputs if the shop screen is open
+            return (DataLibrary.ReadData("OpenShopScreen") == "1");
         }
         
         //Same for armory screen
         if (DataLibrary.ReadData("OpenArmoryScreen") == "1") {
-            if (shouldClearUIGrabbedArm) {
-                uiGrabbedArm = NULL;
-                EventHandler.SendNetworkEvent("ClearedUIGrabbedArm");
-            }
-            if ( e.KeyScan == InputEvent.Key_Mouse1 ) {
-            }
+            handleMouseMovement(e);
         }
         
         if (showEventDialog) {
-            // grab mouse move & clicks for inventory cursor
-            if ( e.Type == InputEvent.Type_Mouse )
-            {
-                mouseCursorPos.x += e.MouseX * MOUSE_SENSITIVITY_FACTOR_X;
-                mouseCursorPos.y -= e.MouseY * MOUSE_SENSITIVITY_FACTOR_Y;
-                // clamp within screen edges
-                mouseCursorPos.x = max(0, min(Screen.GetWidth(), mouseCursorPos.x));
-                mouseCursorPos.y = max(0, min(Screen.GetHeight(), mouseCursorPos.y));
-                return true;
-            }
-            else if ( e.Type == InputEvent.Type_KeyDown )
-            {
-                // handle mouse clicks
-                if ( e.KeyScan == InputEvent.Key_Mouse1 || e.KeyScan == useBind1 || e.KeyScan == useBind2 )
-                {
-                    if (dialogParser.dialogOpacity >= 1.0) {
-                        if (dialogParser.textPercentDisplayed >= 1.0 && dialogParser.parsedDialogOptions.Size() <= 1) {
-                            EventHandler.SendNetworkEvent("Action_AdvancedDialog", 0);
-                        }
-                        else if (dialogParser.textPercentDisplayed >= 1.0 && dialogParser.hoveredDialogOption != -1) {
-                            EventHandler.SendNetworkEvent("Action_AdvancedDialog", dialogParser.parsedDialogDestinations[dialogParser.hoveredDialogOption]);
-                        }
-                        else {
-                            //If clicked before text is all displayed, set it to displayed
-                            dialogParser.textPercentDisplayed = 1.0;
-                        }
-                    }
-                }
-                return true;
-            }
-            // process keyup events else inputs active when screen invoked bleed & stay on - otherwise, block other keypresses
+            handleMouseMovement(e);
             if ( e.Type == InputEvent.Type_KeyUp ) { return false; }
+            if ( e.Type != InputEvent.Type_KeyDown ) { return true; }
+
+            //Now handle mouse clicks or Use button
+            if ( e.KeyScan == InputEvent.Key_Mouse1 || e.KeyScan == useBind1 || e.KeyScan == useBind2 )
+            {
+                if (dialogParser.dialogOpacity < 1.0) { return true; }
+
+                if (dialogParser.textPercentDisplayed >= 1.0 && dialogParser.parsedDialogOptions.Size() <= 1) {
+                    EventHandler.SendNetworkEvent("Action_AdvancedDialog", 0);
+                }
+                else if (dialogParser.textPercentDisplayed >= 1.0 && dialogParser.hoveredDialogOption != -1) {
+                    EventHandler.SendNetworkEvent("Action_AdvancedDialog", dialogParser.parsedDialogDestinations[dialogParser.hoveredDialogOption]);
+                }
+                else {
+                    //If clicked before text is all displayed, set it to displayed
+                    dialogParser.textPercentDisplayed = 1.0;
+                }
+            }
             return true;
         }
         
         //Check to see whether we should swallow the use key for any other reason (used when player is moving)
         if (e.Type == InputEvent.Type_KeyDown && (e.KeyScan == useBind1 || e.KeyScan == useBind2)) {
-            if (DataLibrary.ReadInt("BlockUseKey")) {
-                //console.printf("\ckDEBUG: Blocked use key");
-                return true;
-            }
+            if (DataLibrary.ReadInt("BlockUseKey")) { return true; }
         }
-
+        //We haven't caught the keypress - let something else handle it
         return false;
-
 	}
+
+    ui void handleMouseMovement(InputEvent e) {
+        if ( e.Type == InputEvent.Type_Mouse )
+        {
+            mouseCursorPos.x += e.MouseX * MOUSE_SENSITIVITY_FACTOR_X;
+            mouseCursorPos.y -= e.MouseY * MOUSE_SENSITIVITY_FACTOR_Y;
+            // clamp within screen edges
+            mouseCursorPos.x = max(0, min(Screen.GetWidth(), mouseCursorPos.x));
+            mouseCursorPos.y = max(0, min(Screen.GetHeight(), mouseCursorPos.y));
+        }
+    }
 
 	override void RenderOverlay(RenderEvent e)
 	{
 		// fonts must be transient; if we're loading a savegame they'll be null so reinit
 		if ( !initialized ) Init();
 		if ( !(tinyFont) ) InitFonts();
-        if ( !Datalibrary.GetInstance()) {
-            return;
-        }
+        if ( !Datalibrary.GetInstance()) { return; }
+
         //ReadLiveVars();
         RenderWeaponSlots();
         RenderPowerSlots();
@@ -711,14 +676,8 @@ class FriendlyUIHandler : EventHandler
             POWeaponSlot w = DataLibrary.getWeaponSlot(i);
             if (w) {
                 DrawFunctions.ScreenDrawTexture(w.getTexture(), weaponX, weaponY);
-                let t = w.getElementTexture();
-                if (t) {
-                    DrawFunctions.ScreenDrawTexture(t, weaponX, weaponY);
-                }
-                let t2 = w.getPowerTexture();
-                if (t2) {
-                    DrawFunctions.ScreenDrawTexture(t2, weaponX, weaponY);
-                }
+                let t = w.getElementTexture(); if (t) { DrawFunctions.ScreenDrawTexture(t, weaponX, weaponY); }
+                let t2 = w.getPowerTexture(); if (t2) { DrawFunctions.ScreenDrawTexture(t2, weaponX, weaponY); }
             }
             weaponX += WEAPON_WIDTH;
         }
@@ -762,9 +721,7 @@ class FriendlyUIHandler : EventHandler
 		double iconArea = 0.05;
         Vector2 v = DrawFunctions.GetVirtualVector(mouseCursorPos);
 
-		Screen.DrawTexture(tx.get("mouseMiniCursorTex"), true,
-						   mouseCursorPos.x, mouseCursorPos.y,
-						   DTA_DestWidth, 24, DTA_DestHeight, 24);
+		Screen.DrawTexture(tx.get("mouseMiniCursorTex"), true, mouseCursorPos.x, mouseCursorPos.y, DTA_DestWidth, 24, DTA_DestHeight, 24);
 
         //The rest of this is only for the inventory screen
         if (!inventoryIsOpen) { return; }
