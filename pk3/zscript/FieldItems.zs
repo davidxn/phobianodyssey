@@ -33,15 +33,15 @@ class POChest : FloatingSkull
     {
         if (!user || hasBeenOpened) { return false; }
 
+        DataLibrary.SetChestToOpen(self);
+
         if (self.containedItem && !self.containedItem.instantUse() && DataLibrary.GetInstance().InventoryIsFull()) {
-            DataLibrary.SetChestToOpen(self);
             DataLibrary.StartConversation("CANNOT_TAKE_CHEST");
             return false;
         }
 
         self.SetStateLabel("Opened");
         hasBeenOpened = true;
-        DataLibrary.SetChestToOpen(self);
         DataLibrary.StartConversation("OPEN_CHEST");
 
         if (self.containedItem) {
@@ -61,7 +61,7 @@ class POChest : FloatingSkull
         }
         return true;
     }
-    
+
     override void PostBeginPlay() {
         int itemId = self.args[0];
         if (itemId > 0) {

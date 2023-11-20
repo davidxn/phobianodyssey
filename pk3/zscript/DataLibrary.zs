@@ -7,6 +7,7 @@ class DataLibrary : Thinker
     Dictionary monsterParties;
     Dictionary monsterPops;
     Dictionary squareData;
+    Dictionary itemIds;
 
     //Player properties
     Array<MFInventoryItem> MFinventory;
@@ -28,9 +29,9 @@ class DataLibrary : Thinker
         monsterParties = Dictionary.Create();
         monsterPops = Dictionary.Create();
         squareData = Dictionary.Create();
+        itemIds = Dictionary.Create();
         inventorySize = 4;
         weaponInventorySize = 3;
-        
 
         //Set up inventory slots
         for (int i = 0; i < inventorySize; i++) {
@@ -111,7 +112,7 @@ class DataLibrary : Thinker
             if (line.Length() < 2) { continue; } //In the absence of trim()
             Array<String> lineData; line.Split(lineData, ",");
             String key = "ItemID" .. lineData[0];
-            squareData.Insert(key, lineData[1]);
+            itemIds.Insert(key, lineData[1]);
         }
         
 		return self;
@@ -143,7 +144,7 @@ class DataLibrary : Thinker
     static clearscope int ReadInt(String position) { return DataLibrary.GetInstance().dic.At(position).ToInt(); }
     static clearscope double ReadDouble(String position) { return DataLibrary.GetInstance().dic.At(position).ToDouble(); }
 
-    static String ReadClassnameByID(int id) { return DataLibrary.inst().squareData.At("ItemID" .. id); }
+    static String ReadClassnameByID(int id) { return DataLibrary.inst().itemIds.At("ItemID" .. id); }
     
     //////////////////////////////////////////////
     // Item Inventory
@@ -341,6 +342,7 @@ class DataLibrary : Thinker
         if (which == 1) { theDictionary = DataLibrary.getInstance().monsterParties; }
         if (which == 2) { theDictionary = DataLibrary.getInstance().monsterPops; }
         if (which == 3) { theDictionary = DataLibrary.getInstance().squareData; }
+        if (which == 4) { theDictionary = DataLibrary.getInstance().itemIds; }
         
         DictionaryIterator d = DictionaryIterator.Create(theDictionary);
 

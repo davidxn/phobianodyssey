@@ -464,8 +464,7 @@ class FriendlyUIHandler : EventHandler
         }
         else if (e.Name == "Action_ScrolledShop") {
             int direction = e.Args[0] ? 1 : -1;
-            shopFirstItemIndex += direction;
-            shopFirstItemIndex = max(shopFirstItemIndex, 0);
+            shopFirstItemIndex = max(shopFirstItemIndex + direction, 0);
         }
         else if ( e.Name == "Action_AdvancedDialog" ) {
             int destination = e.args[0];

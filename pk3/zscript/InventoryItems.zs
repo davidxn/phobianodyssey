@@ -7,7 +7,6 @@ class MFInventoryItem : Thinker abstract {
     virtual clearscope bool isAvailable() { return true; }
     virtual clearscope String getRequirements() { return ""; }
     virtual clearscope bool instantUse() { return false; }
-    virtual clearscope int displayAfterLevel() { return 0; }
 
     virtual virtualscope bool use() { return true; }
 
@@ -253,7 +252,7 @@ class MFITreasure4 : MFInventoryItem {
 
 class MFITreasure5 : MFInventoryItem {
     override String myTexture() { return "TRESE0"; }
-    override String myName() { return "\ckGold Gross"; }
+    override String myName() { return "\ckGold Cross"; }
     override int getBuyPrice() { return 2500; }
     override int getSellPrice() { return 2500; }
     
