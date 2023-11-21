@@ -64,6 +64,32 @@ class MonsterStart : MapSpot
     }
 }
 
+class Breadcrumb : Actor
+{
+
+    int life;
+
+    default {
+        //$Sprite SPEKB0
+        radius 16;
+        LightLevel 64;
+        RenderStyle "Translucent";
+        +ADDLIGHTLEVEL;
+    }
+    States {
+        Spawn:
+            SPEK B -1;
+    }
+
+    void Shrink() {
+        life += 1;
+        self.Alpha = self.Alpha * 0.85;
+        if (life >= 7) {
+            self.Destroy();
+        }
+    }
+}
+
 class HealthRegenerator : MapSpot
 {
     default {

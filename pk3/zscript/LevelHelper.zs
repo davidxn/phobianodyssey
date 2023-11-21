@@ -208,8 +208,13 @@ class LevelHelper : Thinker
         activator.TakeInventory("POWeapon5", 1);
     }
     
-    static void AdvanceTurnBasedTraps()
+    static void AdvanceTurnBasedTraps(Actor activator)
     {
+        Breadcrumb x = Breadcrumb(Actor.Spawn("Breadcrumb", activator.pos));
+        ThinkerIterator it = ThinkerIterator.Create("Breadcrumb");
+        while (x = Breadcrumb(it.Next())) {
+            x.Shrink();
+        }
         return;
     }
 }
